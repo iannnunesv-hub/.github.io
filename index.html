@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#ffffff"/>
+<title>Meu Organizador</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,sans-serif;background:#f0f0f0;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:1rem}
+  #app{width:100%;max-width:480px;background:#fafafa;border-radius:16px;border:1px solid #eee;overflow:hidden;display:flex;flex-direction:column;min-height:96vh}
+  .header{background:#fff;border-bottom:1px solid #eee;padding:16px 20px 12px}
+  .header h1{font-size:18px;font-weight:500;color:#222}
+  .header p{font-size:13px;color:#aaa;margin-top:2px}
+  .content{flex:1;overflow-y:auto}
+  .tab-bar{display:flex;border-top:1px solid #eee;background:#fff}
+  .tab-btn{flex:1;padding:12px 4px 10px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;color:#bbb;font-size:11px;transition:color .15s}
+  .tab-btn.active{color:#222;font-weight:500}
+  .tab-btn svg{width:18px;height:18px}
+  .section{display:none;padding:1.5rem 1rem}
+  .section.active{display:block}
+
+  /* inputs & buttons */
+  .row{display:flex;gap:8px;margin-bottom:1.5rem}
+  input[type=text],textarea{flex:1;padding:10px 14px;border-radius:10px;border:1px solid #ddd;font-size:15px;outline:none;font-family:inherit;width:100%}
+  textarea{resize:none;min-height:200px;line-height:1.7}
+  .btn-add{padding:10px 18px;border-radius:10px;border:none;background:#222;color:#fff;font-size:15px;cursor:pointer}
+  .btn-sm{padding:9px 16px;border-radius:8px;border:none;background:#222;color:#fff;font-size:14px;cursor:pointer}
+  .btn-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:18px;line-height:1;padding:0 4px}
+  .btn-back{background:none;border:none;cursor:pointer;color:#888;font-size:14px;padding:0}
+  .btn-save{background:#222;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:14px;cursor:pointer}
+  .empty{text-align:center;color:#aaa;font-size:14px;margin-top:3rem}
+
+  /* tasks */
+  .task-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;border:1px solid #eee;margin-bottom:8px;background:#fff}
+  .task-check{width:20px;height:20px;border-radius:50%;border:2px solid #ccc;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .task-check.done{background:#222;border-color:#222}
+  .task-text{flex:1;font-size:15px;color:#222}
+  .task-text.done{color:#bbb;text-decoration:line-through}
+  .section-label{font-size:12px;color:#999;margin-bottom:8px;font-weight:500;letter-spacing:.05em;text-transform:uppercase}
+  .done-group{margin-top:1.5rem}
+
+  /* notes */
+  .notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .note-card{border-radius:12px;border:1px solid #eee;padding:14px;cursor:pointer;background:#fff}
+  .note-card h3{font-size:14px;font-weight:500;color:#222;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .note-card p{font-size:13px;color:#888;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .note-footer{display:flex;justify-content:space-between;align-items:center}
+  .note-date{font-size:11px;color:#bbb}
+  .btn-new-note{width:100%;padding:12px;border-radius:10px;border:1px dashed #ccc;background:transparent;font-size:15px;color:#888;cursor:pointer;margin-bottom:1.5rem}
+  .note-editor-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+  #note-title-input{border:none;outline:none;font-size:20px;font-weight:500;color:#222;padding:0;margin-bottom:1rem;border-radius:0}
+  #note-body-input{border:none;outline:none;font-size:15px;color:#444;padding:0;border-radius:0}
+
+  /* calendar */
+  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+  .cal-header span{font-size:16px;font-weight:500;color:#222}
+  .cal-nav{background:none;border:none;font-size:18px;cursor:pointer;color:#888;padding:4px 8px}
+  .cal-days-label{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px}
+  .cal-days-label span{text-align:center;font-size:11px;color:#bbb;font-weight:500;padding:4px 0}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+  .cal-cell{height:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;position:relative;font-size:14px;color:#444}
+  .cal-cell.today{background:#f5f5f5;color:#222}
+  .cal-cell.selected{background:#222;color:#fff}
+  .cal-cell.has-events::after{content:'';width:4px;height:4px;border-radius:50%;background:#222;position:absolute;bottom:5px}
+  .cal-cell.selected.has-events::after{background:#fff}
+  .cal-cell.empty{cursor:default}
+  .events-section{margin-top:1.5rem;border-top:1px solid #eee;padding-top:1.25rem}
+  .events-section p.day-label{font-size:13px;color:#888;margin-bottom:10px}
+  .event-item{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;border:1px solid #eee;margin-bottom:6px;background:#fff}
+  .event-item span{flex:1;font-size:14px;color:#333}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <h1>Meu Organizador</h1>
+    <p id="today-label"></p>
+  </div>
+
+  <div class="content">
+    <!-- TAREFAS -->
+    <div id="sec-tasks" class="section active">
+      <div class="row">
+        <input type="text" id="task-input" placeholder="Nova tarefa..."/>
+        <button class="btn-add" onclick="addTask()">+</button>
+      </div>
+      <div id="tasks-pending"></div>
+      <div id="tasks-done" class="done-group"></div>
+    </div>
+
+    <!-- NOTAS -->
+    <div id="sec-notes" class="section">
+      <div id="notes-list-view">
+        <button class="btn-new-note" onclick="openNoteEditor('new')">+ Nova anotação</button>
+        <div id="notes-grid" class="notes-grid"></div>
+      </div>
+      <div id="notes-editor-view" style="display:none">
+        <div class="note-editor-header">
+          <button class="btn-back" onclick="closeNoteEditor()">← Voltar</button>
+          <button class="btn-save" onclick="saveNote()">Salvar</button>
+        </div>
+        <input type="text" id="note-title-input" placeholder="Título"/>
+        <textarea id="note-body-input" placeholder="Escreva sua nota..."></textarea>
+      </div>
+    </div>
+
+    <!-- AGENDA -->
+    <div id="sec-agenda" class="section">
+      <div class="cal-header">
+        <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+        <span id="cal-title"></span>
+        <button class="cal-nav" onclick="changeMonth(1)">›</button>
+      </div>
+      <div class="cal-days-label">
+        <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+      </div>
+      <div id="cal-grid" class="cal-grid"></div>
+      <div id="events-section" class="events-section" style="display:none">
+        <p class="day-label" id="events-day-label"></p>
+        <div class="row">
+          <input type="text" id="event-input" placeholder="Adicionar evento..." style="font-size:14px;padding:9px 12px"/>
+          <button class="btn-sm" onclick="addEvent()">+</button>
+        </div>
+        <div id="events-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('tasks',this)">
+      <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.2"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Tarefas
+    </button>
+    <button class="tab-btn" onclick="switchTab('notes',this)">
+      <svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M6 6h6M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Notas
+    </button>
+    <button class="tab-btn" onclick="switchTab('agenda',this)">
+      <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M6 2v3M12 2v3M2 8h14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Agenda
+    </button>
+  </div>
+</div>
+
+<script>
+const MONTHS = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const now = new Date();
+
+// Header date
+document.getElementById("today-label").textContent = now.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});
+
+// --- TABS ---
+function switchTab(name, btn) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("sec-"+name).classList.add("active");
+  btn.classList.add("active");
+}
+
+// --- TASKS ---
+let tasks = [];
+
+document.getElementById("task-input").addEventListener("keydown", e => { if(e.key==="Enter") addTask(); });
+
+function addTask() {
+  const inp = document.getElementById("task-input");
+  const text = inp.value.trim();
+  if (!text) return;
+  tasks.unshift({ id: Date.now(), text, done: false });
+  inp.value = "";
+  renderTasks();
+}
+
+function toggleTask(id) {
+  tasks = tasks.map(t => t.id===id ? {...t, done:!t.done} : t);
+  renderTasks();
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id!==id);
+  renderTasks();
+}
+
+function renderTasks() {
+  const pending = tasks.filter(t => !t.done);
+  const done = tasks.filter(t => t.done);
+  const pEl = document.getElementById("tasks-pending");
+  const dEl = document.getElementById("tasks-done");
+
+  if (tasks.length===0) {
+    pEl.innerHTML = '<p class="empty">Nenhuma tarefa ainda. Adicione uma acima!</p>';
+    dEl.innerHTML = "";
+    return;
+  }
+
+  pEl.innerHTML = pending.length ? `<p class="section-label">Pendentes · ${pending.length}</p>` + pending.map(taskHTML).join("") : "";
+  dEl.innerHTML = done.length ? `<p class="section-label">Concluídas · ${done.length}</p>` + done.map(taskHTML).join("") : "";
+}
+
+function taskHTML(t) {
+  return `<div class="task-item">
+    <div class="task-check ${t.done?'done':''}" onclick="toggleTask(${t.id})">
+      ${t.done?'<svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}
+    </div>
+    <span class="task-text ${t.done?'done':''}">${t.text}</span>
+    <button class="btn-del" onclick="deleteTask(${t.id})">×</button>
+  </div>`;
+}
+
+// --- NOTES ---
+let notes = [];
+let editingNoteId = null;
+
+function openNoteEditor(id) {
+  editingNoteId = id;
+  const note = id==="new" ? null : notes.find(n => n.id===id);
+  document.getElementById("note-title-input").value = note ? note.title : "";
+  document.getElementById("note-body-input").value = note ? note.body : "";
+  document.getElementById("notes-list-view").style.display = "none";
+  document.getElementById("notes-editor-view").style.display = "block";
+}
+
+function closeNoteEditor() {
+  document.getElementById("notes-list-view").style.display = "block";
+  document.getElementById("notes-editor-view").style.display = "none";
+  editingNoteId = null;
+}
+
+function saveNote() {
+  const title = document.getElementById("note-title-input").value.trim() || "Sem título";
+  const body = document.getElementById("note-body-input").value.trim();
+  if (editingNoteId==="new") {
+    notes.unshift({ id: Date.now(), title, body, date: now.toLocaleDateString("pt-BR") });
+  } else {
+    notes = notes.map(n => n.id===editingNoteId ? {...n, title, body} : n);
+  }
+  renderNotes();
+  closeNoteEditor();
+}
+
+function deleteNote(id) {
+  notes = notes.filter(n => n.id!==id);
+  renderNotes();
+}
+
+function renderNotes() {
+  const grid = document.getElementById("notes-grid");
+  if (!notes.length) { grid.innerHTML = '<p class="empty" style="grid-column:1/-1">Nenhuma anotação ainda.</p>'; return; }
+  grid.innerHTML = notes.map(n => `
+    <div class="note-card" onclick="openNoteEditor(${n.id})">
+      <h3>${n.title}</h3>
+      <p>${n.body||"Sem conteúdo"}</p>
+      <div class="note-footer">
+        <span class="note-date">${n.date}</span>
+        <button class="btn-del" onclick="event.stopPropagation();deleteNote(${n.id})">×</button>
+      </div>
+    </div>`).join("");
+}
+
+// --- CALENDAR ---
+let calYear = now.getFullYear(), calMonth = now.getMonth();
+let selectedDay = null;
+let events = {};
+
+function calKey(d) { return `${calYear}-${calMonth}-${d}`; }
+
+function changeMonth(dir) {
+  calMonth += dir;
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  selectedDay = null;
+  renderCalendar();
+}
+
+document.getElementById("event-input").addEventListener("keydown", e => { if(e.key==="Enter") addEvent(); });
+
+function addEvent() {
+  const inp = document.getElementById("event-input");
+  const text = inp.value.trim();
+  if (!text || !selectedDay) return;
+  const k = calKey(selectedDay);
+  if (!events[k]) events[k] = [];
+  events[k].push({ id: Date.now(), text });
+  inp.value = "";
+  renderEventsList();
+  renderCalendar();
+}
+
+function deleteEvent(day, id) {
+  const k = calKey(day);
+  events[k] = events[k].filter(e => e.id!==id);
+  renderEventsList();
+  renderCalendar();
+}
+
+function selectDay(d) {
+  selectedDay = d;
+  renderCalendar();
+  const sec = document.getElementById("events-section");
+  sec.style.display = "block";
+  document.getElementById("events-day-label").textContent = `${d} de ${MONTHS[calMonth]}`;
+  renderEventsList();
+}
+
+function renderEventsList() {
+  const list = document.getElementById("events-list");
+  const evs = events[calKey(selectedDay)] || [];
+  if (!evs.length) { list.innerHTML = '<p style="font-size:13px;color:#ccc">Sem eventos neste dia.</p>'; return; }
+  list.innerHTML = evs.map(ev => `
+    <div class="event-item">
+      <span>${ev.text}</span>
+      <button class="btn-del" onclick="deleteEvent(${selectedDay},${ev.id})">×</button>
+    </div>`).join("");
+}
+
+function renderCalendar() {
+  document.getElementById("cal-title").textContent = `${MONTHS[calMonth]} ${calYear}`;
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  let html = "";
+  for (let i=0; i<firstDay; i++) html += '<div class="cal-cell empty"></div>';
+  for (let d=1; d<=daysInMonth; d++) {
+    const isToday = d===now.getDate() && calMonth===now.getMonth() && calYear===now.getFullYear();
+    const isSel = d===selectedDay;
+    const hasEv = (events[calKey(d)]||[]).length > 0;
+    const cls = ["cal-cell", isToday?"today":"", isSel?"selected":"", hasEv?"has-events":""].join(" ");
+    html += `<div class="${cls}" onclick="selectDay(${d})">${d}</div>`;
+  }
+  document.getElementById("cal-grid").innerHTML = html;
+}
+
+renderTasks();
+renderNotes();
+renderCalendar();
+</script>
+</body>
+</html>
