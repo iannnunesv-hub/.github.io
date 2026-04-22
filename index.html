@@ -3,422 +3,517 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
 <meta name="theme-color" content="#ffffff"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
 <title>Meu Organizador</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:system-ui,sans-serif;background:#f0f0f0;display:flex;justify-content:center;min-height:100vh;padding:1rem}
-  #app{width:100%;max-width:480px;background:#fafafa;border-radius:16px;border:1px solid #eee;overflow:hidden;display:flex;flex-direction:column;min-height:96vh}
-  .header{background:#fff;border-bottom:1px solid #eee;padding:16px 20px 12px;display:flex;justify-content:space-between;align-items:center}
-  .header-left h1{font-size:18px;font-weight:500;color:#222}
-  .header-left p{font-size:13px;color:#aaa;margin-top:2px}
-  .notif-btn{background:none;border:1px solid #eee;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px;color:#888;white-space:nowrap}
-  .notif-btn.granted{color:#3a3;border-color:#cec}
-  .content{flex:1;overflow-y:auto}
-  .tab-bar{display:flex;border-top:1px solid #eee;background:#fff}
-  .tab-btn{flex:1;padding:12px 4px 10px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;color:#bbb;font-size:11px;transition:color .15s}
-  .tab-btn.active{color:#222;font-weight:500}
-  .tab-btn svg{width:18px;height:18px}
-  .section{display:none;padding:1.5rem 1rem}
-  .section.active{display:block}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#ececec;display:flex;justify-content:center;min-height:100vh;padding:.5rem}
+#app{width:100%;max-width:480px;background:#fafafa;border-radius:16px;border:.5px solid #ddd;overflow:hidden;display:flex;flex-direction:column;min-height:97vh}
+.hdr{background:#fff;border-bottom:.5px solid #eee;padding:13px 16px 10px;display:flex;justify-content:space-between;align-items:center}
+.hdr h1{font-size:17px;font-weight:500;color:#222}
+.hdr p{font-size:12px;color:#aaa;margin-top:1px}
+.nbtn{background:none;border:.5px solid #ddd;border-radius:7px;padding:5px 9px;cursor:pointer;font-size:11px;color:#888;font-family:inherit}
+.nbtn.on{color:#3a3;border-color:#aca}
+.content{flex:1;overflow-y:auto;overflow-x:hidden}
+.sec{display:none;padding:1.2rem 1rem}
+.sec.active{display:block}
+.tabbar{display:flex;border-top:.5px solid #eee;background:#fff;flex-shrink:0}
+.tb{flex:1;padding:10px 2px 8px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:#ccc;font-size:10px;font-family:inherit}
+.tb.active{color:#222;font-weight:500}
+.tb svg{width:17px;height:17px}
+input,textarea,select{padding:8px 11px;border-radius:8px;border:.5px solid #ddd;font-size:13px;outline:none;font-family:inherit;background:#fff;color:#222}
+textarea{resize:none;line-height:1.7;width:100%}
+.row{display:flex;gap:7px;margin-bottom:8px;align-items:stretch}
+.row>input[type=text]{flex:1}
+.ib{padding:8px 14px;border-radius:8px;border:none;background:#222;color:#fff;font-size:17px;cursor:pointer;line-height:1;flex-shrink:0}
+.bdel{background:none;border:none;cursor:pointer;color:#ddd;font-size:16px;line-height:1;padding:0 3px;flex-shrink:0}
+.lbl{font-size:10px;color:#bbb;margin-bottom:5px;font-weight:500;letter-spacing:.07em;text-transform:uppercase}
+.empty{text-align:center;color:#ccc;font-size:13px;margin-top:2rem}
 
-  input[type=text],input[type=time],textarea,select{padding:10px 12px;border-radius:10px;border:1px solid #ddd;font-size:14px;outline:none;font-family:inherit;background:#fff;color:#222}
-  textarea{resize:none;min-height:200px;line-height:1.7;width:100%}
-  .btn-add{padding:10px 18px;border-radius:10px;border:none;background:#222;color:#fff;font-size:15px;cursor:pointer}
-  .btn-sm{padding:9px 14px;border-radius:8px;border:none;background:#222;color:#fff;font-size:14px;cursor:pointer}
-  .btn-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:18px;line-height:1;padding:0 4px}
-  .btn-back{background:none;border:none;cursor:pointer;color:#888;font-size:14px}
-  .btn-save{background:#222;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:14px;cursor:pointer}
-  .row{display:flex;gap:8px;margin-bottom:12px}
-  .empty{text-align:center;color:#aaa;font-size:14px;margin-top:3rem}
+/* TASKS */
+.tf{background:#fff;border-radius:11px;border:.5px solid #eee;padding:11px;margin-bottom:1rem}
+.tf-r2{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.tf-r2 input,.tf-r2 select{flex:1;min-width:80px;font-size:12px;padding:7px 8px}
+.ti{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;border-radius:9px;border:.5px solid #eee;margin-bottom:6px;background:#fff}
+.tck{width:19px;height:19px;border-radius:50%;border:1.5px solid #ccc;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.tck.done{background:#222;border-color:#222}
+.tb2{flex:1;min-width:0}
+.tt{font-size:13px;color:#222;line-height:1.4}
+.tt.done{color:#ccc;text-decoration:line-through}
+.tm{font-size:11px;color:#bbb;margin-top:2px}
+.tm.ov{color:#e44}
+.dg{margin-top:1rem}
 
-  /* tasks */
-  .task-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;border:1px solid #eee;margin-bottom:8px;background:#fff}
-  .task-check{width:20px;height:20px;border-radius:50%;border:2px solid #ccc;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-  .task-check.done{background:#222;border-color:#222}
-  .task-text{flex:1;font-size:15px;color:#222}
-  .task-text.done{color:#bbb;text-decoration:line-through}
-  .sec-label{font-size:12px;color:#999;margin-bottom:8px;font-weight:500;letter-spacing:.05em;text-transform:uppercase}
-  .done-group{margin-top:1.5rem}
+/* NOTES */
+.ng{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.nc{border-radius:10px;border:.5px solid #eee;padding:12px;cursor:pointer;background:#fff}
+.nc h3{font-size:13px;font-weight:500;color:#222;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nc p{font-size:12px;color:#aaa;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.nf{display:flex;justify-content:space-between;align-items:center}
+.nd{font-size:10px;color:#ddd}
+.bnn{width:100%;padding:10px;border-radius:9px;border:.5px dashed #ddd;background:transparent;font-size:13px;color:#aaa;cursor:pointer;margin-bottom:1.2rem;font-family:inherit}
+.neh{display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem}
+#nt-ttl{border:none;outline:none;font-size:18px;font-weight:500;color:#222;padding:0;margin-bottom:.7rem;border-radius:0;width:100%}
+#nt-bdy{border:none;outline:none;font-size:13px;color:#444;padding:0;border-radius:0;min-height:180px}
+.bbk{background:none;border:.5px solid #ddd;border-radius:8px;padding:6px 11px;cursor:pointer;font-size:12px;color:#666;font-family:inherit}
+.bsv{background:#222;color:#fff;border:none;border-radius:8px;padding:6px 13px;font-size:12px;cursor:pointer;font-family:inherit}
 
-  /* notes */
-  .notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .note-card{border-radius:12px;border:1px solid #eee;padding:14px;cursor:pointer;background:#fff}
-  .note-card h3{font-size:14px;font-weight:500;color:#222;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .note-card p{font-size:13px;color:#888;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-  .note-footer{display:flex;justify-content:space-between;align-items:center}
-  .note-date{font-size:11px;color:#bbb}
-  .btn-new-note{width:100%;padding:12px;border-radius:10px;border:1px dashed #ccc;background:transparent;font-size:15px;color:#888;cursor:pointer;margin-bottom:1.5rem}
-  .note-editor-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
-  #note-title-input{border:none;outline:none;font-size:20px;font-weight:500;color:#222;padding:0;margin-bottom:1rem;border-radius:0;width:100%}
-  #note-body-input{border:none;outline:none;font-size:15px;color:#444;padding:0;border-radius:0}
+/* CALENDAR */
+.cnr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem}
+.cnr span{font-size:14px;font-weight:500;color:#222}
+.cnv{background:none;border:none;font-size:16px;cursor:pointer;color:#999;padding:4px 7px}
+.cdow{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;margin-bottom:3px}
+.cdow span{text-align:center;font-size:10px;color:#ccc;font-weight:500;padding:2px 0}
+.cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
+.cc{height:36px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:7px;cursor:pointer;position:relative;font-size:13px;color:#444}
+.cc:hover{background:#f0f0f0}
+.cc.past{color:#d0d0d0}
+.cc.today{background:#f5f5f5;font-weight:500;color:#222}
+.cc.sel{background:#222!important;color:#fff!important}
+.cc.dot::after{content:'';width:3px;height:3px;border-radius:50%;background:currentColor;position:absolute;bottom:3px;opacity:.6}
+.cc.sel.dot::after{background:#fff;opacity:.9}
+.cc.emp{cursor:default}
+.cc.emp:hover{background:transparent}
+.evs{margin-top:1rem;border-top:.5px solid #eee;padding-top:.9rem}
+.edl{font-size:12px;color:#999;margin-bottom:9px}
+.ef{display:flex;flex-direction:column;gap:6px;margin-bottom:.9rem}
+.ef-r{display:flex;gap:6px}
+.ef-r input,.ef-r select{flex:1;font-size:12px;padding:7px 8px}
+.ef-r button{padding:7px 12px;border-radius:8px;border:none;background:#222;color:#fff;font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.evi{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:8px;border:.5px solid #eee;margin-bottom:5px;background:#fff}
+.ei2{flex:1;min-width:0}
+.et2{font-size:13px;color:#333}
+.em2{font-size:10px;color:#bbb;margin-top:1px}
+.ebdg{display:inline-block;font-size:9px;background:#f5f5f5;color:#999;border-radius:3px;padding:1px 4px;margin-left:3px}
+.etbdg{background:#fff3e0;color:#b07}
 
-  /* calendar */
-  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
-  .cal-header span{font-size:16px;font-weight:500;color:#222}
-  .cal-nav{background:none;border:none;font-size:18px;cursor:pointer;color:#888;padding:4px 8px}
-  .cal-days-label{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px}
-  .cal-days-label span{text-align:center;font-size:11px;color:#bbb;font-weight:500;padding:4px 0}
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-  .cal-cell{height:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;position:relative;font-size:14px;color:#444}
-  .cal-cell.today{background:#f5f5f5;color:#222}
-  .cal-cell.selected{background:#222;color:#fff}
-  .cal-cell.has-ev::after{content:'';width:4px;height:4px;border-radius:50%;background:#222;position:absolute;bottom:5px}
-  .cal-cell.selected.has-ev::after{background:#fff}
-  .cal-cell.empty{cursor:default}
-  .events-section{margin-top:1.5rem;border-top:1px solid #eee;padding-top:1.25rem}
-  .day-label{font-size:13px;color:#888;margin-bottom:12px}
-  .event-form{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem}
-  .event-form-row{display:flex;gap:8px}
-  .event-item{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;border:1px solid #eee;margin-bottom:6px;background:#fff}
-  .event-item-info{flex:1}
-  .event-item-title{font-size:14px;color:#333}
-  .event-item-meta{font-size:11px;color:#aaa;margin-top:2px}
-  .notif-badge{display:inline-block;font-size:10px;background:#f5f5f5;color:#888;border-radius:4px;padding:1px 5px;margin-left:4px}
+/* SISTEMA */
+.osc{background:#181818;border-radius:11px;color:#ccc;overflow:hidden;margin-bottom:1.1rem;font-size:12px;line-height:1.65}
+.ost{background:#0f0f0f;padding:11px 15px;font-size:11px;font-weight:500;color:#ddd;letter-spacing:.1em;text-align:center}
+.oss{padding:9px 15px;border-top:.5px solid #242424}
+.ossl{font-size:9px;color:#484848;font-weight:500;letter-spacing:.09em;text-transform:uppercase;margin-bottom:5px}
+.osr{display:flex;align-items:baseline;padding:1.5px 0;font-size:12px}
+.osk{color:#484848;min-width:54px;flex-shrink:0;font-size:11px}
+.osa{color:#303030;margin:0 5px}
+.osh{color:#bbb}
+
+.smhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.smhdr h3{font-size:13px;font-weight:500;color:#222}
+.smwk{font-size:11px;color:#bbb}
+.sma{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:#fff;border-radius:9px;border:.5px solid #eee;margin-bottom:6px}
+.sma-n{font-size:13px;color:#333}
+.smd{display:flex;gap:5px}
+.smdot{width:27px;height:27px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;border:.5px solid #eee;background:#f8f8f8;filter:grayscale(1) opacity(.3);transition:filter .15s,transform .15s}
+.smdot.sel{filter:none;transform:scale(1.18)}
+.sml{display:flex;gap:10px;justify-content:center;margin-top:8px;font-size:11px;color:#bbb}
 </style>
 </head>
 <body>
 <div id="app">
-  <div class="header">
-    <div class="header-left">
+  <div class="hdr">
+    <div>
       <h1>Meu Organizador</h1>
-      <p id="today-label"></p>
+      <p id="dlbl"></p>
     </div>
-    <button class="notif-btn" id="notif-btn" onclick="requestNotifPermission()">🔔 Notificações</button>
+    <button class="nbtn" id="nbtn" onclick="reqNotif()">🔔 Notificações</button>
   </div>
 
   <div class="content">
     <!-- TAREFAS -->
-    <div id="sec-tasks" class="section active">
-      <div class="row">
-        <input type="text" id="task-input" placeholder="Nova tarefa..." style="flex:1"/>
-        <button class="btn-add" onclick="addTask()">+</button>
+    <div id="sec-tasks" class="sec active">
+      <div class="tf">
+        <div class="row">
+          <input type="text" id="task-in" placeholder="Nova tarefa..."/>
+          <button class="ib" onclick="addTask()">+</button>
+        </div>
+        <div class="tf-r2">
+          <input type="date" id="task-date"/>
+          <input type="time" id="task-time"/>
+          <select id="task-ntf">
+            <option value="0">Sem aviso</option>
+            <option value="5">5 min</option>
+            <option value="10" selected>10 min</option>
+            <option value="15">15 min</option>
+            <option value="30">30 min</option>
+            <option value="60">1 hora</option>
+          </select>
+        </div>
       </div>
-      <div id="tasks-pending"></div>
-      <div id="tasks-done" class="done-group"></div>
+      <div id="t-pend"></div>
+      <div id="t-done" class="dg"></div>
     </div>
 
     <!-- NOTAS -->
-    <div id="sec-notes" class="section">
-      <div id="notes-list-view">
-        <button class="btn-new-note" onclick="openNoteEditor('new')">+ Nova anotação</button>
-        <div id="notes-grid" class="notes-grid"></div>
+    <div id="sec-notes" class="sec">
+      <div id="nlv">
+        <button class="bnn" onclick="openNote('new')">+ Nova anotação</button>
+        <div id="ngrid" class="ng"></div>
       </div>
-      <div id="notes-editor-view" style="display:none">
-        <div class="note-editor-header">
-          <button class="btn-back" onclick="closeNoteEditor()">← Voltar</button>
-          <button class="btn-save" onclick="saveNote()">Salvar</button>
+      <div id="nev" style="display:none">
+        <div class="neh">
+          <button class="bbk" onclick="closeNote()">← Voltar</button>
+          <button class="bsv" onclick="saveNote()">Salvar</button>
         </div>
-        <input type="text" id="note-title-input" placeholder="Título"/>
-        <textarea id="note-body-input" placeholder="Escreva sua nota..."></textarea>
+        <input type="text" id="nt-ttl" placeholder="Título"/>
+        <textarea id="nt-bdy" placeholder="Escreva sua nota..."></textarea>
       </div>
     </div>
 
     <!-- AGENDA -->
-    <div id="sec-agenda" class="section">
-      <div class="cal-header">
-        <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
-        <span id="cal-title"></span>
-        <button class="cal-nav" onclick="changeMonth(1)">›</button>
+    <div id="sec-agenda" class="sec">
+      <div class="cnr">
+        <button class="cnv" onclick="chMonth(-1)">‹</button>
+        <span id="cal-ttl"></span>
+        <button class="cnv" onclick="chMonth(1)">›</button>
       </div>
-      <div class="cal-days-label">
-        <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
-      </div>
-      <div id="cal-grid" class="cal-grid"></div>
-      <div id="events-section" class="events-section" style="display:none">
-        <p class="day-label" id="events-day-label"></p>
-        <div class="event-form">
-          <input type="text" id="event-input" placeholder="Nome do evento..."/>
-          <div class="event-form-row">
-            <input type="time" id="event-time" style="flex:1"/>
-            <select id="event-notify" style="flex:1.5">
-              <option value="0">Sem notificação</option>
-              <option value="5">5 minutos antes</option>
-              <option value="10" selected>10 minutos antes</option>
-              <option value="15">15 minutos antes</option>
-              <option value="30">30 minutos antes</option>
-              <option value="60">1 hora antes</option>
-              <option value="120">2 horas antes</option>
+      <div class="cdow"><span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span></div>
+      <div id="cal-grid" class="cgrid"></div>
+      <div id="ev-sec" class="evs" style="display:none">
+        <p class="edl" id="ev-dlbl"></p>
+        <div class="ef">
+          <input type="text" id="ev-in" placeholder="Nome do evento..."/>
+          <div class="ef-r">
+            <input type="time" id="ev-time"/>
+            <select id="ev-ntf">
+              <option value="0">Sem aviso</option>
+              <option value="5">5 min</option>
+              <option value="10" selected>10 min</option>
+              <option value="15">15 min</option>
+              <option value="30">30 min</option>
+              <option value="60">1h</option>
+              <option value="120">2h</option>
             </select>
-            <button class="btn-sm" onclick="addEvent()">+</button>
+            <button onclick="addEvent()">+ Evento</button>
           </div>
         </div>
-        <div id="events-list"></div>
+        <div id="ev-list"></div>
       </div>
+    </div>
+
+    <!-- SISTEMA -->
+    <div id="sec-sistema" class="sec">
+      <div class="osc">
+        <div class="ost">MEU SISTEMA OPERACIONAL DE VIDA</div>
+        <div class="oss">
+          <div class="ossl">Manhã · 6h–6h40</div>
+          <div class="osr"><span class="osk">6h00</span><span class="osa">→</span><span>Água + silêncio</span></div>
+          <div class="osr"><span class="osk">6h10</span><span class="osa">→</span><span>Estudo (rodízio semanal)</span></div>
+          <div class="osr"><span class="osk">6h30</span><span class="osa">→</span><span>Revisão do dia</span></div>
+        </div>
+        <div class="oss">
+          <div class="ossl">Noites livres</div>
+          <div class="osr"><span class="osk osh">Seg</span><span class="osa">→</span><span>BI / Excel</span></div>
+          <div class="osr"><span class="osk osh">Ter</span><span class="osa">→</span><span>IA / Prog / Revenda</span></div>
+          <div class="osr"><span class="osk osh">Qua</span><span class="osa">→</span><span>Direito</span></div>
+          <div class="osr"><span class="osk osh">Qui/Sex</span><span class="osa">→</span><span>Aula (já conta)</span></div>
+        </div>
+        <div class="oss">
+          <div class="ossl">Fins de semana</div>
+          <div class="osr"><span class="osk osh">Sáb manhã</span><span class="osa">→</span><span>Revenda / Produto Digital</span></div>
+          <div class="osr"><span class="osk osh">Dom manhã</span><span class="osa">→</span><span>Revisão semanal</span></div>
+        </div>
+        <div class="oss">
+          <div class="ossl">Rotas de renda</div>
+          <div class="osr"><span class="osk">Curto</span><span class="osa">→</span><span>Revenda (Mercado Livre / Shopee)</span></div>
+          <div class="osr"><span class="osk">Médio</span><span class="osa">→</span><span>Produto digital (planilha / curso)</span></div>
+          <div class="osr"><span class="osk">Longo</span><span class="osa">→</span><span>LinkedIn + App próprio</span></div>
+        </div>
+        <div class="oss">
+          <div class="ossl">Regras</div>
+          <div class="osr"><span>Dias ruins → 15 min por área</span></div>
+          <div class="osr"><span>Revisão mensal → 1ª dom do mês · 15 min</span></div>
+        </div>
+      </div>
+
+      <div class="smhdr">
+        <h3>Semáforo da semana</h3>
+        <span class="smwk" id="smwk"></span>
+      </div>
+      <div id="smareas"></div>
+      <div class="sml"><span>🟢 Avancei</span><span>🟡 Mantive</span><span>🔴 Regredi</span></div>
     </div>
   </div>
 
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('tasks',this)">
-      <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.2"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Tarefas
+  <div class="tabbar">
+    <button class="tb active" onclick="swTab('tasks',this)">
+      <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.2"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Tarefas
     </button>
-    <button class="tab-btn" onclick="switchTab('notes',this)">
-      <svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M6 6h6M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-      Notas
+    <button class="tb" onclick="swTab('notes',this)">
+      <svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M6 6h6M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Notas
     </button>
-    <button class="tab-btn" onclick="switchTab('agenda',this)">
-      <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M6 2v3M12 2v3M2 8h14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-      Agenda
+    <button class="tb" onclick="swTab('agenda',this)">
+      <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M6 2v3M12 2v3M2 8h14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Agenda
+    </button>
+    <button class="tb" onclick="swTab('sistema',this)">
+      <svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.2"/><path d="M9 5.5V9l2.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Sistema
     </button>
   </div>
 </div>
 
 <script>
-const MONTHS = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-const now = new Date();
-document.getElementById("today-label").textContent = now.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});
+const MO=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const NOW=new Date(), TY=NOW.getFullYear(), TM=NOW.getMonth(), TD=NOW.getDate();
+document.getElementById('dlbl').textContent=NOW.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
 
-// ── STORAGE ──────────────────────────────────────────
-let tasks = [], notes = [], events = {};
-let scheduledTimeouts = [];
-
-function loadData() {
-  try { tasks = JSON.parse(localStorage.getItem("org_tasks")) || []; } catch(e){ tasks=[]; }
-  try { notes = JSON.parse(localStorage.getItem("org_notes")) || []; } catch(e){ notes=[]; }
-  try { events = JSON.parse(localStorage.getItem("org_events")) || {}; } catch(e){ events={}; }
+// ── STORAGE ──────────────────────────────────
+let tasks=[],notes=[],events={},sem={};
+function load(){
+  try{tasks=JSON.parse(localStorage.getItem('o_tasks'))||[];}catch(e){tasks=[];}
+  try{notes=JSON.parse(localStorage.getItem('o_notes'))||[];}catch(e){notes=[];}
+  try{events=JSON.parse(localStorage.getItem('o_events'))||{};}catch(e){events={};}
+  try{sem=JSON.parse(localStorage.getItem('o_sem'))||{};}catch(e){sem={};}
+}
+function save(){
+  localStorage.setItem('o_tasks',JSON.stringify(tasks));
+  localStorage.setItem('o_notes',JSON.stringify(notes));
+  localStorage.setItem('o_events',JSON.stringify(events));
+  localStorage.setItem('o_sem',JSON.stringify(sem));
 }
 
-function saveData() {
-  localStorage.setItem("org_tasks", JSON.stringify(tasks));
-  localStorage.setItem("org_notes", JSON.stringify(notes));
-  localStorage.setItem("org_events", JSON.stringify(events));
+// ── SERVICE WORKER + NOTIFICAÇÕES ────────────
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
-
-// ── NOTIFICATIONS ─────────────────────────────────────
-function updateNotifBtn() {
-  const btn = document.getElementById("notif-btn");
-  if (Notification.permission === "granted") {
-    btn.textContent = "🔔 Ativadas"; btn.classList.add("granted");
-  } else {
-    btn.textContent = "🔔 Notificações"; btn.classList.remove("granted");
+function updNBtn(){
+  const b=document.getElementById('nbtn');
+  if(Notification.permission==='granted'){b.textContent='🔔 Ativas';b.classList.add('on');}
+  else{b.textContent='🔔 Notificações';b.classList.remove('on');}
+}
+function reqNotif(){
+  if(!('Notification' in window)){alert('Navegador não suporta notificações.');return;}
+  if(Notification.permission==='granted'){alert('Notificações já estão ativadas!');return;}
+  Notification.requestPermission().then(p=>{
+    updNBtn();
+    if(p==='granted'){schedAll();}
+    else{alert('Permissão negada. Ative nas configurações do navegador.');}
+  });
+}
+let fbTimers=[];
+async function schedNotif(title,body,delay,tag){
+  if(delay<=0)return;
+  if('serviceWorker' in navigator){
+    try{
+      const reg=await navigator.serviceWorker.ready;
+      if(reg.active){reg.active.postMessage({type:'NOTIFY',title,body,delay,tag});return;}
+    }catch(e){}
   }
+  // fallback main thread
+  const t=setTimeout(()=>{
+    if(Notification.permission==='granted') new Notification(title,{body});
+  },delay);
+  fbTimers.push(t);
 }
-
-function requestNotifPermission() {
-  if (!("Notification" in window)) { alert("Seu navegador não suporta notificações."); return; }
-  Notification.requestPermission().then(() => { updateNotifBtn(); scheduleAllNotifications(); });
-}
-
-function scheduleAllNotifications() {
-  scheduledTimeouts.forEach(t => clearTimeout(t));
-  scheduledTimeouts = [];
-  if (Notification.permission !== "granted") return;
-  Object.keys(events).forEach(key => {
-    const parts = key.split("-");
-    const yr = parseInt(parts[0]), mo = parseInt(parts[1]), dy = parseInt(parts[2]);
-    (events[key] || []).forEach(ev => {
-      if (!ev.time || !ev.notifyBefore) return;
-      const [h, m] = ev.time.split(":").map(Number);
-      const eventDate = new Date(yr, mo, dy, h, m, 0);
-      const notifyAt = new Date(eventDate.getTime() - ev.notifyBefore * 60000);
-      const delay = notifyAt - Date.now();
-      if (delay > 0) {
-        const label = ev.notifyBefore >= 60 ? `${ev.notifyBefore/60}h` : `${ev.notifyBefore} min`;
-        const t = setTimeout(() => {
-          new Notification("Meu Organizador", {
-            body: `📅 "${ev.text}" às ${ev.time} — faltam ${label}`,
-            icon: "https://cdn-icons-png.flaticon.com/512/747/747310.png"
-          });
-        }, delay);
-        scheduledTimeouts.push(t);
-      }
+function schedAll(){
+  fbTimers.forEach(t=>clearTimeout(t));fbTimers=[];
+  if(Notification.permission!=='granted')return;
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.ready.then(r=>{if(r.active)r.active.postMessage({type:'CLEAR_ALL'});}).catch(()=>{});
+  }
+  const nlbl=n=>n>=60?`${n/60}h`:`${n}min`;
+  tasks.filter(t=>!t.done&&t.dk&&t.dt&&t.nb).forEach(t=>{
+    const[y,m,d]=t.dk.split('-').map(Number);
+    const[h,mi]=t.dt.split(':').map(Number);
+    const delay=new Date(y,m,d,h,mi).getTime()-t.nb*60000-Date.now();
+    if(delay>0) schedNotif('Meu Organizador',`✅ "${t.text}" — faltam ${nlbl(t.nb)}`,delay,`t-${t.id}`);
+  });
+  Object.keys(events).forEach(key=>{
+    const[y,m,d]=key.split('-').map(Number);
+    (events[key]||[]).forEach(ev=>{
+      if(!ev.time||!ev.nb)return;
+      const[h,mi]=ev.time.split(':').map(Number);
+      const delay=new Date(y,m,d,h,mi).getTime()-ev.nb*60000-Date.now();
+      if(delay>0) schedNotif('Meu Organizador',`📅 "${ev.text}" às ${ev.time} — faltam ${nlbl(ev.nb)}`,delay,`e-${ev.id}`);
     });
   });
 }
 
-// ── TABS ──────────────────────────────────────────────
-function switchTab(name, btn) {
-  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-  document.getElementById("sec-"+name).classList.add("active");
-  btn.classList.add("active");
+// ── TABS ──────────────────────────────────────
+function swTab(name,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  btn.classList.add('active');
 }
 
-// ── TASKS ─────────────────────────────────────────────
-document.getElementById("task-input").addEventListener("keydown", e => { if(e.key==="Enter") addTask(); });
-
-function addTask() {
-  const inp = document.getElementById("task-input");
-  const text = inp.value.trim();
-  if (!text) return;
-  tasks.unshift({ id: Date.now(), text, done: false });
-  inp.value = "";
-  saveData(); renderTasks();
+// ── TASKS ─────────────────────────────────────
+document.getElementById('task-in').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
+function d2k(s){if(!s)return null;const[y,m,d]=s.split('-').map(Number);return`${y}-${m-1}-${d}`;}
+function fmtDt(dk,dt){
+  if(!dk)return'';
+  const[y,m,d]=dk.split('-').map(Number);
+  const s=new Date(y,m,d).toLocaleDateString('pt-BR',{day:'numeric',month:'short'});
+  return dt?`${s} ${dt}`:s;
 }
-
-function toggleTask(id) {
-  tasks = tasks.map(t => t.id===id ? {...t, done:!t.done} : t);
-  saveData(); renderTasks();
+function isOv(dk,dt){
+  if(!dk)return false;
+  const[y,m,d]=dk.split('-').map(Number);
+  if(dt){const[h,mi]=dt.split(':').map(Number);return new Date(y,m,d,h,mi)<NOW;}
+  return new Date(y,m,d,23,59)<NOW;
 }
-
-function deleteTask(id) {
-  tasks = tasks.filter(t => t.id!==id);
-  saveData(); renderTasks();
+function addTask(){
+  const inp=document.getElementById('task-in');
+  const text=inp.value.trim();if(!text)return;
+  const dk=d2k(document.getElementById('task-date').value);
+  const dt=document.getElementById('task-time').value||null;
+  const nb=parseInt(document.getElementById('task-ntf').value)||0;
+  tasks.unshift({id:Date.now(),text,done:false,dk,dt,nb});
+  inp.value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';
+  save();schedAll();renderTasks();renderCal();
 }
-
-function renderTasks() {
-  const pending = tasks.filter(t => !t.done);
-  const done = tasks.filter(t => t.done);
-  const pEl = document.getElementById("tasks-pending");
-  const dEl = document.getElementById("tasks-done");
-  if (!tasks.length) {
-    pEl.innerHTML = '<p class="empty">Nenhuma tarefa ainda. Adicione uma acima!</p>';
-    dEl.innerHTML = ""; return;
-  }
-  pEl.innerHTML = pending.length ? `<p class="sec-label">Pendentes · ${pending.length}</p>`+pending.map(taskHTML).join("") : "";
-  dEl.innerHTML = done.length ? `<p class="sec-label">Concluídas · ${done.length}</p>`+done.map(taskHTML).join("") : "";
-}
-
-function taskHTML(t) {
-  return `<div class="task-item">
-    <div class="task-check ${t.done?"done":""}" onclick="toggleTask(${t.id})">
-      ${t.done?'<svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':""}
+function togTask(id){tasks=tasks.map(t=>t.id===id?{...t,done:!t.done}:t);save();renderTasks();}
+function delTask(id){tasks=tasks.filter(t=>t.id!==id);save();schedAll();renderTasks();renderCal();}
+function taskHTML(t){
+  const meta=fmtDt(t.dk,t.dt),ov=!t.done&&isOv(t.dk,t.dt);
+  return`<div class="ti">
+    <div class="tck ${t.done?'done':''}" onclick="togTask(${t.id})">
+      ${t.done?'<svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}
     </div>
-    <span class="task-text ${t.done?"done":""}">${t.text}</span>
-    <button class="btn-del" onclick="deleteTask(${t.id})">×</button>
+    <div class="tb2">
+      <div class="tt ${t.done?'done':''}">${t.text}</div>
+      ${meta?`<div class="tm ${ov?'ov':''}">${ov?'⚠ ':'📅 '}${meta}</div>`:''}
+    </div>
+    <button class="bdel" onclick="delTask(${t.id})">×</button>
   </div>`;
 }
-
-// ── NOTES ─────────────────────────────────────────────
-let editingNoteId = null;
-
-function openNoteEditor(id) {
-  editingNoteId = id;
-  const note = id==="new" ? null : notes.find(n => n.id===id);
-  document.getElementById("note-title-input").value = note ? note.title : "";
-  document.getElementById("note-body-input").value = note ? note.body : "";
-  document.getElementById("notes-list-view").style.display = "none";
-  document.getElementById("notes-editor-view").style.display = "block";
+function renderTasks(){
+  const pend=tasks.filter(t=>!t.done).sort((a,b)=>{
+    if(!a.dk&&!b.dk)return 0;if(!a.dk)return 1;if(!b.dk)return-1;return a.dk.localeCompare(b.dk);
+  });
+  const done=tasks.filter(t=>t.done);
+  const pEl=document.getElementById('t-pend'),dEl=document.getElementById('t-done');
+  if(!tasks.length){pEl.innerHTML='<p class="empty">Nenhuma tarefa ainda.</p>';dEl.innerHTML='';return;}
+  pEl.innerHTML=pend.length?`<p class="lbl">Pendentes · ${pend.length}</p>`+pend.map(taskHTML).join(''):'';
+  dEl.innerHTML=done.length?`<p class="lbl">Concluídas · ${done.length}</p>`+done.map(taskHTML).join(''):'';
 }
 
-function closeNoteEditor() {
-  document.getElementById("notes-list-view").style.display = "block";
-  document.getElementById("notes-editor-view").style.display = "none";
-  editingNoteId = null;
+// ── NOTES ─────────────────────────────────────
+let enid=null;
+function openNote(id){
+  enid=id;const n=id==='new'?null:notes.find(n=>n.id===id);
+  document.getElementById('nt-ttl').value=n?n.title:'';
+  document.getElementById('nt-bdy').value=n?n.body:'';
+  document.getElementById('nlv').style.display='none';
+  document.getElementById('nev').style.display='block';
 }
-
-function saveNote() {
-  const title = document.getElementById("note-title-input").value.trim() || "Sem título";
-  const body = document.getElementById("note-body-input").value.trim();
-  if (editingNoteId==="new") {
-    notes.unshift({ id: Date.now(), title, body, date: now.toLocaleDateString("pt-BR") });
-  } else {
-    notes = notes.map(n => n.id===editingNoteId ? {...n, title, body} : n);
-  }
-  saveData(); renderNotes(); closeNoteEditor();
+function closeNote(){
+  document.getElementById('nlv').style.display='block';
+  document.getElementById('nev').style.display='none';enid=null;
 }
-
-function deleteNote(id) {
-  notes = notes.filter(n => n.id!==id);
-  saveData(); renderNotes();
+function saveNote(){
+  const title=document.getElementById('nt-ttl').value.trim()||'Sem título';
+  const body=document.getElementById('nt-bdy').value.trim();
+  if(enid==='new')notes.unshift({id:Date.now(),title,body,date:NOW.toLocaleDateString('pt-BR')});
+  else notes=notes.map(n=>n.id===enid?{...n,title,body}:n);
+  save();renderNotes();closeNote();
 }
-
-function renderNotes() {
-  const grid = document.getElementById("notes-grid");
-  if (!notes.length) { grid.innerHTML = '<p class="empty" style="grid-column:1/-1">Nenhuma anotação ainda.</p>'; return; }
-  grid.innerHTML = notes.map(n => `
-    <div class="note-card" onclick="openNoteEditor(${n.id})">
-      <h3>${n.title}</h3>
-      <p>${n.body||"Sem conteúdo"}</p>
-      <div class="note-footer">
-        <span class="note-date">${n.date}</span>
-        <button class="btn-del" onclick="event.stopPropagation();deleteNote(${n.id})">×</button>
+function delNote(id){notes=notes.filter(n=>n.id!==id);save();renderNotes();}
+function renderNotes(){
+  const g=document.getElementById('ngrid');
+  if(!notes.length){g.innerHTML='<p class="empty" style="grid-column:1/-1">Nenhuma anotação ainda.</p>';return;}
+  g.innerHTML=notes.map(n=>`
+    <div class="nc" onclick="openNote(${n.id})">
+      <h3>${n.title}</h3><p>${n.body||'Sem conteúdo'}</p>
+      <div class="nf"><span class="nd">${n.date}</span>
+        <button class="bdel" onclick="event.stopPropagation();delNote(${n.id})">×</button>
       </div>
-    </div>`).join("");
+    </div>`).join('');
 }
 
-// ── CALENDAR ─────────────────────────────────────────
-let calYear = now.getFullYear(), calMonth = now.getMonth(), selectedDay = null;
-
-function calKey(d) { return `${calYear}-${calMonth}-${d}`; }
-
-function changeMonth(dir) {
-  calMonth += dir;
-  if (calMonth < 0) { calMonth = 11; calYear--; }
-  if (calMonth > 11) { calMonth = 0; calYear++; }
-  selectedDay = null;
-  document.getElementById("events-section").style.display = "none";
-  renderCalendar();
+// ── CALENDAR ──────────────────────────────────
+let cY=TY,cM=TM,selD=null;
+function ck(d){return`${cY}-${cM}-${d}`;}
+function chMonth(dir){
+  cM+=dir;if(cM<0){cM=11;cY--;}if(cM>11){cM=0;cY++;}
+  selD=null;document.getElementById('ev-sec').style.display='none';renderCal();
 }
-
-document.getElementById("event-input").addEventListener("keydown", e => { if(e.key==="Enter") addEvent(); });
-
-function addEvent() {
-  const text = document.getElementById("event-input").value.trim();
-  if (!text || !selectedDay) return;
-  const time = document.getElementById("event-time").value;
-  const notifyBefore = parseInt(document.getElementById("event-notify").value);
-  const k = calKey(selectedDay);
-  if (!events[k]) events[k] = [];
-  events[k].push({ id: Date.now(), text, time, notifyBefore });
-  document.getElementById("event-input").value = "";
-  document.getElementById("event-time").value = "";
-  saveData(); scheduleAllNotifications(); renderEventsList(); renderCalendar();
+document.getElementById('ev-in').addEventListener('keydown',e=>{if(e.key==='Enter')addEvent();});
+function addEvent(){
+  const text=document.getElementById('ev-in').value.trim();if(!text||!selD)return;
+  const time=document.getElementById('ev-time').value||null;
+  const nb=parseInt(document.getElementById('ev-ntf').value)||0;
+  const k=ck(selD);if(!events[k])events[k]=[];
+  events[k].push({id:Date.now(),text,time,nb});
+  document.getElementById('ev-in').value='';document.getElementById('ev-time').value='';
+  save();schedAll();renderEvList();renderCal();
 }
-
-function deleteEvent(day, id) {
-  const k = calKey(day);
-  events[k] = (events[k]||[]).filter(e => e.id!==id);
-  saveData(); scheduleAllNotifications(); renderEventsList(); renderCalendar();
+function delEvent(day,id){
+  const k=ck(day);events[k]=(events[k]||[]).filter(e=>e.id!==id);
+  save();schedAll();renderEvList();renderCal();
 }
-
-function selectDay(d) {
-  selectedDay = d;
-  renderCalendar();
-  const sec = document.getElementById("events-section");
-  sec.style.display = "block";
-  document.getElementById("events-day-label").textContent = `${d} de ${MONTHS[calMonth]} de ${calYear}`;
-  renderEventsList();
+function selDay(d){
+  selD=d;renderCal();
+  document.getElementById('ev-sec').style.display='block';
+  document.getElementById('ev-dlbl').textContent=
+    new Date(cY,cM,d).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  renderEvList();
 }
-
-function notifyLabel(min) {
-  if (!min) return "";
-  if (min >= 60) return `${min/60}h antes`;
-  return `${min} min antes`;
+function renderEvList(){
+  const evs=(events[ck(selD)]||[]).slice().sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  const dkSel=`${cY}-${cM}-${selD}`;
+  const dayTasks=tasks.filter(t=>t.dk===dkSel);
+  const el=document.getElementById('ev-list');
+  if(!evs.length&&!dayTasks.length){el.innerHTML='<p style="font-size:12px;color:#ccc">Sem eventos ou tarefas neste dia.</p>';return;}
+  const nlbl=n=>n>=60?`${n/60}h antes`:`${n}min antes`;
+  const th=dayTasks.map(t=>`<div class="evi"><div class="ei2">
+    <div class="et2">${t.done?`<s style="color:#ccc">${t.text}</s>`:t.text}<span class="ebdg etbdg">tarefa</span></div>
+    ${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}
+  </div></div>`).join('');
+  const eh=evs.map(ev=>`<div class="evi"><div class="ei2">
+    <div class="et2">${ev.text}</div>
+    <div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}${ev.nb?`<span class="ebdg">🔔 ${nlbl(ev.nb)}</span>`:''}</div>
+  </div><button class="bdel" onclick="delEvent(${selD},${ev.id})">×</button></div>`).join('');
+  el.innerHTML=(dayTasks.length?`<p class="lbl" style="margin-bottom:5px">Tarefas</p>`+th:'')+
+    (evs.length?`<p class="lbl" style="margin-top:${dayTasks.length?'10px':'0'};margin-bottom:5px">Eventos</p>`+eh:'');
 }
-
-function renderEventsList() {
-  const list = document.getElementById("events-list");
-  const evs = (events[calKey(selectedDay)]||[]).slice().sort((a,b) => (a.time||"").localeCompare(b.time||""));
-  if (!evs.length) { list.innerHTML = '<p style="font-size:13px;color:#ccc">Sem eventos neste dia.</p>'; return; }
-  list.innerHTML = evs.map(ev => `
-    <div class="event-item">
-      <div class="event-item-info">
-        <div class="event-item-title">${ev.text}</div>
-        <div class="event-item-meta">
-          ${ev.time ? `🕐 ${ev.time}` : "Sem horário"}
-          ${ev.notifyBefore ? `<span class="notif-badge">🔔 ${notifyLabel(ev.notifyBefore)}</span>` : ""}
-        </div>
-      </div>
-      <button class="btn-del" onclick="deleteEvent(${selectedDay},${ev.id})">×</button>
-    </div>`).join("");
-}
-
-function renderCalendar() {
-  document.getElementById("cal-title").textContent = `${MONTHS[calMonth]} ${calYear}`;
-  const firstDay = new Date(calYear, calMonth, 1).getDay();
-  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-  let html = "";
-  for (let i=0; i<firstDay; i++) html += '<div class="cal-cell empty"></div>';
-  for (let d=1; d<=daysInMonth; d++) {
-    const isToday = d===now.getDate() && calMonth===now.getMonth() && calYear===now.getFullYear();
-    const isSel = d===selectedDay;
-    const hasEv = (events[calKey(d)]||[]).length > 0;
-    const cls = ["cal-cell", isToday?"today":"", isSel?"selected":"", hasEv?"has-ev":""].join(" ");
-    html += `<div class="${cls}" onclick="selectDay(${d})">${d}</div>`;
+function renderCal(){
+  document.getElementById('cal-ttl').textContent=`${MO[cM]} ${cY}`;
+  const fd=new Date(cY,cM,1).getDay(),dim=new Date(cY,cM+1,0).getDate();
+  let h='';
+  for(let i=0;i<fd;i++)h+='<div class="cc emp"></div>';
+  for(let d=1;d<=dim;d++){
+    const past=cY<TY||(cY===TY&&cM<TM)||(cY===TY&&cM===TM&&d<TD);
+    const isT=d===TD&&cM===TM&&cY===TY,isSel=d===selD;
+    const k=`${cY}-${cM}-${d}`;
+    const hasDot=(events[k]||[]).length>0||tasks.some(t=>t.dk===k);
+    const cls=['cc',past?'past':'',isT?'today':'',isSel?'sel':'',hasDot?'dot':''].filter(Boolean).join(' ');
+    h+=`<div class="${cls}" onclick="selDay(${d})">${d}</div>`;
   }
-  document.getElementById("cal-grid").innerHTML = html;
+  document.getElementById('cal-grid').innerHTML=h;
 }
 
-// ── INIT ──────────────────────────────────────────────
-loadData();
-updateNotifBtn();
-scheduleAllNotifications();
-renderTasks();
-renderNotes();
-renderCalendar();
+// ── SISTEMA / SEMÁFORO ────────────────────────
+const AREAS=['Rotina manhã','BI / Excel','IA / Prog / Revenda','Direito','Revenda / Shopee','Produto digital','LinkedIn / App'];
+function wkKey(){
+  const d=new Date(),s=new Date(d.getFullYear(),0,1);
+  const w=Math.ceil(((d-s)/86400000+s.getDay()+1)/7);
+  return`${d.getFullYear()}-W${String(w).padStart(2,'0')}`;
+}
+function setSem(area,state){
+  const wk=wkKey();if(!sem[wk])sem[wk]={};
+  sem[wk][area]=sem[wk][area]===state?null:state;
+  save();renderSistema();
+}
+function renderSistema(){
+  const wk=wkKey(),wd=sem[wk]||{};
+  document.getElementById('smwk').textContent=wk.replace('-W',' · Semana ');
+  document.getElementById('smareas').innerHTML=AREAS.map(a=>`
+    <div class="sma">
+      <span class="sma-n">${a}</span>
+      <div class="smd">
+        <div class="smdot ${wd[a]==='g'?'sel':''}" onclick="setSem('${a}','g')">🟢</div>
+        <div class="smdot ${wd[a]==='y'?'sel':''}" onclick="setSem('${a}','y')">🟡</div>
+        <div class="smdot ${wd[a]==='r'?'sel':''}" onclick="setSem('${a}','r')">🔴</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── INIT ──────────────────────────────────────
+load();updNBtn();schedAll();
+renderTasks();renderNotes();renderCal();renderSistema();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedAll();});
 </script>
 </body>
 </html>
