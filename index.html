@@ -255,13 +255,13 @@ function save(){
 
 // ── HÁBITOS STORAGE ──────────────────────────────────
 const DEF_HAB=[
-  {id:1,title:'Manhã · 6h–6h40',items:[{id:11,k:'6h00',v:'Água + silêncio'},{id:12,k:'6h10',v:'Estudo (rodízio semanal)'},{id:13,k:'6h30',v:'Revisão do dia'}]},
-  {id:2,title:'Noites livres',items:[{id:21,k:'Seg',v:'BI / Excel'},{id:22,k:'Ter',v:'IA / Prog / Revenda'},{id:23,k:'Qua',v:'Direito'},{id:24,k:'Qui/Sex',v:'Aula (já conta)'}]},
-  {id:3,title:'Fins de semana',items:[{id:31,k:'Sáb manhã',v:'Revenda / Produto Digital'},{id:32,k:'Dom manhã',v:'Revisão semanal'}]},
-  {id:4,title:'Rotas de renda',items:[{id:41,k:'Curto',v:'Revenda (Mercado Livre / Shopee)'},{id:42,k:'Médio',v:'Produto digital (planilha / curso)'},{id:43,k:'Longo',v:'LinkedIn + App próprio'}]},
-  {id:5,title:'Regras',items:[{id:51,k:'',v:'Dias ruins → 15 min por área'},{id:52,k:'',v:'Revisão mensal → 1ª dom do mês · 15 min'}]}
+  {id:1,title:'Manhã · 6h–6h40',items:[{id:11,k:'6h00',v:'Beber Água'},{id:12,k:'6h10',v:'Preencher'},{id:13,k:'6h30',v:'Preencher'}]},
+  {id:2,title:'Noite',items:[{id:21,k:'20h00',v:'Preencher'},{id:22,k:'21h00',v:'Preencher'},{id:23,k:'22h00',v:'Preencher'},{id:24,k:'23h00',v:'Preencher'}]},
+  {id:3,title:'Fim de semana',items:[{id:31,k:'Sábado',v:'Preencher'},{id:32,k:'Domingo',v:'Preencher'}]},
+  {id:4,title:'Extra',items:[{id:41,k:'Dia x',v:'Revenda'},{id:42,k:'Dia y',v:'Preencher'},{id:43,k:'Dia z',v:'Preencher'}]},
+  {id:5,title:'Regras',items:[{id:51,k:'',v:'Dias ruins → 15 min'},{id:52,k:'',v:'Revisão semanal Domingo'}]}
 ];
-const DEF_AREAS=['Rotina manhã','BI / Excel','IA / Prog / Revenda','Direito','Revenda / Shopee','Produto digital','LinkedIn / App'];
+const DEF_AREAS=['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
 let habitos=[],smAreas=[],editHab=false,editAreas=false;
 function loadHab(){
   try{habitos=JSON.parse(localStorage.getItem('o_hab'));}catch(e){habitos=null;}
@@ -477,7 +477,7 @@ function renderHabitos(){
   const c=document.getElementById('hab-cont');
   if(!editHab){
     c.innerHTML=`<div class="osc">
-      <div class="ost">MEU SISTEMA OPERACIONAL DE VIDA</div>
+      <div class="ost">Hábitos</div>
       ${habitos.map(s=>`<div class="oss">
         <div class="ossl">${esc(s.title)}</div>
         ${s.items.map(i=>i.k
