@@ -350,11 +350,12 @@ textarea{resize:none;line-height:1.65;width:100%}
 </div></div>
 
 <script>
+// --- CONSTANTES E DADOS ---
 const MO=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const DL=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 const COLORS=['#FF6B6B','#FF9F43','#FECA57','#1DD1A1','#48DBFB','#54A0FF','#A29BFE','#FF9FF3'];
-const QUOTES=['Disciplina é liberdade.','Um dia de cada vez.','Consistência supera intensidade.','Progresso, não perfeição.','Cada hábito é um voto para quem você quer ser.','Não quebre a corrente.','Pequenos esforços, grandes resultados.','O sucesso está na repetição.'];
-const NOW=new Date(),TY=NOW.getFullYear(),TM=NOW.getMonth(),TD=NOW.getDate();
+const QUOTES=['Disciplina é liberdade.','Um dia de cada vez.','Consistência supera intensidade.','Progresso, não perfeição.','Cada hábito é um voto para quem você quer ser.','Não quebre a corrente.','Pequenos esforços, grandes resultados.'];
+const NOW=new Date(), TY=NOW.getFullYear(), TM=NOW.getMonth(), TD=NOW.getDate();
 const TABS=['tasks','agenda','notes','habitos'];
 
 const EMOJI_CATS=[
@@ -365,151 +366,130 @@ const EMOJI_CATS=[
   {cat:'🌱 Outros',e:['🌱','🌍','♻️','🎨','🎮','🚗','✈️','🐾','🎉','🌈','⭐','🔥','🏠','🎸']},
 ];
 
-// ... (BADGE_DEFS e TUT_STEPS já estão no seu HTML, vou focar nas funções)
+const BADGE_DEFS=[
+  {id:'s5', grp:'🔥 Sequência', title:'Primeiros passos', desc:'5 dias consecutivos', icon:'🥉'},
+  {id:'s30', grp:'🔥 Sequência', title:'Mês completo', desc:'30 dias consecutivos', icon:'🥇'},
+  {id:'first', grp:'🌟 Especial', title:'Primeiro passo', desc:'Criou um hábito', icon:'🌱'},
+  {id:'t100', grp:'⭐ Conclusões', title:'100 hábitos!', desc:'100 conclusões', icon:'🏆'}
+];
 
-let tutStep=0;
+const TUT_STEPS=[
+  {ico:'👋',ttl:'Bem-vindo!',txt:'Seu organizador pessoal. Vamos mostrar as funções principais.',tab:null},
+  {ico:'✅',ttl:'Tarefas',txt:'Crie tarefas com data, hora e notificação.',tab:'tasks'},
+  {ico:'📅',ttl:'Agenda',txt:'Visualize tudo no calendário. Toque em um dia para detalhes.',tab:'agenda'},
+  {ico:'⏰',ttl:'Hábitos',txt:'Crie hábitos com metas diárias e use o Timer de Foco.',tab:'habitos'}
+];
+
+// --- VARIÁVEIS DE ESTADO ---
+let tasks=[], notes=[], events={}, habits=[], cfg={dark:false,name:'',greet:''};
+let tutStep=0, enid=null, doneExp=false, focusH=null, focTmr=null;
+let cY=TY, cM=TM, selD=null, calView='month', wkOff=0;
+let hfd={id:null,icon:'⭐',name:'',color:'#54A0FF',target:1,times:[],frequency:'daily',customDays:[],reminderTime:''};
+
+// --- UTILITÁRIOS ---
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const getDK=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-const getToday=()=>getDK(new Date());
+const ck=(y,m,d)=>`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 
-// STORAGE & LOAD
-let tasks=[], notes=[], events={}, habits=[];
+// --- STORAGE ---
 function load(){
-    try{
-        tasks=JSON.parse(localStorage.getItem('o_tasks'))||[];
-        notes=JSON.parse(localStorage.getItem('o_notes'))||[];
-        events=JSON.parse(localStorage.getItem('o_events'))||{};
-        habits=JSON.parse(localStorage.getItem('o_habits2'))||[];
-    }catch(e){console.error("Erro ao carregar dados", e);}
+  try {
+    tasks=JSON.parse(localStorage.getItem('o_tasks'))||[];
+    notes=JSON.parse(localStorage.getItem('o_notes'))||[];
+    events=JSON.parse(localStorage.getItem('o_events'))||{};
+    habits=JSON.parse(localStorage.getItem('o_habits2'))||[];
+    const c=JSON.parse(localStorage.getItem('o_cfg')); if(c) cfg={...cfg,...c};
+  } catch(e){ console.error("Erro no load", e); }
 }
 function save(){
-    localStorage.setItem('o_tasks',JSON.stringify(tasks));
-    localStorage.setItem('o_notes',JSON.stringify(notes));
-    localStorage.setItem('o_events',JSON.stringify(events));
-    localStorage.setItem('o_habits2',JSON.stringify(habits));
+  localStorage.setItem('o_tasks',JSON.stringify(tasks));
+  localStorage.setItem('o_notes',JSON.stringify(notes));
+  localStorage.setItem('o_events',JSON.stringify(events));
+  localStorage.setItem('o_habits2',JSON.stringify(habits));
+  localStorage.setItem('o_cfg',JSON.stringify(cfg));
 }
 
-// CONFIG & THEME
-let cfg={dark:false,name:'',greet:''};
-function loadCfg(){try{const c=JSON.parse(localStorage.getItem('o_cfg'));if(c)cfg={...cfg,...c};}catch(e){}}
-function saveCfg(){localStorage.setItem('o_cfg',JSON.stringify(cfg));}
-function applyTheme(){document.documentElement.setAttribute('data-theme',cfg.dark?'dark':'');}
-function toggleTheme(on){cfg.dark=on;saveCfg();applyTheme();}
-function applyName(){document.getElementById('aname').textContent=cfg.name||'Meu Organizador';}
-
-// TABS (FUNÇÃO PRINCIPAL)
+// --- INTERFACE (TABS & THEME) ---
 function swTab(name,btn){
-    document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
-    document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
-    const section = document.getElementById('sec-'+name);
-    if(section) section.classList.add('active');
-    if(btn) btn.classList.add('active');
-    else {
-        const tabBtn = document.getElementById('tb-'+name);
-        if(tabBtn) tabBtn.classList.add('active');
-    }
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  if(btn) btn.classList.add('active'); else document.getElementById('tb-'+name).classList.add('active');
 }
+function toggleTheme(on){ cfg.dark=on; save(); applyTheme(); }
+function applyTheme(){ document.documentElement.setAttribute('data-theme',cfg.dark?'dark':''); document.getElementById('tog-dark').checked=cfg.dark; }
+function applyName(){ document.getElementById('aname').textContent=cfg.name||'Meu Organizador'; document.getElementById('dlbl').textContent=cfg.greet||NOW.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}); }
 
-// MODALS BASIC
+// --- TAREFAS ---
+function renderTasks(){
+  const pEl=document.getElementById('t-pend'), dEl=document.getElementById('t-done-wrap');
+  const pend=tasks.filter(t=>!t.done), done=tasks.filter(t=>t.done);
+  pEl.innerHTML = pend.length ? `<p class="lbl">Pendentes · ${pend.length}</p>` + pend.map(t=>`<div class="ti">
+    <div class="tck" onclick="togTask(${t.id})"></div>
+    <div class="tb2"><div class="tt">${esc(t.text)}</div></div>
+    <button class="bd" onclick="delTask(${t.id})">×</button></div>`).join('') : '<p class="empty">Tudo em dia!</p>';
+  dEl.innerHTML = done.length ? `<button class="dtoggle" onclick="doneExp=!doneExp;renderTasks()">Concluídas (${done.length})</button>` : '';
+}
+function addTask(){ 
+  const val=document.getElementById('task-in').value.trim(); 
+  if(val){ tasks.unshift({id:Date.now(),text:val,done:false}); document.getElementById('task-in').value=''; save(); renderTasks(); } 
+}
+function togTask(id){ tasks=tasks.map(t=>t.id===id?{...t,done:!t.done}:t); save(); renderTasks(); }
+function delTask(id){ tasks=tasks.filter(t=>t.id!==id); save(); renderTasks(); }
+
+// --- CALENDÁRIO ---
+function setView(v){ calView=v; renderCal(); }
+function renderCal(){
+  const main=document.getElementById('cal-main');
+  if(calView==='month'){
+    let h=`<div class="cnr"><button onclick="chMonth(-1)">‹</button><span>${MO[cM]} ${cY}</span><button onclick="chMonth(1)">›</button></div><div class="cdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div class="cgrid">`;
+    const fd=new Date(cY,cM,1).getDay(), dim=new Date(cY,cM+1,0).getDate();
+    for(let i=0;i<fd;i++) h+='<div class="cc emp"></div>';
+    for(let d=1;d<=dim;d++) h+=`<div class="cc ${d===TD&&cM===TM?'today':''}" onclick="selDay(${d})">${d}</div>`;
+    main.innerHTML=h+'</div>';
+  }
+}
+function chMonth(dir){ cM+=dir; if(cM<0){cM=11;cY--;} if(cM>11){cM=0;cY++;} renderCal(); }
+function selDay(d){ selD=d; document.getElementById('ev-sec').style.display='block'; document.getElementById('ev-dlbl').textContent=`${d} de ${MO[cM]}`; }
+
+// --- NOTAS ---
+function openNote(id){ enid=id; document.getElementById('nlv').style.display='none'; document.getElementById('nev').classList.add('open'); }
+function closeNote(){ document.getElementById('nlv').style.display='flex'; document.getElementById('nev').classList.remove('open'); }
+function saveNote(){ 
+  const t=document.getElementById('nt-ttl').value, b=document.getElementById('nt-bdy').value;
+  if(enid==='new') notes.unshift({id:Date.now(),title:t,body:b,date:new Date().toLocaleDateString()});
+  save(); renderNotes(); closeNote(); 
+}
+function renderNotes(){ document.getElementById('ngrid').innerHTML=notes.map(n=>`<div class="nc" onclick="openNote(${n.id})"><h3>${esc(n.title)}</h3><p>${esc(n.body)}</p></div>`).join(''); }
+
+// --- HÁBITOS ---
+function renderHabits(){
+  const list=document.getElementById('hab-list');
+  list.innerHTML=habits.map(h=>`<div class="hcard" onclick="openFocus(${h.id})">
+    <div class="hcbar" style="background:${h.color}"></div>
+    <div class="hcbody"><strong>${h.icon} ${esc(h.name)}</strong></div></div>`).join('') + `<button class="bnn" onclick="openHF()">+ Novo Hábito</button>`;
+}
+function openHF(){ document.getElementById('mo-hf').classList.add('open'); renderHF(); }
+function closeHF(){ document.getElementById('mo-hf').classList.remove('open'); }
+function renderHF(){ document.getElementById('hf-body').innerHTML=`<input type="text" placeholder="Nome" oninput="hfd.name=this.value">`; }
+function saveHabit(){ habits.push({...hfd, id:Date.now()}); save(); renderHabits(); closeHF(); }
+
+// --- TUTORIAL & CONQUISTAS ---
+function startTutorial(){ if(!localStorage.getItem('o_tut_done')) document.getElementById('tut').style.display='flex', showStep(); }
+function showStep(){ const s=TUT_STEPS[tutStep]; document.getElementById('tut-ico').textContent=s.ico; document.getElementById('tut-ttl').textContent=s.ttl; document.getElementById('tut-txt').textContent=s.txt; if(s.tab) swTab(s.tab); }
+function nextTut(){ if(tutStep<TUT_STEPS.length-1) { tutStep++; showStep(); } else endTutorial(); }
+function endTutorial(){ document.getElementById('tut').style.display='none'; localStorage.setItem('o_tut_done','true'); }
+function openAch(){ document.getElementById('mo-ach').classList.add('open'); }
+
+// --- CONFIG ---
 function openCfg(){ document.getElementById('mo-cfg').classList.add('open'); }
 function closeCfg(){ document.getElementById('mo-cfg').classList.remove('open'); }
-function bgC(e,id){ if(e.target===document.getElementById(id)) document.getElementById(id).classList.remove('open'); }
+function saveName(){ cfg.name=document.getElementById('cfg-name').value; save(); applyName(); }
 
-// TUTORIAL LOGIC
-function startTutorial(){
-    const done = localStorage.getItem('o_tut_done');
-    if(!done){
-        tutStep=0;
-        showStep();
-        document.getElementById('tut').style.display='flex';
-    }
-}
-function showStep(){
-    const s = TUT_STEPS[tutStep];
-    document.getElementById('tut-ico').textContent = s.ico;
-    document.getElementById('tut-ttl').textContent = s.ttl;
-    document.getElementById('tut-txt').textContent = s.txt;
-    if(s.tab) swTab(s.tab, null);
-    
-    let dots = '';
-    TUT_STEPS.forEach((_,i)=> dots += `<div class="tut-dot ${i===tutStep?'active':''}"></div>`);
-    document.getElementById('tut-dots').innerHTML = dots;
-    document.getElementById('tut-next').textContent = tutStep === TUT_STEPS.length-1 ? 'Começar!' : 'Próximo →';
-}
-function nextTut(){
-    if(tutStep < TUT_STEPS.length-1){
-        tutStep++;
-        showStep();
-    } else endTutorial();
-}
-function endTutorial(){
-    document.getElementById('tut').style.display='none';
-    localStorage.setItem('o_tut_done', 'true');
-}
-
-// CONQUISTAS (ACHIEVEMENTS)
-function openAch(){
-    const body = document.getElementById('ach-body');
-    // Cálculo básico para demonstração
-    const totalDone = tasks.filter(t=>t.done).length;
-    let html = `<div class="ach-stat">Você já concluiu <strong>${totalDone}</strong> tarefas!</div>`;
-    
-    BADGE_DEFS.forEach(b => {
-        const locked = totalDone < parseInt(b.id.replace(/\D/g,'') || 1); 
-        html += `
-            <div class="ach-card ${locked?'locked':''}">
-                <div class="ach-ico">${b.icon}</div>
-                <div class="ach-ttl">${b.title}</div>
-                <div class="ach-dsc">${b.desc}</div>
-            </div>`;
-    });
-    body.innerHTML = `<div class="ach-grid">${html}</div>`;
-    document.getElementById('mo-ach').classList.add('open');
-}
-
-// CALENDÁRIO & RENDERIZAÇÃO (RE-IMPLEMENTADO O QUE FOI CORTADO)
-let cY=TY, cM=TM, selD=null, calView='month';
-
-function renderDay(){
-    if(selD===null){selD=TD;cY=TY;cM=TM;}
-    const k=getDK(new Date(cY,cM,selD));
-    const el = document.getElementById('cal-main');
-    // ... (restante da lógica de renderização do dia)
-    el.innerHTML = `<div class="dtl">Visualizando dia ${selD}/${cM+1}</div>`; // Simplificado para restaurar funcionamento
-}
-
-// INICIALIZAÇÃO
-window.onload = () => {
-    load();
-    loadCfg();
-    applyTheme();
-    applyName();
-    renderTasks();
-    renderNotes();
-    swTab('tasks', document.getElementById('tb-tasks'));
-    startTutorial();
+// --- INICIALIZAÇÃO ---
+window.onload=()=>{
+  load(); applyTheme(); applyName(); renderTasks(); renderNotes(); renderCal(); renderHabits(); startTutorial();
 };
-
-// Funções auxiliares necessárias para os botões do seu HTML não darem erro:
-function setView(v){ calView=v; renderDay(); }
-function addTask(){ 
-    const val = document.getElementById('task-in').value;
-    if(val){ tasks.push({id:Date.now(), text:val, done:false}); save(); renderTasks(); document.getElementById('task-in').value=''; }
-}
-function renderTasks(){
-    const pEl = document.getElementById('t-pend');
-    if(pEl) pEl.innerHTML = tasks.filter(t=>!t.done).map(t=> `<div class="ti">${t.text}</div>`).join('');
-}
-function renderNotes(){
-    const g = document.getElementById('ngrid');
-    if(g) g.innerHTML = notes.map(n => `<div class="nc"><h3>${n.title}</h3></div>`).join('');
-}
-function openNote(id){ document.getElementById('nev').classList.add('open'); }
-function closeNote(){ document.getElementById('nev').classList.remove('open'); }
-function saveNote(){ closeNote(); }
-function openAch(){ document.getElementById('mo-ach').classList.add('open'); }
-function openHF(){ document.getElementById('mo-hf').classList.add('open'); }
-function closeHF(){ document.getElementById('mo-hf').classList.remove('open'); }
 </script>
 </body>
 </html>
