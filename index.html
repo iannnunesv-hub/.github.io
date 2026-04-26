@@ -264,6 +264,15 @@ textarea{resize:none;line-height:1.65;width:100%}
 .tut-row{display:flex;gap:9px}
 .tut-skip{flex:1;padding:11px;border-radius:10px;border:.5px solid var(--brd2);background:transparent;color:var(--txt3);cursor:pointer;font-family:inherit;font-size:13px}
 .tut-next{flex:2;padding:11px;border-radius:10px;border:none;background:var(--ac);color:var(--acfg);cursor:pointer;font-family:inherit;font-size:13px;font-weight:500}
+/* FINANCES */
+.f-card{background:var(--card);border-radius:13px;border:.5px solid var(--brd);padding:13px;margin-bottom:1rem;flex-shrink:0}
+.f-bal{display:flex;justify-content:space-between;align-items:flex-start}
+.f-v{font-size:26px;font-weight:600;color:var(--txt);margin-top:2px}
+.f-proj{font-size:12px;color:var(--txt3);margin-top:6px;padding-top:6px;border-top:.5px dashed var(--brd2)}
+.acc-list{margin-top:10px;display:flex;flex-direction:column;gap:5px}
+.acc-it{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--bg3);border-radius:8px;font-size:13px;color:var(--txt)}
+.acc-nm{font-weight:500;display:flex;align-items:center;gap:5px}
+.acc-val{color:var(--txt2)}
 </style>
 </head>
 <body>
@@ -343,15 +352,19 @@ textarea{resize:none;line-height:1.65;width:100%}
       <div id="hab-list" style="flex:1;overflow-y:auto;overflow-x:hidden"></div>
     </div>
     <div id="sec-fin" class="sec">
-      <div class="hprog" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem">
-         <div>
-            <span style="font-size:12px; color:var(--txt3); font-weight:500; letter-spacing:0.05em; text-transform:uppercase">Saldo Atual</span><br>
-            <span style="font-size:26px; font-weight:600; color:var(--txt)" id="fin-balance">R$ 0,00</span>
+      <div class="f-card">
+         <div class="f-bal">
+            <div>
+              <div class="lbl">Saldo Total (Soma das Carteiras)</div>
+              <div class="f-v" id="fin-total">R$ 0,00</div>
+            </div>
+            <button class="ib" style="font-size:14px; padding:6px 12px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="addAccount()">+ Conta</button>
          </div>
-         <button class="ib" style="font-size:16px; padding:8px 14px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="editBalance()">✏️</button>
+         <div id="acc-list" class="acc-list"></div>
+         <div class="f-proj" id="fin-proj">Previsão após pagar contas pendentes: R$ 0,00</div>
       </div>
       <div class="tf">
-        <div class="tftop"><input type="text" id="bill-desc" placeholder="Nova conta (ex: Cartão Caixa)"/><button class="ib" onclick="addBill()">+</button></div>
+        <div class="tftop"><input type="text" id="bill-desc" placeholder="Nova conta a pagar..."/><button class="ib" onclick="addBill()">+</button></div>
         <div class="tf2">
           <div class="tff"><label>Vencimento</label><input type="date" id="bill-date"/></div>
           <div class="tff"><label>Valor (R$)</label><input type="number" id="bill-val" step="0.01" placeholder="0.00"/></div>
@@ -479,7 +492,7 @@ const TUT_STEPS=[
   {ico:'📅',ttl:'Agenda',txt:'Visualize tudo no calendário. Deslize no meio do calendário para trocar o mês/semana.',tab:'agenda'},
   {ico:'📝',ttl:'Notas',txt:'Anote ideias e ordene-as segurando a nota por meio segundo. O botão voltar do celular salva a nota.',tab:'notes'},
   {ico:'⏰',ttl:'Hábitos',txt:'Crie hábitos e reordene segurando o card. Toque nas bolhas para marcar progresso.',tab:'habitos'},
-  {ico:'💵',ttl:'Finanças',txt:'Controle seu saldo e contas a pagar do mês de forma rápida e intuitiva.',tab:'fin'},
+  {ico:'💵',ttl:'Finanças',txt:'Subdivida seus saldos e veja suas contas a pagar integradas direto na sua Agenda.',tab:'fin'},
   {ico:'🏆',ttl:'Conquistas',txt:'Acumule sequências e ganhe badges! Toque no troféu 🏆 no topo para ver.',tab:null},
   {ico:'⚙️',ttl:'Tudo pronto!',txt:'Configure tudo na engrenagem. Bom uso! 🚀',tab:null},
 ];
@@ -500,19 +513,23 @@ function ensureHols(y){if(HC[y])return HC[y];const h={};[[1,1,'Confraternizaçã
 function getHol(y,m,d){return ensureHols(y)[ck(y,m,d)]||null;}
 
 // STORAGE
-let tasks=[],notes=[],events={},balance=0,bills=[];
+let tasks=[],notes=[],events={},accounts=[],bills=[];
 function load(){
   try{tasks=JSON.parse(localStorage.getItem('o_tasks'))||[];}catch(e){tasks=[];}
   try{notes=JSON.parse(localStorage.getItem('o_notes'))||[];}catch(e){notes=[];}
   try{events=JSON.parse(localStorage.getItem('o_events'))||{};}catch(e){events={};}
-  try{balance=parseFloat(localStorage.getItem('o_balance'))||0;}catch(e){balance=0;}
+  try{accounts=JSON.parse(localStorage.getItem('o_accs'))||[];}catch(e){accounts=[];}
   try{bills=JSON.parse(localStorage.getItem('o_bills'))||[];}catch(e){bills=[];}
+  
+  // Migration fallback for old balance
+  const oldB = parseFloat(localStorage.getItem('o_balance'));
+  if(accounts.length === 0 && !isNaN(oldB) && oldB > 0) { accounts.push({id:Date.now(), name:'Carteira Principal', val:oldB}); }
 }
 function save(){
   localStorage.setItem('o_tasks',JSON.stringify(tasks));
   localStorage.setItem('o_notes',JSON.stringify(notes));
   localStorage.setItem('o_events',JSON.stringify(events));
-  localStorage.setItem('o_balance', balance);
+  localStorage.setItem('o_accs', JSON.stringify(accounts));
   localStorage.setItem('o_bills', JSON.stringify(bills));
 }
 
@@ -684,15 +701,25 @@ function chMonth(dir){if(calView==='month'){cM+=dir;if(cM<0){cM=11;cY--;}if(cM>1
 function selDay(d){selD=d;renderCal();document.getElementById('ev-sec').style.display='block';document.getElementById('ev-dlbl').textContent=new Date(cY,cM,d).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});const hol=getHol(cY,cM,d),hr=document.getElementById('hol-row');if(hol){hr.style.display='flex';document.getElementById('hol-nm').textContent=hol;}else hr.style.display='none';renderEvList();}
 function addEvent(){const text=document.getElementById('ev-in').value.trim();if(!text||selD===null)return;const time=document.getElementById('ev-time').value||null,nb=parseInt(document.getElementById('ev-ntf').value)||0;const k=ckSel();if(!events[k])events[k]=[];events[k].push({id:Date.now(),text,time,nb,done:false});document.getElementById('ev-in').value='';document.getElementById('ev-time').value='';save();schedAll();renderEvList();renderCal();renderTasks();}
 
-function renderEvList(){if(selD===null)return;const k=ckSel(),evs=(events[k]||[]).slice().sort((a,b)=>(a.time||'').localeCompare(b.time||'')),dT=tasks.filter(t=>t.dk===k),el=document.getElementById('ev-list');if(!evs.length&&!dT.length){el.innerHTML='<p style="font-size:13px;color:var(--txt4)">Sem eventos ou tarefas neste dia.</p>';return;}const nl=n=>n>=60?`${n/60}h antes`:`${n}min antes`;
-const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}<span class="ebdg etask">tarefa</span></div>${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`).join('');
-const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}${ev.nb?`<span class="ebdg">🔔 ${nl(ev.nb)}</span>`:''}</div></div><button class="bd" onclick="delEvGlobal('${k}',${ev.id})">×</button></div>`).join('');
-el.innerHTML=(dT.length?`<p class="lbl" style="margin-bottom:5px">Tarefas</p>`+th:'')+(evs.length?`<p class="lbl" style="margin-top:${dT.length?7:0}px;margin-bottom:5px">Eventos</p>`+eh:'');}
+function renderEvList(){if(selD===null)return;const k=ckSel(),evs=(events[k]||[]).slice().sort((a,b)=>(a.time||'').localeCompare(b.time||'')),dT=tasks.filter(t=>t.dk===k),dBills=bills.filter(b=>b.date===k),el=document.getElementById('ev-list');
+  if(!evs.length&&!dT.length&&!dBills.length){el.innerHTML='<p style="font-size:13px;color:var(--txt4)">Sem eventos, tarefas ou contas neste dia.</p>';return;}
+  const nl=n=>n>=60?`${n/60}h antes`:`${n}min antes`;
+  
+  const bh=dBills.map(b=>`<div class="evi ${b.paid?'done-ev':''}"><div class="tck ${b.paid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id});renderEvList()">...</div><div class="ei2"><div class="et2">${esc(b.desc)}<span class="ebdg" style="background:#e8f5e9;color:#2e7d32">conta</span></div><div class="em2">${Number(b.val).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div><button class="bd" onclick="delBill(${b.id});renderEvList()">×</button></div>`).join('');
+  const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}<span class="ebdg etask">tarefa</span></div>${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`).join('');
+  const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}${ev.nb?`<span class="ebdg">🔔 ${nl(ev.nb)}</span>`:''}</div></div><button class="bd" onclick="delEvGlobal('${k}',${ev.id})">×</button></div>`).join('');
+  
+  el.innerHTML=(dBills.length?`<p class="lbl" style="margin-bottom:5px">Contas a Pagar</p>`+bh:'')+(dT.length?`<p class="lbl" style="margin-top:${dBills.length?7:0}px;margin-bottom:5px">Tarefas</p>`+th:'')+(evs.length?`<p class="lbl" style="margin-top:${dT.length||dBills.length?7:0}px;margin-bottom:5px">Eventos</p>`+eh:'');
+}
 
 function renderCal(){if(calView==='month')renderMonth();else if(calView==='week')renderWeek();else renderDay();}
-function renderMonth(){ensureHols(cY);document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span>${MO[cM]} ${cY}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="cdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div id="cgrid" class="cgrid"></div>`;const fd=new Date(cY,cM,1).getDay(),dim=new Date(cY,cM+1,0).getDate();let h='';for(let i=0;i<fd;i++)h+='<div class="cc emp"></div>';for(let d=1;d<=dim;d++){const past=cY<TY||(cY===TY&&cM<TM)||(cY===TY&&cM===TM&&d<TD),isT=d===TD&&cM===TM&&cY===TY,isSel=d===selD,k=ck(cY,cM,d),hasDot=(events[k]||[]).length>0||tasks.some(t=>t.dk===k),hol=getHol(cY,cM,d);h+=`<div class="${['cc',past?'past':'',isT?'today':'',isSel?'sel':'',hasDot?'dot':'',hol?'hol':''].filter(Boolean).join(' ')}" onclick="selDay(${d})" title="${esc(hol||'')}">${d}</div>`;}document.getElementById('cgrid').innerHTML=h;}
-function renderWeek(){const ref=new Date(TY,TM,TD);ref.setDate(ref.getDate()+wkOff*7);const ws=new Date(ref);ws.setDate(ref.getDate()-ref.getDay());const we=new Date(ws);we.setDate(ws.getDate()+6);const lbl=`${ws.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})} – ${we.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})}`;let strip='';for(let i=0;i<7;i++){const d=new Date(ws);d.setDate(ws.getDate()+i);const y=d.getFullYear(),mo=d.getMonth(),dy=d.getDate(),past=d<new Date(TY,TM,TD),isT=dy===TD&&mo===TM&&y===TY,isSel=selD===dy&&cM===mo&&cY===y,k=ck(y,mo,dy),hasDot=(events[k]||[]).length>0||tasks.some(t=>t.dk===k),hol=getHol(y,mo,dy);strip+=`<div class="${['wd',past?'past':'',isT?'today':'',isSel?'sel':'',hasDot?'dot':'',hol?'hol':''].filter(Boolean).join(' ')}" onclick="cY=${y};cM=${mo};selDay(${dy})" title="${esc(hol||'')}"><span class="wdn">${DL[d.getDay()].substring(0,3)}</span><span class="wdd">${dy}</span></div>`;}document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${lbl}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="wstrip">${strip}</div>`;}
-function renderDay(){if(selD===null){selD=TD;cY=TY;cM=TM;}const d=new Date(cY,cM,selD),k=ck(cY,cM,selD),hol=getHol(cY,cM,selD);const evs=(events[k]||[]).slice().sort((a,b)=>(a.time||'ZZ').localeCompare(b.time||'ZZ')),dT=tasks.filter(t=>t.dk===k).sort((a,b)=>(a.dt||'ZZ').localeCompare(b.dt||'ZZ'));const items=[...dT.map(t=>({type:'task',time:t.dt||'',obj:t})),...evs.map(e=>({type:'ev',time:e.time||'',obj:e,k}))].sort((a,b)=>a.time.localeCompare(b.time));const ihtml=items.length?items.map(it=>{if(it.type==='task'){const t=it.obj;return`<div class="dti"><span class="dtt">${t.dt||'—'}</span><div class="dtb2"><div class="dttl ${t.done?'done':''}">${esc(t.text)}<span class="ebdg etask">tarefa</span></div></div><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id});renderDay()">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`;}else{const e=it.obj;return`<div class="dti"><span class="dtt">${e.time||'—'}</span><div class="dtb2"><div class="dttl ${e.done?'done':''}">${esc(e.text)}<span class="ebdg eev">evento</span></div></div><div class="tck ${e.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${e.id});renderDay()">${e.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delEvGlobal('${k}',${e.id})">×</button></div>`;}}).join(''):'<p class="empty" style="margin-top:1rem">Nenhum item neste dia.</p>';document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="cnv" onclick="chMonth(1)">›</button></div>${hol?`<div class="holbanner">🎉 ${esc(hol)}</div>`:''}<div class="dtl">${ihtml}</div>`;document.getElementById('ev-sec').style.display='block';document.getElementById('ev-dlbl').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});document.getElementById('hol-row').style.display='none';renderEvList();}
+function renderMonth(){ensureHols(cY);document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span>${MO[cM]} ${cY}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="cdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div id="cgrid" class="cgrid"></div>`;const fd=new Date(cY,cM,1).getDay(),dim=new Date(cY,cM+1,0).getDate();let h='';for(let i=0;i<fd;i++)h+='<div class="cc emp"></div>';for(let d=1;d<=dim;d++){const past=cY<TY||(cY===TY&&cM<TM)||(cY===TY&&cM===TM&&d<TD),isT=d===TD&&cM===TM&&cY===TY,isSel=d===selD,k=ck(cY,cM,d),hasDot=(events[k]||[]).length>0||tasks.some(t=>t.dk===k)||bills.some(b=>b.date===k),hol=getHol(cY,cM,d);h+=`<div class="${['cc',past?'past':'',isT?'today':'',isSel?'sel':'',hasDot?'dot':'',hol?'hol':''].filter(Boolean).join(' ')}" onclick="selDay(${d})" title="${esc(hol||'')}">${d}</div>`;}document.getElementById('cgrid').innerHTML=h;}
+function renderWeek(){const ref=new Date(TY,TM,TD);ref.setDate(ref.getDate()+wkOff*7);const ws=new Date(ref);ws.setDate(ref.getDate()-ref.getDay());const we=new Date(ws);we.setDate(ws.getDate()+6);const lbl=`${ws.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})} – ${we.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})}`;let strip='';for(let i=0;i<7;i++){const d=new Date(ws);d.setDate(ws.getDate()+i);const y=d.getFullYear(),mo=d.getMonth(),dy=d.getDate(),past=d<new Date(TY,TM,TD),isT=dy===TD&&mo===TM&&y===TY,isSel=selD===dy&&cM===mo&&cY===y,k=ck(y,mo,dy),hasDot=(events[k]||[]).length>0||tasks.some(t=>t.dk===k)||bills.some(b=>b.date===k),hol=getHol(y,mo,dy);strip+=`<div class="${['wd',past?'past':'',isT?'today':'',isSel?'sel':'',hasDot?'dot':'',hol?'hol':''].filter(Boolean).join(' ')}" onclick="cY=${y};cM=${mo};selDay(${dy})" title="${esc(hol||'')}"><span class="wdn">${DL[d.getDay()].substring(0,3)}</span><span class="wdd">${dy}</span></div>`;}document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${lbl}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="wstrip">${strip}</div>`;}
+function renderDay(){if(selD===null){selD=TD;cY=TY;cM=TM;}const d=new Date(cY,cM,selD),k=ck(cY,cM,selD),hol=getHol(cY,cM,selD);const evs=(events[k]||[]).slice().sort((a,b)=>(a.time||'ZZ').localeCompare(b.time||'ZZ')),dT=tasks.filter(t=>t.dk===k).sort((a,b)=>(a.dt||'ZZ').localeCompare(b.dt||'ZZ')),dBills=bills.filter(b=>b.date===k);const items=[...dT.map(t=>({type:'task',time:t.dt||'',obj:t})),...evs.map(e=>({type:'ev',time:e.time||'',obj:e,k})),...dBills.map(b=>({type:'bill',time:'',obj:b}))].sort((a,b)=>a.time.localeCompare(b.time));const ihtml=items.length?items.map(it=>{
+  if(it.type==='task'){const t=it.obj;return`<div class="dti"><span class="dtt">${t.dt||'—'}</span><div class="dtb2"><div class="dttl ${t.done?'done':''}">${esc(t.text)}<span class="ebdg etask">tarefa</span></div></div><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id});renderDay()">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`;}
+  else if(it.type==='ev'){const e=it.obj;return`<div class="dti"><span class="dtt">${e.time||'—'}</span><div class="dtb2"><div class="dttl ${e.done?'done':''}">${esc(e.text)}<span class="ebdg eev">evento</span></div></div><div class="tck ${e.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${it.k}',${e.id});renderDay()">${e.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delEvGlobal('${it.k}',${e.id})">×</button></div>`;}
+  else if(it.type==='bill'){const b=it.obj;return `<div class="dti"><span class="dtt">—</span><div class="dtb2"><div class="dttl ${b.paid?'done':''}">${esc(b.desc)} <span class="ebdg" style="background:#e8f5e9;color:#2e7d32">conta</span></div><div class="tm">${Number(b.val).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div><div class="tck ${b.paid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id});renderDay()">...</div><button class="bd" onclick="delBill(${b.id});renderDay()">×</button></div>`;}
+}).join(''):'<p class="empty" style="margin-top:1rem">Nenhum item neste dia.</p>';document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="cnv" onclick="chMonth(1)">›</button></div>${hol?`<div class="holbanner">🎉 ${esc(hol)}</div>`:''}<div class="dtl">${ihtml}</div>`;document.getElementById('ev-sec').style.display='block';document.getElementById('ev-dlbl').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});document.getElementById('hol-row').style.display='none';renderEvList();}
 function renderSearch(){const q=document.getElementById('cal-srch').value.trim().toLowerCase(),res=document.getElementById('srch-res');if(!q){res.style.display='none';return;}const R=[];tasks.forEach(t=>{if(t.text.toLowerCase().includes(q))R.push({title:t.text,meta:`📅 ${t.dk?fmtDt(t.dk,t.dt):'Sem data'}`,dk:t.dk,type:'tarefa'});});Object.keys(events).forEach(k=>{(events[k]||[]).forEach(ev=>{if(ev.text.toLowerCase().includes(q)){const[y,m,d]=k.split('-').map(Number);R.push({title:ev.text,meta:`📅 ${new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'})}${ev.time?' '+ev.time:''}`,dk:k,type:'evento'});}});});res.style.display='block';res.innerHTML=!R.length?'<p style="font-size:13px;color:var(--txt4);text-align:center;padding:8px">Nenhum resultado.</p>':R.slice(0,7).map(r=>`<div class="sri" onclick="jumpDK('${r.dk||''}')"><div class="sri-t">${esc(r.title)} <span class="ebdg">${r.type}</span></div><div class="sri-m">${esc(r.meta)}</div></div>`).join('');}
 function jumpDK(dk){if(!dk)return;const[y,m,d]=dk.split('-').map(Number);cY=y;cM=m-1;selD=d;document.getElementById('cal-srch').value='';document.getElementById('srch-res').style.display='none';if(calView!=='month')setView('month');else{renderCal();selDay(d);}}
 
@@ -746,7 +773,24 @@ function fmtTimer(s){return`${String(Math.floor(s/60)).padStart(2,'0')}:${String
 
 // FINANCES
 function renderFin(){
-  document.getElementById('fin-balance').textContent = balance.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const totalBal = accounts.reduce((acc, curr) => acc + Number(curr.val), 0);
+  document.getElementById('fin-total').textContent = totalBal.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  
+  const pendingBills = bills.filter(b => !b.paid).reduce((acc, curr) => acc + Number(curr.val||0), 0);
+  const proj = totalBal - pendingBills;
+  document.getElementById('fin-proj').textContent = `Previsão após pagar contas pendentes: ${proj.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`;
+
+  const accList = document.getElementById('acc-list');
+  accList.innerHTML = accounts.map(a => `
+    <div class="acc-it">
+       <span class="acc-nm"><button class="bd" style="font-size:14px;color:#e44" onclick="delAccount(${a.id})">×</button> ${esc(a.name)}</span>
+       <div style="display:flex;gap:8px;align-items:center">
+          <span class="acc-val">${Number(a.val).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+          <button class="bd" style="font-size:12px;color:var(--txt3)" onclick="editAccount(${a.id})">✏️</button>
+       </div>
+    </div>
+  `).join('');
+
   const list = document.getElementById('bill-list');
   const sortedBills = [...bills].sort((a,b) => (a.date||'').localeCompare(b.date||''));
   list.innerHTML = sortedBills.map(b => `
@@ -757,12 +801,27 @@ function renderFin(){
     </div>
   `).join('') || '<p class="empty" style="margin-top:1rem">Nenhuma conta na lista.</p>';
 }
-function editBalance(){
-  const nb = prompt("Digite seu saldo atual:", balance);
-  if(nb !== null && !isNaN(parseFloat(nb.replace(',','.')))) {
-     balance = parseFloat(nb.replace(',','.')); save(); renderFin();
+
+function addAccount(){
+  const nm = prompt("Nome da Carteira/Banco:");
+  if(!nm || !nm.trim()) return;
+  const vl = prompt(`Saldo inicial para '${nm}':`, "0.00");
+  if(vl !== null && !isNaN(parseFloat(vl.replace(',','.')))) {
+     accounts.push({id:Date.now(), name:nm.trim(), val:parseFloat(vl.replace(',','.'))});
+     save(); renderFin();
   }
 }
+function editAccount(id){
+  const acc = accounts.find(a => a.id === id);
+  if(!acc) return;
+  const nv = prompt(`Novo saldo para '${acc.name}':`, acc.val);
+  if(nv !== null && !isNaN(parseFloat(nv.replace(',','.')))) {
+     acc.val = parseFloat(nv.replace(',','.'));
+     save(); renderFin();
+  }
+}
+function delAccount(id){ if(confirm("Remover esta carteira?")) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
+
 function addBill(){
   const desc = document.getElementById('bill-desc').value.trim();
   if(!desc) return;
@@ -772,10 +831,10 @@ function addBill(){
   document.getElementById('bill-desc').value='';
   document.getElementById('bill-date').value='';
   document.getElementById('bill-val').value='';
-  save(); renderFin();
+  save(); renderFin(); renderCal();
 }
-function togBill(id){ bills = bills.map(b => b.id === id ? {...b, paid: !b.paid} : b); save(); renderFin(); }
-function delBill(id){ if(confirm('Excluir esta conta?')){ bills = bills.filter(b => b.id !== id); save(); renderFin(); } }
+function togBill(id){ bills = bills.map(b => b.id === id ? {...b, paid: !b.paid} : b); save(); renderFin(); renderEvList(); renderCal(); }
+function delBill(id){ if(confirm('Excluir esta conta permanentemente?')){ bills = bills.filter(b => b.id !== id); save(); renderFin(); renderEvList(); renderCal(); } }
 
 // ACHIEVEMENTS & SUGGESTIONS
 function openAch(){
