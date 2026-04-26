@@ -59,7 +59,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 .tog input:checked+.tog-s::before{transform:translateX(20px)}
 .ns{font-size:12px;font-weight:500}.ns.on{color:#3a3}.ns.off{color:var(--txt3)}
 .bncfg{background:var(--ac);color:var(--acfg);border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit}
-/* TASKS */
+/* TASKS & BILLS */
 .tf{background:var(--card);border-radius:13px;border:.5px solid var(--brd);padding:13px;margin-bottom:1rem;flex-shrink:0}
 .tftop{display:flex;gap:7px;margin-bottom:10px}
 .tftop input{flex:1}
@@ -342,12 +342,30 @@ textarea{resize:none;line-height:1.65;width:100%}
       </div>
       <div id="hab-list" style="flex:1;overflow-y:auto;overflow-x:hidden"></div>
     </div>
+    <div id="sec-fin" class="sec">
+      <div class="hprog" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem">
+         <div>
+            <span style="font-size:12px; color:var(--txt3); font-weight:500; letter-spacing:0.05em; text-transform:uppercase">Saldo Atual</span><br>
+            <span style="font-size:26px; font-weight:600; color:var(--txt)" id="fin-balance">R$ 0,00</span>
+         </div>
+         <button class="ib" style="font-size:16px; padding:8px 14px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="editBalance()">✏️</button>
+      </div>
+      <div class="tf">
+        <div class="tftop"><input type="text" id="bill-desc" placeholder="Nova conta (ex: Cartão Caixa)"/><button class="ib" onclick="addBill()">+</button></div>
+        <div class="tf2">
+          <div class="tff"><label>Vencimento</label><input type="date" id="bill-date"/></div>
+          <div class="tff"><label>Valor (R$)</label><input type="number" id="bill-val" step="0.01" placeholder="0.00"/></div>
+        </div>
+      </div>
+      <div id="bill-list" style="overflow-y:auto; flex:1"></div>
+    </div>
   </div>
   <div class="tabbar">
     <button id="tb-tasks" class="tb active" onclick="swTab('tasks',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.3"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Tarefas</button>
     <button id="tb-agenda" class="tb" onclick="swTab('agenda',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 2v3M12 2v3M2 8h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Agenda</button>
     <button id="tb-notes" class="tb" onclick="swTab('notes',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 6h6M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Notas</button>
     <button id="tb-habitos" class="tb" onclick="swTab('habitos',this)"><svg viewBox="0 0 18 18" fill="none"><path d="M9 3a6 6 0 1 1 0 12A6 6 0 0 1 9 3zm0 2v4l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Hábitos</button>
+    <button id="tb-fin" class="tb" onclick="swTab('fin',this)"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M16 12h.01M3 10h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Finanças</button>
   </div>
 </div>
 
@@ -419,7 +437,7 @@ const QUOTES=[
   'A jornada de mil milhas começa com um passo.', 'A disciplina é a ponte entre metas e realizações.'
 ];
 const NOW=new Date(),TY=NOW.getFullYear(),TM=NOW.getMonth(),TD=NOW.getDate();
-const TABS=['tasks','agenda','notes','habitos'];
+const TABS=['tasks','agenda','notes','habitos','fin'];
 
 const EMOJI_CATS=[
   {cat:'💪 Saúde',e:['💧','🏃','🧘','🍎','💊','🛏','🚴','🏋','🥗','🦷','🧴','❤️','🫁','🩺','🥤','🧃']},
@@ -461,6 +479,7 @@ const TUT_STEPS=[
   {ico:'📅',ttl:'Agenda',txt:'Visualize tudo no calendário. Deslize no meio do calendário para trocar o mês/semana.',tab:'agenda'},
   {ico:'📝',ttl:'Notas',txt:'Anote ideias e ordene-as segurando a nota por meio segundo. O botão voltar do celular salva a nota.',tab:'notes'},
   {ico:'⏰',ttl:'Hábitos',txt:'Crie hábitos e reordene segurando o card. Toque nas bolhas para marcar progresso.',tab:'habitos'},
+  {ico:'💵',ttl:'Finanças',txt:'Controle seu saldo e contas a pagar do mês de forma rápida e intuitiva.',tab:'fin'},
   {ico:'🏆',ttl:'Conquistas',txt:'Acumule sequências e ganhe badges! Toque no troféu 🏆 no topo para ver.',tab:null},
   {ico:'⚙️',ttl:'Tudo pronto!',txt:'Configure tudo na engrenagem. Bom uso! 🚀',tab:null},
 ];
@@ -481,9 +500,21 @@ function ensureHols(y){if(HC[y])return HC[y];const h={};[[1,1,'Confraternizaçã
 function getHol(y,m,d){return ensureHols(y)[ck(y,m,d)]||null;}
 
 // STORAGE
-let tasks=[],notes=[],events={};
-function load(){try{tasks=JSON.parse(localStorage.getItem('o_tasks'))||[];}catch(e){tasks=[];}try{notes=JSON.parse(localStorage.getItem('o_notes'))||[];}catch(e){notes=[];}try{events=JSON.parse(localStorage.getItem('o_events'))||{};}catch(e){events={};}}
-function save(){localStorage.setItem('o_tasks',JSON.stringify(tasks));localStorage.setItem('o_notes',JSON.stringify(notes));localStorage.setItem('o_events',JSON.stringify(events));}
+let tasks=[],notes=[],events={},balance=0,bills=[];
+function load(){
+  try{tasks=JSON.parse(localStorage.getItem('o_tasks'))||[];}catch(e){tasks=[];}
+  try{notes=JSON.parse(localStorage.getItem('o_notes'))||[];}catch(e){notes=[];}
+  try{events=JSON.parse(localStorage.getItem('o_events'))||{};}catch(e){events={};}
+  try{balance=parseFloat(localStorage.getItem('o_balance'))||0;}catch(e){balance=0;}
+  try{bills=JSON.parse(localStorage.getItem('o_bills'))||[];}catch(e){bills=[];}
+}
+function save(){
+  localStorage.setItem('o_tasks',JSON.stringify(tasks));
+  localStorage.setItem('o_notes',JSON.stringify(notes));
+  localStorage.setItem('o_events',JSON.stringify(events));
+  localStorage.setItem('o_balance', balance);
+  localStorage.setItem('o_bills', JSON.stringify(bills));
+}
 
 // CONFIG
 let cfg={dark:false,name:'',nHab:true};
@@ -713,6 +744,39 @@ function setTmr(min){if(focTmr)clearInterval(focTmr.intv);focTmr={dur:min,remain
 function togTmr(){if(!focTmr)return;if(focTmr.running){clearInterval(focTmr.intv);focTmr.running=false;focTmr.intv=null;const b=document.getElementById('t-btn');if(b)b.textContent='Continuar';}else{focTmr.running=true;focTmr.intv=setInterval(()=>{focTmr.remaining--;const d=document.getElementById('t-disp');if(d)d.textContent=fmtTimer(focTmr.remaining);if(focTmr.remaining<=0){clearInterval(focTmr.intv);focTmr.running=false;focTmr.intv=null;const d2=document.getElementById('t-disp');if(d2)d2.textContent='00:00';const b=document.getElementById('t-btn');if(b){b.textContent='Reiniciar';b.onclick=()=>setTmr(focTmr.dur);}toast(`⏱ ${focusH?focusH.icon:''} Tempo concluído!`);if(Notification.permission==='granted')new Notification('Meu Organizador',{body:`⏱ Timer concluído: ${focusH?focusH.icon+' '+focusH.name:''}`});}},1000);const b=document.getElementById('t-btn');if(b)b.textContent='Pausar';}}
 function fmtTimer(s){return`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
 
+// FINANCES
+function renderFin(){
+  document.getElementById('fin-balance').textContent = balance.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const list = document.getElementById('bill-list');
+  const sortedBills = [...bills].sort((a,b) => (a.date||'').localeCompare(b.date||''));
+  list.innerHTML = sortedBills.map(b => `
+    <div class="ti ${b.paid?'done-item':''}">
+      <div class="tck ${b.paid?'done':''}" onclick="togBill(${b.id})">${b.paid?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
+      <div class="tb2"><div class="tt">${esc(b.desc)}</div><div class="tm">📅 ${fmtDt(b.date)} ${b.val ? ` · ${Number(b.val).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}` : ''}</div></div>
+      <button class="bd" onclick="delBill(${b.id})">×</button>
+    </div>
+  `).join('') || '<p class="empty" style="margin-top:1rem">Nenhuma conta na lista.</p>';
+}
+function editBalance(){
+  const nb = prompt("Digite seu saldo atual:", balance);
+  if(nb !== null && !isNaN(parseFloat(nb.replace(',','.')))) {
+     balance = parseFloat(nb.replace(',','.')); save(); renderFin();
+  }
+}
+function addBill(){
+  const desc = document.getElementById('bill-desc').value.trim();
+  if(!desc) return;
+  const date = document.getElementById('bill-date').value;
+  const val = document.getElementById('bill-val').value;
+  bills.push({id: Date.now(), desc, date, val, paid: false});
+  document.getElementById('bill-desc').value='';
+  document.getElementById('bill-date').value='';
+  document.getElementById('bill-val').value='';
+  save(); renderFin();
+}
+function togBill(id){ bills = bills.map(b => b.id === id ? {...b, paid: !b.paid} : b); save(); renderFin(); }
+function delBill(id){ if(confirm('Excluir esta conta?')){ bills = bills.filter(b => b.id !== id); save(); renderFin(); } }
+
 // ACHIEVEMENTS & SUGGESTIONS
 function openAch(){
   const body=document.getElementById('ach-body');
@@ -769,7 +833,7 @@ function endTutorial(){
 load();loadCfg();loadHabits();
 applyTheme();applyName();
 (function(){const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}})();
-schedAll();renderTasks();renderNotes();renderCal();renderHabits();
+schedAll();renderTasks();renderNotes();renderCal();renderHabits();renderFin();
 bindDrag('ngrid', '.nc', () => {
     const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id))));
     notes=arr.filter(Boolean); save();
