@@ -794,7 +794,7 @@ function setHabTime(i,v){if(!hfd.times)hfd.times=[];hfd.times[i]=v;}
 function renderHF(){
   const tms=hfd.target>1?`<div class="hff"><label>Horários por ocorrência <span style="font-weight:400;font-size:9px;text-transform:none">(opcional)</span></label><div class="htgrid">${Array.from({length:hfd.target},(_,i)=>`<div class="htrow"><span>Ocorrência ${i+1}</span><input type="time" value="${(hfd.times||[])[i]||''}" onchange="setHabTime(${i},this.value)"/></div>`).join('')}</div></div>`:`<div class="hff"><label>Lembrete</label><input type="time" value="${hfd.reminderTime||''}" onchange="hfd.reminderTime=this.value"/></div>`;
   const catHtml = EMOJI_CATS.map(c => `<div class="ecat-lbl">${c.cat}</div><div class="emoji-row">${c.e.map(em => `<div class="eopt ${hfd.icon===em?'sel':''}" onclick="hfd.icon='${em}';renderHF()">${em}</div>`).join('')}</div>`).join('');
-  document.getElementById('hf-body').innerHTML=`<div class="hff"><label>Ícone</label><div style="display:flex;gap:10px;align-items:center;margin-bottom:8px"><input type="text" value="${esc(hfd.icon)}" maxlength="2" style="width:60px;font-size:20px;text-align:center" oninput="hfd.icon=this.value"/> <span style="font-size:11px;color:var(--txt3)">Ou escolha abaixo:</span></div>${catHtml}</div><div class="hff"><label>Nome</label><input type="text" value="${esc(hfd.name)}" placeholder="Ex: Beber água" oninput="hfd.name=this.value"/></div><div class="hff"><label>Cor</label><div class="csw-row">${COLORS.map(c=>`<div class="csw ${hfd.color===c?'sel':''}" style="background:${c}" onclick="hfd.color='${c}';renderHF()"></div>`).join('')}</div></div><div class="hff"><label>Meta diária</label><div class="tst"><button class="tsb" onclick="if(hfd.target>1){hfd.target--;if(hfd.times)hfd.times=hfd.times.slice(0,hfd.target);}renderHF()">−</button><span class="tsv">${hfd.target}</span><button class="tsb" onclick="if(hfd.target<10)hfd.target++;renderHF()">+</button><span class="tsl">${hfd.target===1?'vez/dia':'vezes/dia'}</span></div></div>${tms}<div class="hff"><label>Frequência</label><div class="frow">${[['daily','Diário'],['weekdays','Dias úteis'],['custom','Personalizado']].map(([v,l])=>`<button class="fbtn ${hfd.frequency===v?'sel':''}" onclick="hfd.frequency='${v}';renderHF()">${l}</button>`).join('')}</div>${hfd.frequency==='custom'?`<div class="drow">${['D','S','T','Q','Q','S','S'].map((d,i)=>`<button class="dck ${(hfd.customDays||[]).includes(i)?'sel':''}" onclick="togCDay(${i})">${d}</button>`).join('')}</div>`:''}</div>`;
+  document.getElementById('hf-body').innerHTML=`<div class="hff"><label>Ícone</label><div style="display:flex;gap:10px;align-items:center;margin-bottom:8px"><input type="text" value="${esc(hfd.icon)}" maxlength="2" style="width:60px;font-size:20px;text-align:center" oninput="hfd.icon=this.value"/> <span style="font-size:11px;color:var(--txt3)">Ou escolha abaixo:</span></div>${catHtml}</div><div class="hff"><label>Nome</label><input type="text" value="${esc(hfd.name)}" placeholder="Ex: Beber água" oninput="hfd.name=this.value"/></div><div class="hff"><label>Cor</label><div class="csw-row">${COLORS.map(c=>`<div class="csw ${hfd.color===c?'sel':''}" style="background:${c}" onclick="hfd.color='${c}';renderHF()"></div>`).join('')}</div></div><div class="hff"><label>Meta diária</label><div class="tst"><button class="tsb" onclick="if(hfd.target>1){hfd.target--;if(hfd.times)hfd.times=hfd.times.slice(0,hfd.target);}renderHF()">−</button><span class="tsv">${hfd.target}</span><button class="tsb" onclick="if(hfd.target<10)hfd.target++;renderHF()">+</button><span class="tsl">${hfd.target===1?'vez/dia':'vezes/dia'}</span></div></div>${tms}<div class="hff"><label>Frequência</label><div class="frow">${[['daily','Diário'],['weekdays','Dias úteis'],['custom','Personalizado']].map(([v,l])=>`<button class="fbtn ${hfd.frequency===v?'sel':''}" onclick="hfd.frequency='${v}';renderHF()">${l}</button>`).join('')}</div>${hfd.frequency==='custom'?`<div class="drow">${['D','S','T','Q','Q','S','S'].map((d,i)=>`<button class="dck ${(hfd.customDays||[]).includes(i)?'sel':''}" onclick="togCDay(${d})">${d}</button>`).join('')}</div>`:''}</div>`;
 }
 function togCDay(d){const i=(hfd.customDays||[]).indexOf(d);if(i>=0)hfd.customDays.splice(i,1);else hfd.customDays.push(d);renderHF();}
 function saveHabit(){if(!hfd.name.trim()){toast('Digite um nome');return;}if(!hfd.times)hfd.times=[];if(hfd.id)habits=habits.map(h=>h.id===hfd.id?{...h,...hfd}:h);else habits.push({...hfd,id:Date.now(),history:{}});saveHabits();renderHabits();schedAll();closeHF();toast(hfd.id?'Hábito atualizado ✓':'Hábito criado ✓');}
@@ -989,17 +989,39 @@ function endTutorial(){
     }, 400);
 }
 
-// ── INIT ──
+// ── INIT BLINDADO ──
 window.onload = () => {
-    load();loadCfg();loadHabits();
-    applyTheme();applyName();
-    (function(){const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}})();
+    // 1. Carrega os dados silenciosamente
+    load(); loadCfg(); loadHabits();
     
-    chgBillType(); // Inicia categorias da aba Finanças
-    selD = TD; // Apenas pré-seleciona visualmente o dia de hoje, sem expandir a aba
+    // 2. Aplica as customizações do usuário
+    applyTheme(); applyName();
     
-    renderTasks();renderNotes();renderHabits();renderFin();renderCal();
+    // 3. Processa URLs compartilhadas (sem atrapalhar o fluxo principal)
+    try {
+        const p = new URLSearchParams(location.search);
+        const txt = (p.get('text') || p.get('url') || '').trim();
+        if (txt) {
+            notes.unshift({ id: Date.now(), title: p.get('title') || 'Compartilhado', body: txt, date: NOW.toLocaleDateString('pt-BR') });
+            save(); history.replaceState(null, '', location.pathname); window._shared = true;
+        }
+    } catch(e) {}
+
+    // 4. Prepara o motor visual
+    chgBillType(); 
+    ensureHols(TY); ensureHols(TY+1);
+
+    // 5. Renderiza TODAS as abas para a memória (Resolve o problema de itens sumindo)
+    renderTasks();
+    renderNotes();
+    renderHabits();
+    renderFin();
     
+    // 6. Força a tela inicial ser a Agenda focado no dia de hoje
+    swTab('agenda', document.getElementById('tb-agenda'));
+    selDay(TD); 
+
+    // 7. Ativa as interações (Teclado e Arrastar)
     bindDrag('ngrid', '.nc', () => {
         const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id))));
         notes=arr.filter(Boolean); save();
@@ -1009,14 +1031,18 @@ window.onload = () => {
         habits=arr.filter(Boolean); saveHabits();
     });
     
-    ensureHols(TY);ensureHols(TY+1);
-    document.getElementById('task-in').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
-    document.getElementById('ev-in').addEventListener('keydown',e=>{if(e.key==='Enter')addEvent();});
-    if(window._shared){swTab('notes',document.getElementById('tb-notes'));toast('✓ Texto salvo nas notas!');}
-    document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedAll();});
+    document.getElementById('task-in').addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); });
+    document.getElementById('ev-in').addEventListener('keydown', e => { if (e.key === 'Enter') addEvent(); });
+
+    if (window._shared) { swTab('notes', document.getElementById('tb-notes')); toast('✓ Texto salvo nas notas!'); }
+
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) schedAll(); });
     
-    schedAll(); // Executado por último para proteger a interface contra bloqueios
-    setTimeout(startTutorial, 200);
+    // 8. Só depois que a tela toda estiver desenhada, ele aciona os alarmes e o tutorial (Evita bloqueios)
+    setTimeout(() => {
+        schedAll();
+        startTutorial();
+    }, 300);
 }
 </script>
 </body>
