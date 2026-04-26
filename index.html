@@ -15,14 +15,23 @@
 body{font-family:system-ui,sans-serif;background:var(--bg4);display:flex;justify-content:center;min-height:100vh;padding:.6rem;transition:background .2s}
 #app{width:100%;max-width:490px;background:var(--bg);border-radius:18px;border:.5px solid var(--brd);overflow:hidden;display:flex;flex-direction:column;min-height:96vh; position:relative;}
 
-/* SPLASH SCREEN PREMIUM */
+/* SPLASH SCREEN PREMIUM 100% CSS */
 #splash {
   position: absolute; inset: 0; background: var(--bg); z-index: 9999;
   display: flex; align-items: center; justify-content: center; flex-direction: column;
-  transition: opacity 0.6s ease; border-radius: 18px;
+  border-radius: 18px;
+  animation: fadeOutSplash 0.8s ease-in-out forwards;
+  animation-delay: 1.6s; /* Tempo que a tela fica visível */
+  pointer-events: none; /* Impede que bloqueie o toque mesmo se algo falhar */
 }
-.sp-title { font-size: 26px; font-weight: 300; color: var(--txt); letter-spacing: 1px; }
-.sp-prem { font-weight: 700; color: #d4af37; font-style: italic; }
+.sp-ico { font-size: 54px; margin-bottom: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+.sp-title { font-size: 24px; font-weight: 300; color: var(--txt); letter-spacing: 1px; }
+.sp-prem { font-weight: 700; color: #d4af37; font-style: italic; letter-spacing: 0; }
+@keyframes fadeOutSplash {
+  0% { opacity: 1; visibility: visible; }
+  99% { opacity: 0; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; z-index: -1; display: none; }
+}
 
 .hdr{background:var(--bg2);border-bottom:.5px solid var(--brd);padding:14px 17px 11px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
 .hdr h1{font-size:18px;font-weight:500;color:var(--txt)}
@@ -285,6 +294,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 <body>
 
 <div id="splash">
+    <div class="sp-ico">👑</div>
     <div class="sp-title">Organizador <span class="sp-prem">Premium</span></div>
 </div>
 
@@ -1049,25 +1059,19 @@ function endTutorial(){
 // ── INIT BLINDADO ──
 window.onload = () => {
     try {
-        // 1. Carrega dados do celular
         load(); loadCfg(); loadHabits();
         
-        // 2. Aplica personalizações visuais
         applyTheme(); applyName();
         if(typeof chgBillType === 'function') chgBillType(); 
         
-        // 3. Reseta a seleção do dia (Agenda sem focar no dia ao abrir)
         selD = null;
         
-        // 4. Desenha toda a interface antes de qualquer processamento assíncrono
         renderTasks(); renderNotes(); renderHabits(); 
         if(typeof renderFin === 'function') renderFin(); 
         renderCal();
         
-        // 5. Força a tela inicial ser a Agenda 
         swTab('agenda', document.getElementById('tb-agenda'));
 
-        // 6. Liga o Drag & Drop (Arrastar)
         bindDrag('ngrid', '.nc', () => {
             const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id))));
             notes=arr.filter(Boolean); save();
@@ -1077,14 +1081,11 @@ window.onload = () => {
             habits=arr.filter(Boolean); saveHabits();
         });
         
-        // 7. Prepara calendários de feriados
         ensureHols(TY); ensureHols(TY+1);
         
-        // 8. Eventos de Teclado
         document.getElementById('task-in').addEventListener('keydown', e => { if(e.key==='Enter') addTask(); });
         document.getElementById('ev-in').addEventListener('keydown', e => { if(e.key==='Enter') addEvent(); });
         
-        // 9. Tratamento de links compartilhados
         try {
             const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();
             if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}
@@ -1092,20 +1093,9 @@ window.onload = () => {
         
         if(window._shared){swTab('notes',document.getElementById('tb-notes'));toast('✓ Texto salvo nas notas!');}
         
-        // 10. Agendamentos de Notificações
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         
-        // 11. Remove a Splash Screen Premium
-        setTimeout(() => {
-            const sp = document.getElementById('splash');
-            if(sp) {
-                sp.style.opacity = '0';
-                setTimeout(() => { sp.style.display = 'none'; startTutorial(); }, 600);
-            } else {
-                startTutorial();
-            }
-        }, 1500);
-
+        setTimeout(startTutorial, 2000);
         schedAll();
     } catch (err) {
         console.error("Erro na inicialização:", err);
