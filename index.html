@@ -268,6 +268,8 @@ textarea{resize:none;line-height:1.65;width:100%}
 .acc-it{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--bg3);border-radius:8px;font-size:13px;color:var(--txt)}
 .acc-nm{font-weight:500;display:flex;align-items:center;gap:5px}
 .acc-val{color:var(--txt2)}
+.cat-it{display:flex;justify-content:space-between;padding:6px 0;border-bottom:.5px solid var(--brd2);font-size:13px;color:var(--txt)}
+.cat-it:last-child{border-bottom:none}
 </style>
 </head>
 <body>
@@ -359,16 +361,20 @@ textarea{resize:none;line-height:1.65;width:100%}
       </div>
       <div style="margin-bottom:1rem">
          <div class="lbl" style="margin-bottom:8px">Projeção Mês a Mês</div>
-         <div id="fin-proj" style="overflow-x:auto; display:flex; gap:8px; padding-bottom:8px;"></div>
+         <div id="fin-proj" style="overflow-x:auto; display:flex; gap:8px; padding-bottom:8px; scroll-behavior:smooth"></div>
+         <div id="fin-proj-details" style="display:none; background:var(--card); border:.5px solid var(--brd); border-radius:10px; padding:10px; margin-top:5px;"></div>
       </div>
       <div class="tf">
+        <div class="tftop" style="gap:6px; margin-bottom:8px">
+           <select id="bill-type" onchange="chgBillType()" style="padding:8px 4px; font-size:16px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp); flex-shrink:0"><option value="-">🔴</option><option value="+">🟢</option></select>
+           <select id="bill-cat" style="flex:1"></select>
+        </div>
         <div class="tftop">
-           <select id="bill-type" style="padding:9px 6px; font-size:16px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp); flex-shrink:0"><option value="-">🔴</option><option value="+">🟢</option></select>
-           <input type="text" id="bill-desc" placeholder="Transação (ex: Aluguel)" style="flex:1"/>
+           <input type="text" id="bill-desc" placeholder="Descrição (ex: Netflix)" style="flex:1"/>
            <button class="ib" onclick="addBill()">+</button>
         </div>
         <div class="tf2">
-          <div class="tff"><label>Vencimento</label><input type="date" id="bill-date"/></div>
+          <div class="tff"><label id="lbl-bill-date">Vencimento</label><input type="date" id="bill-date"/></div>
           <div class="tff"><label>Valor (R$)</label><input type="number" id="bill-val" step="0.01" placeholder="0.00" min="0"/></div>
         </div>
       </div>
@@ -499,6 +505,9 @@ const TUT_STEPS=[
 ];
 let tutStep=0;
 
+const CATS_OUT=['🛒 Supermercado','🏠 Moradia','🚗 Transporte','🏥 Saúde','🎓 Educação','🎬 Lazer','💳 Cartão','📄 Assinaturas','💸 Outro'];
+const CATS_IN=['💼 Salário','📈 Rendimentos','💰 Pix/Transf.','💸 Outro'];
+
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const getDK=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const getToday=()=>getDK(new Date());
@@ -561,6 +570,7 @@ function schedAll(){
   const nl=n=>n>=60?`${n/60}h`:`${n}min`;
   tasks.filter(t=>!t.done&&t.dk&&t.dt&&t.nb).forEach(t=>{const[y,m,d]=t.dk.split('-').map(Number);const[h,mi]=t.dt.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-t.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`✅ "${t.text}" — faltam ${nl(t.nb)}`,delay,`t-${t.id}`);});
   Object.keys(events).forEach(key=>{const[y,m,d]=key.split('-').map(Number);(events[key]||[]).forEach(ev=>{if(!ev.time||!ev.nb)return;const[h,mi]=ev.time.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-ev.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`📅 "${ev.text}" às ${ev.time} — faltam ${nl(ev.nb)}`,delay,`e-${ev.id}`);});});
+  
   if(cfg.nHab !== false) {
     habits.forEach(h=>{
       if(!isSchedOn(h,new Date()))return;
@@ -577,18 +587,21 @@ function schedAll(){
 // TABS
 function swTab(name,btn){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));document.getElementById('sec-'+name).classList.add('active');if(btn) btn.classList.add('active'); else document.getElementById('tb-'+name).classList.add('active');}
 
-// SWIPE — dual behavior in agenda
-let tsX=0,tsY=0,tsTime=0,tsOnCal=false;
+// SWIPE — dual behavior
+let tsX=0,tsY=0,tsTime=0,tsOnCal=false,tsNoSwipe=false;
 document.getElementById('cnt').addEventListener('touchstart',e=>{
   const t=e.touches[0];tsX=t.clientX;tsY=t.clientY;tsTime=Date.now();
+  const activeSec = document.querySelector('.sec.active').id;
   const cm=document.getElementById('cal-main');
-  if(cm && document.querySelector('.sec.active').id === 'sec-agenda'){
+  if(activeSec === 'sec-agenda' && cm){
       const r=cm.getBoundingClientRect();
       tsOnCal=t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom;
-  }
-  else tsOnCal=false;
+  } else { tsOnCal=false; }
+  const fp = e.target.closest('#fin-proj');
+  tsNoSwipe = !!fp;
 },{passive:true});
 document.getElementById('cnt').addEventListener('touchend',e=>{
+  if(tsNoSwipe) return;
   const dx=e.changedTouches[0].clientX-tsX,dy=e.changedTouches[0].clientY-tsY,dt=Date.now()-tsTime;
   if(Math.abs(dx)<50||Math.abs(dy)>Math.abs(dx)*.8||dt>500)return;
   const cur=document.querySelector('.sec.active').id.replace('sec-','');
@@ -629,7 +642,7 @@ function openNote(id){enid=id;const n=id==='new'?null:notes.find(n=>n.id===id);o
 function closeNote(auto=false){
   const ct=document.getElementById('nt-ttl').value.trim(), cb=document.getElementById('nt-bdy').value.trim();
   if(ct!==origNTitle || cb!==origNBody){
-     if(confirm("Existem alterações não salvas. Deseja salvar agora?")){ saveNote(); return; }
+     if(confirm("Existem alterações não salvas nesta nota. Deseja salvá-las agora?")){ saveNote(); return; }
   }
   document.getElementById('nlv').style.display='flex';document.getElementById('nev').classList.remove('open');enid=null;
 }
@@ -688,7 +701,6 @@ function bindDrag(containerId, itemClass, onReorder) {
 }
 
 // CALENDAR
-let cY=TY,cM=TM,selD=null,calView='month',wkOff=0;
 function ckSel(){return selD!==null?ck(cY,cM,selD):null;}
 function setView(v){calView=v;['month','week','day'].forEach(x=>document.getElementById('vbtn-'+x).classList.toggle('sel',x===v));if(v==='week')wkOff=0;document.getElementById('ev-sec').style.display='none';selD=null;renderCal();}
 function chMonth(dir){if(calView==='month'){cM+=dir;if(cM<0){cM=11;cY--;}if(cM>11){cM=0;cY++;}selD=null;document.getElementById('ev-sec').style.display='none';renderCal();}else if(calView==='week'){wkOff+=dir;renderCal();}else{if(selD===null){selD=TD;}const d=addDays(new Date(cY,cM,selD),dir);cY=d.getFullYear();cM=d.getMonth();selD=d.getDate();renderCal();selDay(selD);}}
@@ -701,7 +713,7 @@ function renderEvList(){
   if(!evs.length&&!dT.length&&!dBills.length){el.innerHTML='<p style="font-size:13px;color:var(--txt4)">Sem eventos, tarefas ou finanças neste dia.</p>';return;}
   const nl=n=>n>=60?`${n/60}h antes`:`${n}min antes`;
   
-  const bh=dBills.map(b=>`<div class="evi ${b.paid?'done-ev':''}"><div class="tck ${b.paid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id});renderEvList()">...</div><div class="ei2"><div class="et2">${esc(b.desc)} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="em2">${fmtC(b.val)}</div></div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id})">✏️</button><button class="bd" onclick="delBill(${b.id});renderEvList()">×</button></div>`).join('');
+  const bh=dBills.map(b=>{const cEmoji=b.cat?b.cat.split(' ')[0]:''; return `<div class="evi ${b.paid?'done-ev':''}"><div class="tck ${b.paid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id});renderEvList()">...</div><div class="ei2"><div class="et2">${cEmoji} ${esc(b.desc)} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="em2">${fmtC(b.val)}</div></div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id})">✏️</button><button class="bd" onclick="delBill(${b.id});renderEvList()">×</button></div>`}).join('');
   const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}<span class="ebdg etask">tarefa</span></div>${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`).join('');
   const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}${ev.nb?`<span class="ebdg">🔔 ${nl(ev.nb)}</span>`:''}</div></div><button class="bd" onclick="delEvGlobal('${k}',${ev.id})">×</button></div>`).join('');
   
@@ -719,7 +731,7 @@ function renderDay(){
   const ihtml=items.length?items.map(it=>{
     if(it.type==='task'){const t=it.obj;return`<div class="dti"><span class="dtt">${t.dt||'—'}</span><div class="dtb2"><div class="dttl ${t.done?'done':''}">${esc(t.text)}<span class="ebdg etask">tarefa</span></div></div><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id});renderDay()">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`;}
     else if(it.type==='ev'){const e=it.obj;return`<div class="dti"><span class="dtt">${e.time||'—'}</span><div class="dtb2"><div class="dttl ${e.done?'done':''}">${esc(e.text)}<span class="ebdg eev">evento</span></div></div><div class="tck ${e.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${it.k}',${e.id});renderDay()">${e.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delEvGlobal('${it.k}',${e.id})">×</button></div>`;}
-    else if(it.type==='bill'){const b=it.obj;return `<div class="dti"><span class="dtt">—</span><div class="dtb2"><div class="dttl ${b.paid?'done':''}">${esc(b.desc)} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">${fmtC(b.val)}</div></div><div class="tck ${b.paid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id});renderDay()">...</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id});renderDay()">✏️</button><button class="bd" onclick="delBill(${b.id});renderDay()">×</button></div>`;}
+    else if(it.type==='bill'){const b=it.obj; const cEmoji=b.cat?b.cat.split(' ')[0]:''; return `<div class="dti"><span class="dtt">—</span><div class="dtb2"><div class="dttl ${b.paid?'done':''}">${cEmoji} ${esc(b.desc)} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">${fmtC(b.val)}</div></div><div class="tck ${b.paid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id});renderDay()">...</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id});renderDay()">✏️</button><button class="bd" onclick="delBill(${b.id});renderDay()">×</button></div>`;}
   }).join(''):'<p class="empty" style="margin-top:1rem">Nenhum item neste dia.</p>';
   document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="cnv" onclick="chMonth(1)">›</button></div>${hol?`<div class="holbanner">🎉 ${esc(hol)}</div>`:''}<div class="dtl">${ihtml}</div>`;
   document.getElementById('ev-sec').style.display='block';
@@ -797,11 +809,36 @@ function togTmr(){
 function fmtTimer(s){return`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
 
 // FINANCES
+function chgBillType(){
+  const t = document.getElementById('bill-type').value;
+  document.getElementById('lbl-bill-date').textContent = t === '+' ? 'Entrada' : 'Vencimento';
+  document.getElementById('bill-cat').innerHTML = (t === '+' ? CATS_IN : CATS_OUT).map(c => `<option value="${c}">${c}</option>`).join('');
+}
+function expandMonth(k, name) {
+  const b = bills.filter(x => x.date && x.date.startsWith(k));
+  const el = document.getElementById('fin-proj-details');
+  if(!b.length) {
+      el.style.display = 'block';
+      el.innerHTML = `<div style="font-size:13px;font-weight:600;color:var(--txt);margin-bottom:6px">Resumo de ${name}</div><p style="font-size:12px;color:var(--txt3)">Nenhum lançamento previsto.</p>`;
+      return;
+  }
+  let html = `<div style="font-size:13px;font-weight:600;color:var(--txt);margin-bottom:8px">Resumo de ${name}</div>`;
+  const cats = {};
+  b.forEach(x => {
+      const key = x.cat || 'Outro';
+      if(!cats[key]) cats[key] = {in:0, out:0};
+      if(x.type === '+') cats[key].in += Number(x.val); else cats[key].out += Number(x.val);
+  });
+  for(let c in cats) {
+      if(cats[c].in > 0) html += `<div class="cat-it"><span>${c}</span><span style="color:#2e7d32">+${fmtC(cats[c].in)}</span></div>`;
+      if(cats[c].out > 0) html += `<div class="cat-it"><span>${c}</span><span style="color:#e44">-${fmtC(cats[c].out)}</span></div>`;
+  }
+  el.style.display = 'block'; el.innerHTML = html;
+}
 function renderFin(){
   const totalBal = accounts.reduce((acc, curr) => acc + Number(curr.val), 0);
   document.getElementById('fin-total').textContent = fmtC(totalBal);
   
-  // Projection Month by Month
   let projHtml = '';
   let runBal = totalBal;
   const now = new Date();
@@ -811,12 +848,10 @@ function renderFin(){
       let k = `${y}-${String(m+1).padStart(2,'0')}`;
       let inM=0, outM=0;
       bills.forEach(b => {
-          if(!b.paid && b.date && b.date.startsWith(k)) {
-              if(b.type === '+') inM += Number(b.val||0); else outM += Number(b.val||0);
-          }
+          if(!b.paid && b.date && b.date.startsWith(k)) { if(b.type === '+') inM += Number(b.val||0); else outM += Number(b.val||0); }
       });
       runBal = runBal + inM - outM;
-      projHtml += `<div style="min-width:125px; padding:10px; background:var(--bg3); border:.5px solid var(--brd2); border-radius:10px; flex-shrink:0;">
+      projHtml += `<div onclick="expandMonth('${k}', '${MO[m]}/${y}')" style="min-width:125px; padding:10px; cursor:pointer; background:var(--bg3); border:.5px solid var(--brd2); border-radius:10px; flex-shrink:0;">
          <div style="font-size:11px; color:var(--txt3); font-weight:600; text-transform:uppercase">${MO[m].substring(0,3)}/${y}</div>
          <div style="font-size:14px; font-weight:600; color:${runBal<0?'#e44':'var(--txt)'}; margin-top:4px">${fmtC(runBal)}</div>
          <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:10px;">
@@ -839,57 +874,43 @@ function renderFin(){
 
   const list = document.getElementById('bill-list');
   const sortedBills = [...bills].sort((a,b) => (a.date||'').localeCompare(b.date||''));
-  list.innerHTML = sortedBills.map(b => `
-    <div class="ti ${b.paid?'done-item':''}">
+  list.innerHTML = sortedBills.map(b => {
+    const cEmoji=b.cat?b.cat.split(' ')[0]:'';
+    return `<div class="ti ${b.paid?'done-item':''}">
       <div class="tck ${b.paid?'done':''}" onclick="togBill(${b.id})">${b.paid?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
-      <div class="tb2"><div class="tt">${esc(b.desc)} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">📅 ${fmtDt(b.date)} ${b.val ? ` · ${fmtC(b.val)}` : ''}</div></div>
+      <div class="tb2"><div class="tt">${cEmoji} ${esc(b.desc)} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">📅 ${fmtDt(b.date)} ${b.val ? ` · ${fmtC(b.val)}` : ''}</div></div>
       <button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id})">✏️</button>
       <button class="bd" onclick="delBill(${b.id})">×</button>
-    </div>
-  `).join('') || '<p class="empty" style="margin-top:1rem">Nenhum lançamento.</p>';
+    </div>`;
+  }).join('') || '<p class="empty" style="margin-top:1rem">Nenhum lançamento.</p>';
 }
 
 function addAccount(){
   const nm = prompt("Nome da Carteira/Banco:");
   if(!nm || !nm.trim()) return;
   const vl = prompt(`Saldo inicial para '${nm}' (use ponto para centavos):`, "0.00");
-  if(vl !== null && !isNaN(parseFloat(vl.replace(',','.')))) {
-     accounts.push({id:Date.now(), name:nm.trim(), val:parseFloat(vl.replace(',','.'))});
-     save(); renderFin();
-  }
+  if(vl !== null && !isNaN(parseFloat(vl.replace(',','.')))) { accounts.push({id:Date.now(), name:nm.trim(), val:parseFloat(vl.replace(',','.'))}); save(); renderFin(); }
 }
 function editAccount(id){
-  const acc = accounts.find(a => a.id === id);
-  if(!acc) return;
+  const acc = accounts.find(a => a.id === id); if(!acc) return;
   const nv = prompt(`Novo saldo para '${acc.name}':`, acc.val);
-  if(nv !== null && !isNaN(parseFloat(nv.replace(',','.')))) {
-     acc.val = parseFloat(nv.replace(',','.'));
-     save(); renderFin();
-  }
+  if(nv !== null && !isNaN(parseFloat(nv.replace(',','.')))) { acc.val = parseFloat(nv.replace(',','.')); save(); renderFin(); }
 }
 function delAccount(id){ if(confirm("Remover esta carteira permanentemente?")) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
 
 function addBill(){
-  const desc = document.getElementById('bill-desc').value.trim();
-  if(!desc) return;
-  const type = document.getElementById('bill-type').value;
-  const date = document.getElementById('bill-date').value;
-  const val = document.getElementById('bill-val').value;
-  bills.push({id: Date.now(), type, desc, date, val, paid: false});
-  document.getElementById('bill-desc').value='';
-  document.getElementById('bill-date').value='';
-  document.getElementById('bill-val').value='';
+  const desc = document.getElementById('bill-desc').value.trim(); if(!desc) return;
+  const type = document.getElementById('bill-type').value, cat = document.getElementById('bill-cat').value, date = document.getElementById('bill-date').value, val = document.getElementById('bill-val').value;
+  bills.push({id: Date.now(), type, cat, desc, date, val, paid: false});
+  document.getElementById('bill-desc').value=''; document.getElementById('bill-date').value=''; document.getElementById('bill-val').value='';
   save(); renderFin(); renderCal();
 }
 function editBill(id){
-  const b = bills.find(x => x.id === id);
-  if(!b) return;
+  const b = bills.find(x => x.id === id); if(!b) return;
   const ndesc = prompt("Nova descrição:", b.desc); if(ndesc === null) return;
   const nval = prompt("Novo valor (use ponto para centavos):", b.val); if(nval === null) return;
   const ndate = prompt("Nova data (YYYY-MM-DD):", b.date); if(ndate === null) return;
-  b.desc = ndesc.trim() || b.desc;
-  b.val = parseFloat(nval.replace(',','.')) || b.val;
-  b.date = ndate || b.date;
+  b.desc = ndesc.trim() || b.desc; b.val = parseFloat(nval.replace(',','.')) || b.val; b.date = ndate || b.date;
   save(); renderFin(); renderEvList(); renderCal();
 }
 function togBill(id){ bills = bills.map(b => b.id === id ? {...b, paid: !b.paid} : b); save(); renderFin(); renderEvList(); renderCal(); }
@@ -901,9 +922,7 @@ function openAch(){
   const tDn=tasks.filter(t=>t.done).length, eDn=Object.values(events).flat().filter(e=>e.done).length, hDn=Object.values(habits.map(h=>Object.values(h.history||{})).flat()).filter(v=>v>0).length;
   const totalDn=tDn+eDn+hDn;
   let maxStr=0; habits.forEach(h=>{const s=compStreak(h);if(s>maxStr)maxStr=s;});
-  
   let html=`<div class="ach-stat">Você já completou <strong>${totalDn}</strong> itens no total e sua maior sequência atual é de <strong>${maxStr}</strong> dias. Continue assim!</div><div class="ach-grid">`;
-  
   BADGE_DEFS.forEach(b=>{
     let unlocked = false;
     if(b.id.startsWith('s')) unlocked = maxStr >= parseInt(b.id.substring(1));
@@ -948,24 +967,30 @@ function endTutorial(){
 }
 
 // ── INIT ──
-load();loadCfg();loadHabits();
-applyTheme();applyName();
-(function(){const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}})();
-schedAll();renderTasks();renderNotes();renderCal();renderHabits();renderFin();
-bindDrag('ngrid', '.nc', () => {
-    const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id))));
-    notes=arr.filter(Boolean); save();
-});
-bindDrag('hab-list', '.hcard', () => {
-    const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id))));
-    habits=arr.filter(Boolean); saveHabits();
-});
-ensureHols(TY);ensureHols(TY+1);
-document.getElementById('task-in').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
-document.getElementById('ev-in').addEventListener('keydown',e=>{if(e.key==='Enter')addEvent();});
-if(window._shared){swTab('notes',document.getElementById('tb-notes'));toast('✓ Texto salvo nas notas!');}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedAll();});
-setTimeout(startTutorial, 200);
+window.onload = () => {
+    load();loadCfg();loadHabits();
+    applyTheme();applyName();
+    (function(){const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}})();
+    
+    chgBillType(); // Inicia categorias
+    selDay(TD); // Pré-seleciona dia de hoje
+    
+    schedAll();renderTasks();renderNotes();renderHabits();renderFin();
+    bindDrag('ngrid', '.nc', () => {
+        const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id))));
+        notes=arr.filter(Boolean); save();
+    });
+    bindDrag('hab-list', '.hcard', () => {
+        const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id))));
+        habits=arr.filter(Boolean); saveHabits();
+    });
+    ensureHols(TY);ensureHols(TY+1);
+    document.getElementById('task-in').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
+    document.getElementById('ev-in').addEventListener('keydown',e=>{if(e.key==='Enter')addEvent();});
+    if(window._shared){swTab('notes',document.getElementById('tb-notes'));toast('✓ Texto salvo nas notas!');}
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedAll();});
+    setTimeout(startTutorial, 200);
+}
 </script>
 </body>
 </html>
