@@ -19,9 +19,9 @@ body{font-family:system-ui,sans-serif;background:var(--bg4);display:flex;justify
 #splash {
   position: absolute; inset: 0; background: var(--bg); z-index: 9999;
   display: flex; align-items: center; justify-content: center; flex-direction: column;
-  transition: opacity 0.6s ease, visibility 0.6s; border-radius: 18px;
+  transition: opacity 0.6s ease; border-radius: 18px;
 }
-.sp-title { font-size: 26px; font-weight: 300; color: var(--txt); letter-spacing: 1.5px; }
+.sp-title { font-size: 26px; font-weight: 300; color: var(--txt); letter-spacing: 1px; }
 .sp-prem { font-weight: 700; color: #d4af37; font-style: italic; }
 
 .hdr{background:var(--bg2);border-bottom:.5px solid var(--brd);padding:14px 17px 11px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
@@ -290,7 +290,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 
 <div id="app">
   <div class="hdr">
-    <div><h1 id="aname">Organizador Premium</h1><p id="dlbl"></p></div>
+    <div><h1 id="aname">Meu Organizador</h1><p id="dlbl"></p></div>
     <div class="hdr-r">
       <button class="ibt" onclick="openAch()" title="Conquistas">🏆</button>
       <button class="gear-btn" onclick="openCfg()" title="Configurações">
@@ -1049,20 +1049,22 @@ function endTutorial(){
 // ── INIT BLINDADO ──
 window.onload = () => {
     try {
-        // 1. Carrega dados do celular (Com trava Array)
+        // 1. Carrega dados do celular
         load(); loadCfg(); loadHabits();
         
         // 2. Aplica personalizações visuais
         applyTheme(); applyName();
-        chgBillType(); 
+        if(typeof chgBillType === 'function') chgBillType(); 
         
-        // 3. Reseta a seleção do dia (impede travamento de renderização)
+        // 3. Reseta a seleção do dia (Agenda sem focar no dia ao abrir)
         selD = null;
         
         // 4. Desenha toda a interface antes de qualquer processamento assíncrono
-        renderTasks(); renderNotes(); renderHabits(); renderFin(); renderCal();
+        renderTasks(); renderNotes(); renderHabits(); 
+        if(typeof renderFin === 'function') renderFin(); 
+        renderCal();
         
-        // 5. Força a tela inicial ser a Agenda sem focar no dia
+        // 5. Força a tela inicial ser a Agenda 
         swTab('agenda', document.getElementById('tb-agenda'));
 
         // 6. Liga o Drag & Drop (Arrastar)
@@ -1093,20 +1095,20 @@ window.onload = () => {
         // 10. Agendamentos de Notificações
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         
-        // Remove Splash e incia App
+        // 11. Remove a Splash Screen Premium
         setTimeout(() => {
             const sp = document.getElementById('splash');
             if(sp) {
                 sp.style.opacity = '0';
-                setTimeout(() => { sp.style.visibility = 'hidden'; startTutorial(); }, 600);
+                setTimeout(() => { sp.style.display = 'none'; startTutorial(); }, 600);
             } else {
                 startTutorial();
             }
-        }, 1200);
+        }, 1500);
 
         schedAll();
     } catch (err) {
-        console.error("Erro na inicialização do App:", err);
+        console.error("Erro na inicialização:", err);
     }
 }
 </script>
