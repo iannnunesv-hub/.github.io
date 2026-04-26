@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
-<meta name="theme-color" content="#ffffff"/>
+<meta name="theme-color" content="#fff"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <link rel="manifest" href="./manifest.json"/>
-<title>Meu Organizador</title>
+<title>Organizador Premium</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#fafafa;--bg2:#fff;--bg3:#f5f5f5;--bg4:#e8e8e8;--brd:#eee;--brd2:#ddd;--txt:#222;--txt2:#666;--txt3:#aaa;--txt4:#ccc;--ac:#222;--acfg:#fff;--card:#fff;--inp:#fff;--hol:#e05;}
@@ -15,14 +15,14 @@
 body{font-family:system-ui,sans-serif;background:var(--bg4);display:flex;justify-content:center;min-height:100vh;padding:.6rem;transition:background .2s}
 #app{width:100%;max-width:490px;background:var(--bg);border-radius:18px;border:.5px solid var(--brd);overflow:hidden;display:flex;flex-direction:column;min-height:96vh; position:relative;}
 
-/* SPLASH SCREEN */
+/* SPLASH SCREEN PREMIUM */
 #splash {
   position: absolute; inset: 0; background: var(--bg); z-index: 9999;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity 0.4s ease;
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  transition: opacity 0.6s ease, visibility 0.6s; border-radius: 18px;
 }
-.splash-icon { font-size: 72px; margin-bottom: 16px; animation: pulse 2s infinite ease-in-out; }
-.splash-title { font-size: 24px; font-weight: 600; color: var(--txt); letter-spacing: -0.02em; }
+.sp-title { font-size: 26px; font-weight: 300; color: var(--txt); letter-spacing: 1.5px; }
+.sp-prem { font-weight: 700; color: #d4af37; font-style: italic; }
 
 .hdr{background:var(--bg2);border-bottom:.5px solid var(--brd);padding:14px 17px 11px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
 .hdr h1{font-size:18px;font-weight:500;color:var(--txt)}
@@ -283,14 +283,14 @@ textarea{resize:none;line-height:1.65;width:100%}
 </style>
 </head>
 <body>
+
 <div id="splash">
-  <div class="splash-icon">📅</div>
-  <div class="splash-title">Meu Organizador</div>
+    <div class="sp-title">Organizador <span class="sp-prem">Premium</span></div>
 </div>
 
 <div id="app">
   <div class="hdr">
-    <div><h1 id="aname">Meu Organizador</h1><p id="dlbl"></p></div>
+    <div><h1 id="aname">Organizador Premium</h1><p id="dlbl"></p></div>
     <div class="hdr-r">
       <button class="ibt" onclick="openAch()" title="Conquistas">🏆</button>
       <button class="gear-btn" onclick="openCfg()" title="Configurações">
@@ -510,7 +510,7 @@ const BADGE_DEFS=[
 ];
 
 const TUT_STEPS=[
-  {ico:'👋',ttl:'Bem-vindo!',txt:'Seu organizador pessoal. Vamos mostrar as principais funções.',tab:null},
+  {ico:'✨',ttl:'Bem-vindo ao Organizador Premium!',txt:'Para começarmos, como você se chama?', html:'<input type="text" id="tut-name" placeholder="Seu nome..." style="width:100%; text-align:center; padding:12px; font-size:16px; border-radius:10px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt); margin-top:10px; outline:none; font-family:inherit;"/>',tab:null},
   {ico:'📅',ttl:'Agenda',txt:'Visualize tudo no calendário. Deslize no meio do calendário para trocar o mês.',tab:'agenda'},
   {ico:'✅',ttl:'Tarefas',txt:'Crie tarefas com data, hora e notificação.',tab:'tasks'},
   {ico:'📝',ttl:'Notas',txt:'Anote ideias e ordene-as segurando a nota por meio segundo. O app confere se você quer salvar antes de sair.',tab:'notes'},
@@ -541,11 +541,11 @@ function getHol(y,m,d){return ensureHols(y)[ck(y,m,d)]||null;}
 // STORAGE
 let tasks=[],notes=[],events={},accounts=[],bills=[];
 function load(){
-  try{tasks=JSON.parse(localStorage.getItem('o_tasks'))||[];}catch(e){tasks=[];}
-  try{notes=JSON.parse(localStorage.getItem('o_notes'))||[];}catch(e){notes=[];}
+  try{tasks=JSON.parse(localStorage.getItem('o_tasks')); if(!Array.isArray(tasks)) tasks=[];}catch(e){tasks=[];}
+  try{notes=JSON.parse(localStorage.getItem('o_notes')); if(!Array.isArray(notes)) notes=[];}catch(e){notes=[];}
   try{events=JSON.parse(localStorage.getItem('o_events'))||{};}catch(e){events={};}
-  try{accounts=JSON.parse(localStorage.getItem('o_accs'))||[];}catch(e){accounts=[];}
-  try{bills=JSON.parse(localStorage.getItem('o_bills'))||[];}catch(e){bills=[];}
+  try{accounts=JSON.parse(localStorage.getItem('o_accs')); if(!Array.isArray(accounts)) accounts=[];}catch(e){accounts=[];}
+  try{bills=JSON.parse(localStorage.getItem('o_bills')); if(!Array.isArray(bills)) bills=[];}catch(e){bills=[];}
   const oldB = parseFloat(localStorage.getItem('o_balance'));
   if(accounts.length===0&&!isNaN(oldB)&&oldB>0){accounts.push({id:Date.now(),name:'Carteira Principal',val:oldB});}
 }
@@ -564,7 +564,7 @@ function saveCfg(){localStorage.setItem('o_cfg',JSON.stringify(cfg));}
 function applyTheme(){document.documentElement.setAttribute('data-theme',cfg.dark?'dark':'');const t=document.getElementById('tog-dark');if(t)t.checked=cfg.dark;}
 function toggleTheme(on){cfg.dark=on;saveCfg();applyTheme();}
 function applyName(){
-  document.getElementById('aname').textContent=cfg.name?`Organizador de ${cfg.name}`:'Meu Organizador';
+  document.getElementById('aname').textContent=cfg.name?`Organizador de ${cfg.name}`:'Organizador Premium';
   document.getElementById('dlbl').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
 }
 function saveName(){const v=document.getElementById('cfg-name').value.trim();if(v){cfg.name=v;saveCfg();applyName();toast('Nome atualizado ✓');}}
@@ -597,7 +597,7 @@ let fbT=[];
 async function schedN(title,body,delay,tag){
   if(delay<=0)return;
   try{const r=await navigator.serviceWorker.ready;if(r.active){r.active.postMessage({type:'NOTIFY',title,body,delay,tag});return;}}catch(e){}
-  fbT.push(setTimeout(()=>{if(Notification.permission==='granted')new Notification(title,{body});},delay));
+  fbT.push(setTimeout(()=>{if(typeof Notification !== 'undefined' && Notification.permission==='granted')new Notification(title,{body});},delay));
 }
 function schedAll(){
   fbT.forEach(t=>clearTimeout(t));fbT=[];
@@ -674,7 +674,7 @@ function renderTasks(){
 
 // NOTES
 let enid=null, origNTitle='', origNBody='';
-function openNote(id){enid=id;const n=id==='new'?null:notes.find(n=>n.id===id);origNTitle=n?n.title:'';origNBody=n?n.body:'';document.getElementById('nt-ttl').value=origNTitle;document.getElementById('nt-bdy').value=origNBody;document.getElementById('nlv').style.display='none';document.getElementById('nev').classList.add('open');history.pushState({note:true},'');}
+function openNote(id){enid=id;const n=id==='new'?null:(notes||[]).find(n=>n.id===id);origNTitle=n?n.title:'';origNBody=n?n.body:'';document.getElementById('nt-ttl').value=origNTitle;document.getElementById('nt-bdy').value=origNBody;document.getElementById('nlv').style.display='none';document.getElementById('nev').classList.add('open');history.pushState({note:true},'');}
 function closeNote(auto=false){
   const ct=document.getElementById('nt-ttl').value.trim(), cb=document.getElementById('nt-bdy').value.trim();
   if(ct!==origNTitle || cb!==origNBody){
@@ -807,7 +807,7 @@ function jumpDK(dk){if(!dk)return;const[y,m,d]=dk.split('-').map(Number);cY=y;cM
 
 // HABITS
 let habits=[],hfd={id:null,icon:'⭐',name:'',color:'#54A0FF',target:1,times:[],frequency:'daily',customDays:[],reminderTime:''},focusH=null,focTmr=null;
-function loadHabits(){try{habits=JSON.parse(localStorage.getItem('o_habits2'))||[];}catch(e){habits=[];}}
+function loadHabits(){try{habits=JSON.parse(localStorage.getItem('o_habits2')); if(!Array.isArray(habits)) habits=[];}catch(e){habits=[];}}
 function saveHabits(){localStorage.setItem('o_habits2',JSON.stringify(habits));}
 function isSchedOn(h,date){const w=date.getDay();if(h.frequency==='daily')return true;if(h.frequency==='weekdays')return w>=1&&w<=5;if(h.frequency==='custom')return(h.customDays||[]).includes(w);return true;}
 function getHabCnt(h){return(h.history||{})[getToday()]||0;}
@@ -829,7 +829,7 @@ function habCardHTML(h){
   const bubtip=cnt===0&&sched?`<span class="bubtip">← toque</span>`:'';
   return`<div class="hcard ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
 }
-function renderHabits(){const tod=(habits||[]).filter(h=>isSchedOn(h,new Date())),dn=tod.filter(h=>isHabDone(h)),pct=tod.length?Math.round(dn.length/tod.length*100):0;const g=pct===100?'#1DD1A1,#48DBFB':'#54A0FF,#A29BFE';document.getElementById('hab-list').innerHTML=`<div class="hprog"><div class="hph"><span>${dn.length}/${tod.length} hoje</span><span style="font-size:12px;color:var(--txt3)">${pct}%</span></div><div class="pbw"><div class="pbf" style="width:${pct}%;background:linear-gradient(90deg,${g})"></div></div>${pct===100&&tod.length?'<div class="pbm">🎉 Todos concluídos hoje!</div>':''}</div>${habits.length?habits.map(habCardHTML).join(''):'<p class="empty">Nenhum hábito ainda.</p>'}`;}
+function renderHabits(){const tod=(habits||[]).filter(h=>isSchedOn(h,new Date())),dn=tod.filter(h=>isHabDone(h)),pct=tod.length?Math.round(dn.length/tod.length*100):0;const g=pct===100?'#1DD1A1,#48DBFB':'#54A0FF,#A29BFE';document.getElementById('hab-list').innerHTML=`<div class="hprog"><div class="hph"><span>${dn.length}/${tod.length} hoje</span><span style="font-size:12px;color:var(--txt3)">${pct}%</span></div><div class="pbw"><div class="pbf" style="width:${pct}%;background:linear-gradient(90deg,${g})"></div></div>${pct===100&&tod.length?'<div class="pbm">🎉 Todos concluídos hoje!</div>':''}</div>${(habits||[]).length?habits.map(habCardHTML).join(''):'<p class="empty">Nenhum hábito ainda.</p>'}`;}
 function openHF(id){if(id){const h=habits.find(h=>h.id===id);if(h)hfd={...h,customDays:[...(h.customDays||[])],times:[...(h.times||[])]};document.getElementById('hf-ttl').textContent='Editar hábito';}else{hfd={id:null,icon:'⭐',name:'',color:COLORS[5],target:1,times:[],frequency:'daily',customDays:[],reminderTime:''};document.getElementById('hf-ttl').textContent='Novo hábito';}renderHF();document.getElementById('mo-hf').classList.add('open');}
 function closeHF(){document.getElementById('mo-hf').classList.remove('open');}
 function setHabTime(i,v){if(!hfd.times)hfd.times=[];hfd.times[i]=v;}
@@ -982,9 +982,9 @@ function delBill(id){ if(confirm('Excluir este lançamento permanentemente?')){ 
 // ACHIEVEMENTS & SUGGESTIONS
 function openAch(){
   const body=document.getElementById('ach-body');
-  const tDn=tasks.filter(t=>t.done).length, eDn=Object.values(events).flat().filter(e=>e.done).length, hDn=Object.values(habits.map(h=>Object.values(h.history||{})).flat()).filter(v=>v>0).length;
+  const tDn=(tasks||[]).filter(t=>t.done).length, eDn=Object.values(events||{}).flat().filter(e=>e.done).length, hDn=Object.values((habits||[]).map(h=>Object.values(h.history||{}))).flat().filter(v=>v>0).length;
   const totalDn=tDn+eDn+hDn;
-  let maxStr=0; habits.forEach(h=>{const s=compStreak(h);if(s>maxStr)maxStr=s;});
+  let maxStr=0; (habits||[]).forEach(h=>{const s=compStreak(h);if(s>maxStr)maxStr=s;});
   
   let html=`<div class="ach-stat">Você já completou <strong>${totalDn}</strong> itens no total e sua maior sequência atual é de <strong>${maxStr}</strong> dias. Continue assim!</div><div class="ach-grid">`;
   
@@ -1013,14 +1013,29 @@ function addSug(i){
 // TUTORIAL
 function startTutorial(){
     if(localStorage.getItem('o_tut_done')) return;
-    setTimeout(()=>{
-        const n = prompt("👋 Bem-vindo ao seu Organizador!\nComo você se chama?");
-        if(n && n.trim()){ cfg.name = n.trim(); saveCfg(); applyName(); }
-        tutStep=0; document.getElementById('tut').style.display='flex'; showStep();
-    }, 150);
+    tutStep=0; document.getElementById('tut').style.display='flex'; showStep();
 }
-function showStep(){const s=TUT_STEPS[tutStep];document.getElementById('tut-ico').textContent=s.ico;document.getElementById('tut-ttl').textContent=s.ttl;document.getElementById('tut-txt').textContent=s.txt;let d='';TUT_STEPS.forEach((_,i)=>d+=`<div class="tut-dot ${i===tutStep?'active':''}"></div>`);document.getElementById('tut-dots').innerHTML=d;document.getElementById('tut-next').textContent=tutStep===TUT_STEPS.length-1?'Começar!':'Próximo →';if(s.tab)swTab(s.tab,document.getElementById('tb-'+s.tab));}
-function nextTut(){if(tutStep<TUT_STEPS.length-1){tutStep++;showStep();}else endTutorial();}
+function showStep(){
+    const s=TUT_STEPS[tutStep];
+    document.getElementById('tut-ico').textContent=s.ico;
+    document.getElementById('tut-ttl').textContent=s.ttl;
+    document.getElementById('tut-txt').innerHTML=s.txt + (s.html ? s.html : '');
+    if(tutStep===0 && cfg.name){
+        const tn = document.getElementById('tut-name');
+        if(tn) tn.value = cfg.name;
+    }
+    let d='';TUT_STEPS.forEach((_,i)=>d+=`<div class="tut-dot ${i===tutStep?'active':''}"></div>`);
+    document.getElementById('tut-dots').innerHTML=d;
+    document.getElementById('tut-next').textContent=tutStep===TUT_STEPS.length-1?'Começar!':'Próximo →';
+    if(s.tab)swTab(s.tab,document.getElementById('tb-'+s.tab));
+}
+function nextTut(){
+    if(tutStep===0){
+        const n = document.getElementById('tut-name');
+        if(n && n.value.trim()){ cfg.name = n.value.trim(); saveCfg(); applyName(); }
+    }
+    if(tutStep<TUT_STEPS.length-1){tutStep++;showStep();}else endTutorial();
+}
 function endTutorial(){
     document.getElementById('tut').style.display='none';
     localStorage.setItem('o_tut_done','true');
@@ -1034,16 +1049,23 @@ function endTutorial(){
 // ── INIT BLINDADO ──
 window.onload = () => {
     try {
+        // 1. Carrega dados do celular (Com trava Array)
         load(); loadCfg(); loadHabits();
+        
+        // 2. Aplica personalizações visuais
         applyTheme(); applyName();
         chgBillType(); 
         
-        // Mantém a visualização focada no mês sem invadir os eventos
-        selD = null; 
+        // 3. Reseta a seleção do dia (impede travamento de renderização)
+        selD = null;
         
+        // 4. Desenha toda a interface antes de qualquer processamento assíncrono
         renderTasks(); renderNotes(); renderHabits(); renderFin(); renderCal();
-        swTab('agenda', document.getElementById('tb-agenda')); // Inicia na Agenda
+        
+        // 5. Força a tela inicial ser a Agenda sem focar no dia
+        swTab('agenda', document.getElementById('tb-agenda'));
 
+        // 6. Liga o Drag & Drop (Arrastar)
         bindDrag('ngrid', '.nc', () => {
             const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id))));
             notes=arr.filter(Boolean); save();
@@ -1053,11 +1075,14 @@ window.onload = () => {
             habits=arr.filter(Boolean); saveHabits();
         });
         
+        // 7. Prepara calendários de feriados
         ensureHols(TY); ensureHols(TY+1);
         
+        // 8. Eventos de Teclado
         document.getElementById('task-in').addEventListener('keydown', e => { if(e.key==='Enter') addTask(); });
         document.getElementById('ev-in').addEventListener('keydown', e => { if(e.key==='Enter') addEvent(); });
         
+        // 9. Tratamento de links compartilhados
         try {
             const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();
             if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}
@@ -1065,23 +1090,21 @@ window.onload = () => {
         
         if(window._shared){swTab('notes',document.getElementById('tb-notes'));toast('✓ Texto salvo nas notas!');}
         
+        // 10. Agendamentos de Notificações
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         
-        // Dá o tempo de respiro para a thread principal construir a interface antes do splash sair
+        // Remove Splash e incia App
         setTimeout(() => {
-            schedAll();
-            
-            // Tira o dia "invisível" que o Mês tentou carregar e foca a matemática no hoje para o usuário
-            selDay(TD); 
-            
             const sp = document.getElementById('splash');
             if(sp) {
                 sp.style.opacity = '0';
-                setTimeout(()=> sp.style.display='none', 400);
+                setTimeout(() => { sp.style.visibility = 'hidden'; startTutorial(); }, 600);
+            } else {
+                startTutorial();
             }
-            startTutorial();
-        }, 600);
+        }, 1200);
 
+        schedAll();
     } catch (err) {
         console.error("Erro na inicialização do App:", err);
     }
