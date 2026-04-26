@@ -89,6 +89,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 }
 .ng{display:flex;flex-direction:column;gap:9px;flex:1;overflow-y:auto;overflow-x:hidden}
 .nc{border-radius:11px;border:.5px solid var(--brd);padding:14px;cursor:pointer;background:var(--card);transition:transform 0.2s, opacity 0.2s, box-shadow 0.2s}
+.nc.dragging, .hcard.dragging { z-index: 10; position: relative; }
 .nc h3{font-size:14px;font-weight:500;color:var(--txt);margin-bottom:4px}
 .nc p{font-size:12px;color:var(--txt3);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .nf{display:flex;justify-content:space-between;align-items:center}
@@ -431,9 +432,9 @@ const EMOJI_CATS=[
 const HABIT_SUGS=[
   {icon:'💧',name:'Beber 2L de água',target:8,frequency:'daily',color:'#48DBFB',desc:'8 copos · todos os dias'},
   {icon:'🐾',name:'Passear com o cachorro',target:1,frequency:'daily',color:'#1DD1A1',desc:'Todos os dias'},
-  {icon:'🌎',name:'Estudar um idioma',target:1,frequency:'daily',color:'#FF9F43',desc:'Praticar 15 min'},
+  {icon:'🌎',name:'Praticar um idioma',target:1,frequency:'daily',color:'#FF9F43',desc:'Praticar 15 min'},
   {icon:'📚',name:'Ler / Estudar',target:1,frequency:'weekdays',color:'#A29BFE',desc:'Dias úteis'},
-  {icon:'⚽',name:'Acompanhar meu time',target:1,frequency:'daily',color:'#54A0FF',desc:'Notícias e jogos'},
+  {icon:'🏅',name:'Acompanhar meu time',target:1,frequency:'daily',color:'#54A0FF',desc:'Notícias e jogos'},
   {icon:'🧘',name:'Meditar',target:1,frequency:'daily',color:'#FF9FF3',desc:'Todos os dias'},
   {icon:'🛏',name:'Dormir no horário',target:1,frequency:'daily',color:'#FF6B6B',desc:'Todos os dias'},
   {icon:'💰',name:'Poupar dinheiro',target:1,frequency:'daily',color:'#FECA57',desc:'Registrar economia diária'},
@@ -458,8 +459,8 @@ const TUT_STEPS=[
   {ico:'👋',ttl:'Bem-vindo!',txt:'Seu organizador pessoal. Vamos mostrar as principais funções em alguns passos.',tab:null},
   {ico:'✅',ttl:'Tarefas',txt:'Crie tarefas com data, hora e notificação. Deslize a tela para navegar entre as abas.',tab:'tasks'},
   {ico:'📅',ttl:'Agenda',txt:'Visualize tudo no calendário. Deslize no meio do calendário para trocar o mês/semana.',tab:'agenda'},
-  {ico:'📝',ttl:'Notas',txt:'Anote ideias e ordene-as segurando e arrastando. O botão voltar do celular salva a nota.',tab:'notes'},
-  {ico:'⏰',ttl:'Hábitos',txt:'Crie hábitos com metas diárias. Toque nas bolhas para marcar progresso.',tab:'habitos'},
+  {ico:'📝',ttl:'Notas',txt:'Anote ideias e ordene-as segurando a nota por meio segundo. O botão voltar do celular salva a nota.',tab:'notes'},
+  {ico:'⏰',ttl:'Hábitos',txt:'Crie hábitos e reordene segurando o card. Toque nas bolhas para marcar progresso.',tab:'habitos'},
   {ico:'🏆',ttl:'Conquistas',txt:'Acumule sequências e ganhe badges! Toque no troféu 🏆 no topo para ver.',tab:null},
   {ico:'⚙️',ttl:'Tudo pronto!',txt:'Configure tudo na engrenagem. Bom uso! 🚀',tab:null},
 ];
@@ -596,41 +597,52 @@ function renderNotes(){
 }
 window.addEventListener('popstate',()=>{if(document.getElementById('nev').classList.contains('open'))closeNote(true);});
 
-// TOUCH DRAG & DROP FOR NOTES
-function bindNotesDnD() {
-  const g = document.getElementById('ngrid');
-  let sx=0, sy=0, dTimer=null, dEl=null;
-  g.addEventListener('touchstart', e => {
-      const t = e.target.closest('.nc');
-      if(!t || e.target.closest('button')) return;
-      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
-      dTimer = setTimeout(() => {
-          dEl = t; 
-          dEl.style.opacity = '0.7'; dEl.style.transform = 'scale(0.96)'; dEl.style.boxShadow = '0 10px 20px rgba(0,0,0,0.15)';
-          if(navigator.vibrate) navigator.vibrate(50);
-      }, 1000); // 1s de pressionamento
-  }, {passive:true});
-  g.addEventListener('touchmove', e => {
-      if(!dEl && dTimer) { if(Math.abs(e.touches[0].clientX - sx)>10 || Math.abs(e.touches[0].clientY - sy)>10) clearTimeout(dTimer); }
-      if(dEl) {
-          e.preventDefault();
-          const touch = e.touches[0];
-          const over = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.nc');
-          if(over && over !== dEl) {
-              const r = over.getBoundingClientRect();
-              g.insertBefore(dEl, touch.clientY > r.top + r.height/2 ? over.nextSibling : over);
-          }
-      }
-  }, {passive:false});
-  const endDrag = () => {
-      clearTimeout(dTimer);
-      if(dEl) {
-          dEl.style.opacity=''; dEl.style.transform=''; dEl.style.boxShadow='';
-          const nArr=[]; g.querySelectorAll('.nc').forEach(el=>nArr.push(notes.find(n=>n.id===Number(el.dataset.id))));
-          notes=nArr.filter(Boolean); save(); dEl=null;
-      }
-  };
-  g.addEventListener('touchend', endDrag); g.addEventListener('touchcancel', endDrag);
+// TOUCH DRAG & DROP FOR ALL
+function bindDrag(containerId, itemClass, onReorder) {
+    const g = document.getElementById(containerId);
+    if(!g) return;
+    let dTimer=null, dEl=null, sx=0, sy=0;
+
+    g.addEventListener('touchstart', e => {
+        const t = e.target.closest(itemClass);
+        if(!t || e.target.closest('button') || e.target.closest('.bub')) return;
+        sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+        dTimer = setTimeout(() => {
+            dEl = t;
+            dEl.classList.add('dragging');
+            dEl.style.opacity = '0.5';
+            dEl.style.transform = 'scale(0.95)';
+            dEl.style.transition = 'none';
+            if(navigator.vibrate) navigator.vibrate(50);
+        }, 500); 
+    }, {passive:true});
+
+    g.addEventListener('touchmove', e => {
+        if(!dEl && dTimer) { 
+            if(Math.abs(e.touches[0].clientX - sx)>15 || Math.abs(e.touches[0].clientY - sy)>15) { 
+                clearTimeout(dTimer); dTimer=null; 
+            } 
+        }
+        if(dEl) {
+            e.preventDefault();
+            const y = e.touches[0].clientY;
+            const els = [...g.querySelectorAll(`${itemClass}:not(.dragging)`)];
+            const afterEl = els.find(el => y <= el.getBoundingClientRect().top + el.getBoundingClientRect().height / 2);
+            if(afterEl) { if(dEl.nextSibling !== afterEl) g.insertBefore(dEl, afterEl); } 
+            else { if(g.lastChild !== dEl) g.appendChild(dEl); }
+        }
+    }, {passive:false});
+
+    const endDrag = () => {
+        if(dTimer) { clearTimeout(dTimer); dTimer=null; }
+        if(dEl) {
+            dEl.classList.remove('dragging');
+            dEl.style.opacity = ''; dEl.style.transform = ''; dEl.style.transition = '';
+            dEl = null;
+            onReorder();
+        }
+    };
+    g.addEventListener('touchend', endDrag); g.addEventListener('touchcancel', endDrag);
 }
 
 // CALENDAR
@@ -689,44 +701,6 @@ function renderHF(){
 function togCDay(d){const i=(hfd.customDays||[]).indexOf(d);if(i>=0)hfd.customDays.splice(i,1);else hfd.customDays.push(d);renderHF();}
 function saveHabit(){if(!hfd.name.trim()){toast('Digite um nome');return;}if(!hfd.times)hfd.times=[];if(hfd.id)habits=habits.map(h=>h.id===hfd.id?{...h,...hfd}:h);else habits.push({...hfd,id:Date.now(),history:{}});saveHabits();renderHabits();schedAll();closeHF();toast(hfd.id?'Hábito atualizado ✓':'Hábito criado ✓');}
 function delHabit(id){if(!confirm('Excluir este hábito e todo o histórico permanentemente?'))return;habits=habits.filter(h=>h.id!==id);saveHabits();renderHabits();if(focusH&&focusH.id===id)closeFocus();toast('Hábito excluído');}
-
-// TOUCH DRAG & DROP FOR HABITS
-function bindHabitsDnD() {
-  const list = document.getElementById('hab-list');
-  let sx=0, sy=0, dTimer=null, dEl=null;
-  list.addEventListener('touchstart', e => {
-      const t = e.target.closest('.hcard');
-      // Prevent drag if touching buttons or bubbles
-      if(!t || e.target.closest('button') || e.target.closest('.bub')) return; 
-      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
-      dTimer = setTimeout(() => {
-          dEl = t;
-          dEl.style.opacity = '0.7'; dEl.style.transform = 'scale(0.96)'; dEl.style.boxShadow = '0 10px 20px rgba(0,0,0,0.15)';
-          if(navigator.vibrate) navigator.vibrate(50);
-      }, 1000); // 1s de pressionamento
-  }, {passive:true});
-  list.addEventListener('touchmove', e => {
-      if(!dEl && dTimer) { if(Math.abs(e.touches[0].clientX - sx)>10 || Math.abs(e.touches[0].clientY - sy)>10) clearTimeout(dTimer); }
-      if(dEl) {
-          e.preventDefault();
-          const touch = e.touches[0];
-          const over = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.hcard');
-          if(over && over !== dEl) {
-              const r = over.getBoundingClientRect();
-              list.insertBefore(dEl, touch.clientY > r.top + r.height/2 ? over.nextSibling : over);
-          }
-      }
-  }, {passive:false});
-  const endDrag = () => {
-      clearTimeout(dTimer);
-      if(dEl) {
-          dEl.style.opacity=''; dEl.style.transform=''; dEl.style.boxShadow='';
-          const hArr=[]; list.querySelectorAll('.hcard').forEach(el=>hArr.push(habits.find(h=>h.id===Number(el.dataset.id))));
-          habits=hArr.filter(Boolean); saveHabits(); dEl=null;
-      }
-  };
-  list.addEventListener('touchend', endDrag); list.addEventListener('touchcancel', endDrag);
-}
 
 // FOCUS
 function openFocus(id){const h=habits.find(h=>h.id===id);if(!h)return;focusH=h;if(focTmr){clearInterval(focTmr.intv);focTmr=null;}document.getElementById('fc-ttl').textContent=`${h.icon} ${h.name}`;renderFocusBody();document.getElementById('mo-focus').classList.add('open');}
@@ -796,7 +770,14 @@ load();loadCfg();loadHabits();
 applyTheme();applyName();
 (function(){const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}})();
 schedAll();renderTasks();renderNotes();renderCal();renderHabits();
-bindNotesDnD(); bindHabitsDnD();
+bindDrag('ngrid', '.nc', () => {
+    const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id))));
+    notes=arr.filter(Boolean); save();
+});
+bindDrag('hab-list', '.hcard', () => {
+    const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id))));
+    habits=arr.filter(Boolean); saveHabits();
+});
 ensureHols(TY);ensureHols(TY+1);
 document.getElementById('task-in').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
 document.getElementById('ev-in').addEventListener('keydown',e=>{if(e.key==='Enter')addEvent();});
