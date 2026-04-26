@@ -384,7 +384,7 @@ textarea{resize:none;line-height:1.65;width:100%}
         </div>
 
         <div id="sec-notes" class="sec">
-          <div id="nlv"><button class="bnn" onclick="openNote('new')">+ Nova anotação</button><div id="ngrid" class="ng no-swipe"></div></div>
+          <div id="nlv"><button class="bnn" onclick="openNote('new')">+ Nova anotação</button><div id="ngrid" class="ng"></div></div>
           <div id="nev">
             <div class="neh"><button class="bbk" onclick="closeNote(true)">← Voltar</button><button class="bsv" onclick="saveNote()">Salvar</button></div>
             <input type="text" id="nt-ttl" placeholder="Título"/>
@@ -397,7 +397,7 @@ textarea{resize:none;line-height:1.65;width:100%}
             <button class="bnn" style="margin-bottom:0;flex:1" onclick="openHF(null)">+ Novo Hábito</button>
             <button class="bnn" style="margin-bottom:0;flex:1;border-style:solid;background:var(--bg2)" onclick="openSug()">💡 Sugestões</button>
           </div>
-          <div id="hab-list" class="no-swipe" style="flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:15px"></div>
+          <div id="hab-list" style="flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:15px"></div>
         </div>
 
         <div id="sec-fin" class="sec">
@@ -551,7 +551,7 @@ const BADGE_DEFS=[
 const TUT_STEPS=[
   {ico:'✨',ttl:'Bem-vindo ao Organizador Premium!',txt:'Para começarmos, como você se chama?', html:'<input type="text" id="tut-name" placeholder="Seu nome..." style="width:100%; text-align:center; padding:12px; font-size:16px; border-radius:10px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt); margin-top:10px; outline:none; font-family:inherit;"/>',tab:null},
   {ico:'📅',ttl:'Agenda Inteligente',txt:'Deslize a tela para navegar! O Mês mostra seus compromissos, finanças e tarefas juntos.',tab:'agenda'},
-  {ico:'💵',ttl:'Finanças Inteligentes',txt:'Agora o app debita o valor automaticamente da sua Carteira quando você marca a conta como paga!',tab:'fin'},
+  {ico:'💵',ttl:'Finanças Recorrentes',txt:'Agora você pode criar contas que se repetem todo mês e ver a projeção do que vai sobrar.',tab:'fin'},
   {ico:'⏰',ttl:'Foco e Hábitos',txt:'Segure os itens por meio segundo para organizar. O Timer Pomodoro agora vibra ao final!',tab:'habitos'},
   {ico:'🏆',ttl:'Tudo pronto!',txt:'Explore o menu da engrenagem para ativar as notificações e o modo escuro. Bom uso! 🚀',tab:null},
 ];
@@ -700,7 +700,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cnt.addEventListener('touchstart', e => {
         tsX = e.touches[0].clientX; tsY = e.touches[0].clientY;
         isSwipe = false; isScroll = false;
-        tsNoSwipe = !!e.target.closest('.no-swipe') || !!e.target.closest('input') || !!e.target.closest('button') || !!e.target.closest('select') || !!e.target.closest('textarea') || !!e.target.closest('.nc') || !!e.target.closest('.hcard');
+        tsNoSwipe = !!e.target.closest('.no-swipe') || !!e.target.closest('input') || !!e.target.closest('button') || !!e.target.closest('select') || !!e.target.closest('textarea');
         tsOnCal = !!e.target.closest('#cal-main') && curTab === 0;
         
         if(!tsNoSwipe && !tsOnCal) slider.style.transition = 'none';
@@ -744,7 +744,6 @@ document.addEventListener('DOMContentLoaded', () => {
 function toast(msg){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ac);color:var(--acfg);padding:8px 18px;border-radius:20px;font-size:13px;z-index:999;white-space:nowrap;pointer-events:none;box-shadow:0 2px 14px rgba(0,0,0,.18)';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>{t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(()=>t.remove(),300);},2200);}
 
 // TASKS + EVENTS
-let doneExp=false;
 function getEvItems(){const today=getToday(),res=[];Object.keys(events||{}).sort().forEach(k=>{if(k>=today)((events||{})[k]||[]).filter(Boolean).forEach(ev=>res.push({id:ev.id,text:ev.text,done:ev.done||false,dk:k,dt:ev.time,isEv:true,evKey:k}));});return res;}
 function togTask(id){tasks=tasks.map(t=>t.id===id?{...t,done:!t.done}:t);save();renderTasks();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function delTask(id){if(!confirm('Excluir esta tarefa permanentemente?'))return;tasks=tasks.filter(t=>t.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
@@ -789,7 +788,7 @@ function renderNotes(){
       g.innerHTML=notes.map(n=>`<div class="nc" data-id="${n.id}">
         <div onclick="openNote(${n.id})">
           <h3>${esc(n.title)}</h3><p>${esc(n.body||'Sem conteúdo')}</p>
-          <div class="nf"><span class="nd">${n.date}</span><button class="bd no-swipe" onclick="event.stopPropagation();delNote(${n.id})">×</button></div>
+          <div class="nf"><span class="nd">${n.date}</span><button class="bd" onclick="event.stopPropagation();delNote(${n.id})">×</button></div>
         </div>
       </div>`).join('');
   } catch(e){}
@@ -1000,7 +999,7 @@ function renderDay(){
       const ihtml=items.length?items.map(it=>{
         if(it.type==='task'){const t=it.obj;return`<div class="dti"><span class="dtt">${t.dt||'—'}</span><div class="dtb2"><div class="dttl ${t.done?'done':''}">${esc(t.text)}<span class="ebdg etask">tarefa</span></div></div><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id});renderDay()">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`;}
         else if(it.type==='ev'){const e=it.obj;return`<div class="dti"><span class="dtt">${e.time||'—'}</span><div class="dtb2"><div class="dttl ${e.done?'done':''}">${esc(e.text)}<span class="ebdg eev">evento</span></div></div><div class="tck ${e.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${it.k}',${e.id});renderDay()">${e.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delEvGlobal('${it.k}',${e.id})">×</button></div>`;}
-        else if(it.type==='bill'){const b=it.obj; const isP=b.paidMap&&b.paidMap[mK]; const cEmoji=b.cat?b.cat.split(' ')[0]:''; const cName=b.cat?b.cat.substring(cEmoji.length).trim():''; const dText=b.desc?esc(b.desc):cName; return `<div class="dti"><span class="dtt">—</span><div class="dtb2"><div class="dttl ${isP?'done':''}">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="tm">${fmtC(b.val)}</div></div><div class="tck ${isP?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}');renderDay()">...</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}');renderDay()">✏️</button><button class="bd" onclick="delBill(${b.id});renderDay()">×</button></div>`;}
+        else if(it.type==='bill'){const b=it.obj; const isP=b.paidMap&&b.paidMap[mK]; const cEmoji=b.cat?b.cat.split(' ')[0]:''; const cName=b.cat?b.cat.substring(cEmoji.length).trim():''; const dText=b.desc?esc(b.desc):cName; return `<div class="dti"><span class="dtt">—</span><div class="dtb2"><div class="dttl ${isP?'done':''}">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">${fmtC(b.val)}</div></div><div class="tck ${isP?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}');renderDay()">...</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}');renderDay()">✏️</button><button class="bd" onclick="delBill(${b.id});renderDay()">×</button></div>`;}
       }).join(''):'<p class="empty" style="margin-top:1rem">Nenhum item neste dia.</p>';
       
       document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="cnv" onclick="chMonth(1)">›</button></div>${hol?`<div class="holbanner">🎉 ${esc(hol)}</div>`:''}<div class="dtl">${ihtml}</div>`;
@@ -1087,6 +1086,15 @@ function togTmr(){
 function fmtTimer(s){return`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
 
 // FINANCES
+let fY=TY, fM=TM;
+
+function chgFinM(dir) {
+    fM += dir;
+    if(fM > 11) { fM = 0; fY++; }
+    if(fM < 0) { fM = 11; fY--; }
+    renderFin();
+}
+
 function chgBillType(){
   const t = document.getElementById('bill-type').value;
   document.getElementById('lbl-bill-date').textContent = t === '+' ? 'Entrada' : 'Vencimento';
@@ -1298,24 +1306,42 @@ function endTutorial(){
     setTimeout(() => { if(typeof Notification !== 'undefined' && Notification.permission === 'default') { if(confirm("Deseja ativar as notificações para ser lembrado das suas tarefas e hábitos?")) { reqN(); } } }, 400);
 }
 
-// ── INIT BLINDADO ──
+// ── INIT BLINDADO ABSOLUTO ──
 function initApp() {
     try {
         load(); loadCfg(); loadHabits();
         applyTheme(); applyName();
         if(typeof chgBillType === 'function') chgBillType(); 
         
-        calView = 'month'; cY = TY; cM = TM; selD = null;
+        // Define aba ativa silenciosamente para garantir altura pro calendário
+        document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+        document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+        document.getElementById('sec-agenda').classList.add('active');
+        document.getElementById('tb-agenda').classList.add('active');
+        
+        // Define variáveis globais e limpa seleção inicial
+        calView = 'month';
+        cY = TY; cM = TM; selD = null;
 
+        // Renderiza tudo
         try{ renderTasks(); } catch(e){}
         try{ renderNotes(); } catch(e){}
         try{ renderHabits(); } catch(e){}
-        try{ chgBillType(); renderFin(); } catch(e){}
-        try{ renderCal(); } catch(e){}
+        try{ if(typeof renderFin==='function') renderFin(); } catch(e){}
+        
+        // Renderiza calendário
+        renderCal();
 
+        // Listeners e Drag
         try {
-            bindDrag('ngrid', '.nc', () => { const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id)))); notes=arr.filter(Boolean); save(); });
-            bindDrag('hab-list', '.hcard', () => { const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id)))); habits=arr.filter(Boolean); saveHabits(); });
+            bindDrag('ngrid', '.nc', () => {
+                const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id))));
+                notes=arr.filter(Boolean); save();
+            });
+            bindDrag('hab-list', '.hcard', () => {
+                const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id))));
+                habits=arr.filter(Boolean); saveHabits();
+            });
         } catch(e) {}
         
         document.getElementById('task-in').addEventListener('keydown', e => { if(e.key==='Enter') addTask(); });
@@ -1330,6 +1356,7 @@ function initApp() {
         
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         
+        // Remove Splash 100% via JS pra nao sobrar rastro
         setTimeout(() => {
             const sp = document.getElementById('splash');
             if(sp) sp.remove(); 
@@ -1337,9 +1364,12 @@ function initApp() {
         }, 2200);
 
         schedAll();
-    } catch (err) { console.error("Erro na inicialização:", err); }
+    } catch (err) {
+        console.error("Erro na inicialização:", err);
+    }
 }
 
+// Executa assim que o script é lido
 initApp();
 </script>
 </body>
