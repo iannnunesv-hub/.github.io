@@ -27,10 +27,7 @@ body{font-family:system-ui,sans-serif;background:var(--bg4);display:flex;justify
 .sp-ico { font-size: 54px; margin-bottom: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
 .sp-title { font-size: 24px; font-weight: 300; color: var(--txt); letter-spacing: 1px; }
 .sp-prem { font-weight: 700; color: #d4af37; font-style: italic; letter-spacing: 0; }
-@keyframes fadeOutSplash {
-  0% { opacity: 1; visibility: visible; }
-  100% { opacity: 0; visibility: hidden; z-index: -1; display: none; }
-}
+@keyframes fadeOutSplash { 0% { opacity: 1; visibility: visible; } 100% { opacity: 0; visibility: hidden; z-index: -1; display: none; } }
 
 .hdr{background:var(--bg2);border-bottom:.5px solid var(--brd);padding:14px 17px 11px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
 .hdr h1{font-size:18px;font-weight:500;color:var(--txt)}
@@ -67,7 +64,6 @@ textarea{resize:none;line-height:1.65;width:100%}
 .mc{background:none;border:none;font-size:23px;cursor:pointer;color:var(--txt3);line-height:1}
 .mb{overflow-y:auto;flex:1;padding:14px 19px}
 .mf{padding:12px 19px 20px;flex-shrink:0;border-top:.5px solid var(--brd)}
-
 /* SETTINGS */
 .cst{font-size:11px;color:var(--txt3);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin:15px 0 9px}
 .cst:first-child{margin-top:0}
@@ -87,10 +83,10 @@ textarea{resize:none;line-height:1.65;width:100%}
 .tf{background:var(--card);border-radius:13px;border:.5px solid var(--brd);padding:13px;margin-bottom:1rem;flex-shrink:0}
 .tftop{display:flex;gap:7px;margin-bottom:10px}
 .tftop input{flex:1}
-.tf2{display:flex;gap:6px;flex-wrap:wrap}
-.tff{display:flex;flex-direction:column;gap:3px;flex:1;min-width:74px}
-.tff label{font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
-.tff input,.tff select{font-size:12px;padding:7px 8px}
+.tf2{display:flex;gap:4px;flex-wrap:nowrap; align-items:center;}
+.tff{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0;}
+.tff label{font-size:9px;color:var(--txt3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tff input,.tff select{font-size:11px;padding:6px 4px;height:30px;}
 .ti{display:flex;align-items:flex-start;gap:9px;padding:11px 13px;border-radius:10px;border:.5px solid var(--brd);margin-bottom:6px;background:var(--card)}
 .ti.done-item .tt{text-decoration:line-through;color:var(--txt4)}
 .tck{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--txt4);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .15s}
@@ -148,6 +144,13 @@ textarea{resize:none;line-height:1.65;width:100%}
 .evs{margin-top:.8rem;border-top:.5px solid var(--brd);padding-top:.8rem;flex-shrink:0}
 .edl{font-size:12px;color:var(--txt3);margin-bottom:8px}
 .holbanner{background:rgba(200,0,50,.07);border:.5px solid rgba(200,0,50,.18);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:12px;color:var(--hol);display:flex;align-items:center;gap:5px}
+
+/* CALENDAR SLIDE ANIMATIONS */
+@keyframes slideCalNext { 0% { transform: translateX(30px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+@keyframes slideCalPrev { 0% { transform: translateX(-30px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+.cal-next { animation: slideCalNext 0.25s ease-out; }
+.cal-prev { animation: slideCalPrev 0.25s ease-out; }
+
 .ef{display:flex;flex-direction:column;gap:6px;margin-bottom:.8rem}
 .efr{display:flex;gap:6px;align-items:flex-end}
 .efl{display:flex;flex-direction:column;gap:3px;flex:1}
@@ -328,7 +331,7 @@ textarea{resize:none;line-height:1.65;width:100%}
   
   <div class="cnt" id="cnt">
     <div id="slider">
-        <div id="sec-agenda" class="sec">
+        <div id="sec-agenda" class="sec active">
           <div class="vrow">
             <button class="vbtn sel" id="vbtn-month" onclick="setView('month')">Mês</button>
             <button class="vbtn" id="vbtn-week" onclick="setView('week')">Semana</button>
@@ -336,7 +339,7 @@ textarea{resize:none;line-height:1.65;width:100%}
           </div>
           <div class="srow"><input type="text" id="cal-srch" placeholder="🔍 Buscar tarefas e eventos..." oninput="renderSearch()"/></div>
           <div id="srch-res" style="display:none"></div>
-          <div id="cal-main" style="flex-shrink:0"></div>
+          <div id="cal-main" style="flex-shrink:0" class="no-swipe"></div>
           <div id="ev-sec" class="evs" style="display:none">
             <p class="edl" id="ev-dlbl"></p>
             <div id="hol-row" style="display:none" class="holbanner">🎉 <span id="hol-nm"></span></div>
@@ -423,7 +426,7 @@ textarea{resize:none;line-height:1.65;width:100%}
                <select id="bill-cat" style="flex:1"></select>
             </div>
             <div class="tftop">
-               <input type="text" id="bill-desc" placeholder="Descrição Opcional..." style="flex:1"/>
+               <input type="text" id="bill-desc" placeholder="Descrição (Opcional)" style="flex:1"/>
                <button class="ib" onclick="addBill()">+</button>
             </div>
             <div class="tf2">
@@ -551,8 +554,9 @@ const TUT_STEPS=[
 ];
 let tutStep=0;
 
-const CATS_OUT=['🛒 Supermercado','🏠 Moradia','🚗 Transporte','🏥 Saúde','🎓 Educação','🎬 Lazer','💳 Cartão','📄 Assinaturas','💸 Outro'];
-const CATS_IN=['💼 Salário','📈 Rendimentos','💰 Pix/Transf.','💸 Outro'];
+// NOVAS CATEGORIAS
+const CATS_OUT=['📄 Assinaturas','🛍️ Compra pessoal','🍔 Delivery','🎓 Educação','🏦 Empréstimo','📌 Fixos','🎬 Lazer','🔧 Manutenção','💸 Outros','🏥 Saúde','🛒 Supermercado','🚗 Transporte'];
+const CATS_IN=['💰 Comissões/bônus','💸 Outros','📈 Renda variável','💼 Salário'];
 
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const getDK=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -674,7 +678,7 @@ function schedAll(){
   }
 }
 
-// TABS NATIVAS
+// TABS E SWIPE
 let curTab = 0;
 function swTab(name,btn){
   curTab = TABS.indexOf(name);
@@ -693,8 +697,9 @@ document.addEventListener('DOMContentLoaded', () => {
     cnt.addEventListener('touchstart', e => {
         tsX = e.touches[0].clientX; tsY = e.touches[0].clientY;
         isSwipe = false; isScroll = false;
-        tsNoSwipe = !!e.target.closest('.no-swipe') || !!e.target.closest('input') || !!e.target.closest('button') || !!e.target.closest('select') || !!e.target.closest('textarea');
+        tsNoSwipe = !!e.target.closest('.no-swipe') || !!e.target.closest('input') || !!e.target.closest('button') || !!e.target.closest('select') || !!e.target.closest('textarea') || !!e.target.closest('.nc') || !!e.target.closest('.hcard');
         tsOnCal = !!e.target.closest('#cal-main') && curTab === 0;
+        
         if(!tsNoSwipe && !tsOnCal) slider.style.transition = 'none';
     }, {passive:true});
 
@@ -787,47 +792,7 @@ function renderNotes(){
 }
 window.addEventListener('popstate',()=>{if(document.getElementById('nev').classList.contains('open'))closeNote(true);});
 
-// TOUCH DRAG FOR ALL
-function bindDrag(containerId, itemClass, onReorder) {
-    const g = document.getElementById(containerId);
-    if(!g) return;
-    let dTimer=null, dEl=null, sx=0, sy=0;
-
-    g.addEventListener('touchstart', e => {
-        const t = e.target.closest(itemClass);
-        if(!t || e.target.closest('button') || e.target.closest('.bub')) return;
-        sx = e.touches[0].clientX; sy = e.touches[0].clientY;
-        dTimer = setTimeout(() => {
-            dEl = t; dEl.classList.add('dragging');
-            dEl.style.opacity = '0.5'; dEl.style.transform = 'scale(0.95)'; dEl.style.transition = 'none';
-            if(navigator.vibrate) navigator.vibrate(50);
-        }, 500); 
-    }, {passive:true});
-
-    g.addEventListener('touchmove', e => {
-        if(!dEl && dTimer) { if(Math.abs(e.touches[0].clientX - sx)>15 || Math.abs(e.touches[0].clientY - sy)>15) { clearTimeout(dTimer); dTimer=null; } }
-        if(dEl) {
-            e.preventDefault();
-            const y = e.touches[0].clientY;
-            const els = [...g.querySelectorAll(`${itemClass}:not(.dragging)`)];
-            const afterEl = els.find(el => y <= el.getBoundingClientRect().top + el.getBoundingClientRect().height / 2);
-            if(afterEl) { if(dEl.nextSibling !== afterEl) g.insertBefore(dEl, afterEl); } 
-            else { if(g.lastChild !== dEl) g.appendChild(dEl); }
-        }
-    }, {passive:false});
-
-    const endDrag = () => {
-        if(dTimer) { clearTimeout(dTimer); dTimer=null; }
-        if(dEl) {
-            dEl.classList.remove('dragging');
-            dEl.style.opacity = ''; dEl.style.transform = ''; dEl.style.transition = '';
-            dEl = null; onReorder();
-        }
-    };
-    g.addEventListener('touchend', endDrag); g.addEventListener('touchcancel', endDrag);
-}
-
-// CALENDAR BLINDADO & RECORRÊNCIA
+// CALENDAR & BILLS LOGIC
 let cY=TY,cM=TM,selD=null,calView='month',wkOff=0;
 
 function isBillInDay(b, dk) {
@@ -869,7 +834,20 @@ function setView(v){
   else if(v==='week') { selD=null; }
   renderCal();
 }
-function chMonth(dir){if(calView==='month'){cM+=dir;if(cM<0){cM=11;cY--;}if(cM>11){cM=0;cY++;}selD=null;document.getElementById('ev-sec').style.display='none';renderCal();}else if(calView==='week'){wkOff+=dir;renderCal();}else{if(selD===null){selD=TD;}const d=addDays(new Date(cY,cM,selD),dir);cY=d.getFullYear();cM=d.getMonth();selD=d.getDate();renderCal();selDay(selD);}}
+
+function chMonth(dir){
+  if(calView==='month'){cM+=dir;if(cM<0){cM=11;cY--;}if(cM>11){cM=0;cY++;}selD=null;document.getElementById('ev-sec').style.display='none';renderCal();}
+  else if(calView==='week'){wkOff+=dir;renderCal();}
+  else{if(selD===null){selD=TD;}const d=addDays(new Date(cY,cM,selD),dir);cY=d.getFullYear();cM=d.getMonth();selD=d.getDate();renderCal();selDay(selD);}
+
+  // Slide Animation for Calendar
+  const cm = document.getElementById('cal-main');
+  if(cm) {
+      cm.classList.remove('cal-next', 'cal-prev');
+      void cm.offsetWidth; // trigger reflow
+      cm.classList.add(dir > 0 ? 'cal-next' : 'cal-prev');
+  }
+}
 
 function selDay(d){
     selD=d;
@@ -1011,7 +989,7 @@ function habCardHTML(h){
     bubs+=`<div class="hbwrap"><div class="bub ${bsz} ${i<cnt?'filled':''}" style="color:${h.color}" onclick="event.stopPropagation();setBubble(${h.id},${i})"></div>${tl}</div>`;
   }
   const bubtip=cnt===0&&sched?`<span class="bubtip">← toque</span>`:'';
-  return`<div class="hcard ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
+  return`<div class="hcard no-swipe ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
 }
 function renderHabits(){
   try {
@@ -1109,17 +1087,17 @@ function renderFin(){
       for(let i=0; i<6; i++) {
           let mDate = new Date(now.getFullYear(), now.getMonth() + i, 1);
           let y = mDate.getFullYear(), m = mDate.getMonth();
-          let mk = `${y}-${String(m+1).padStart(2,'0')}`;
+          let k = `${y}-${String(m+1).padStart(2,'0')}`;
           let inM=0, outM=0;
           (bills||[]).filter(Boolean).forEach(b => {
               if(!b.paidMap) b.paidMap = {};
-              const isPaid = b.paidMap[mk];
-              if(!isPaid && isBillInMonth(b, mk)) { 
+              const isPaid = b.paidMap[k];
+              if(!isPaid && isBillInMonth(b, k)) { 
                   if(b.type === '+') inM += Number(b.val||0); else outM += Number(b.val||0); 
               }
           });
           runBal = runBal + inM - outM;
-          projHtml += `<div class="no-swipe" onclick="expandMonth('${mk}', '${MO[m]}/${y}')" style="min-width:125px; padding:10px; cursor:pointer; background:var(--bg3); border:.5px solid var(--brd2); border-radius:10px; flex-shrink:0;">
+          projHtml += `<div class="no-swipe" onclick="expandMonth('${k}', '${MO[m]}/${y}')" style="min-width:125px; padding:10px; cursor:pointer; background:var(--bg3); border:.5px solid var(--brd2); border-radius:10px; flex-shrink:0;">
              <div style="font-size:11px; color:var(--txt3); font-weight:600; text-transform:uppercase">${MO[m].substring(0,3)}/${y}</div>
              <div style="font-size:14px; font-weight:600; color:${runBal<0?'#e44':'var(--txt)'}; margin-top:4px">${fmtC(runBal)}</div>
              <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:10px;">
@@ -1180,11 +1158,12 @@ function editAccount(id){
 function delAccount(id){ if(confirm("Remover esta carteira permanentemente?")) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
 
 function addBill(){
+  const date = document.getElementById('bill-date').value;
+  if(!date) { toast("A data é obrigatória!"); return; }
+  
   let desc = document.getElementById('bill-desc').value.trim();
   const type = document.getElementById('bill-type').value;
   const cat = document.getElementById('bill-cat').value;
-  const date = document.getElementById('bill-date').value;
-  if(!date) { toast("A data é obrigatória!"); return; }
   const val = document.getElementById('bill-val').value;
   const rep = document.getElementById('bill-rep').checked;
   
@@ -1200,14 +1179,29 @@ function editBill(id, mk){
   save(); renderFin(); renderEvList(); renderCal();
 }
 function togBill(id, mk){ 
+  let msg = '';
   bills = bills.map(b => {
       if(b.id === id) {
           if(!b.paidMap) b.paidMap = {};
-          b.paidMap[mk] = !b.paidMap[mk];
+          const wasPaid = !!b.paidMap[mk];
+          b.paidMap[mk] = !wasPaid;
+          
+          if(accounts.length > 0) {
+              const v = Number(b.val||0);
+              if(v > 0) {
+                  let change = 0;
+                  if(!wasPaid) change = b.type === '+' ? v : -v; 
+                  else change = b.type === '+' ? -v : v;
+                  accounts[0].val += change;
+                  if(!wasPaid) msg = b.type === '+' ? `R$ ${v.toFixed(2)} recebidos na Carteira` : `R$ ${v.toFixed(2)} descontados da Carteira`;
+                  else msg = b.type === '+' ? `R$ ${v.toFixed(2)} estornados` : `R$ ${v.toFixed(2)} reembolsados`;
+              }
+          }
       }
       return b;
   }); 
   save(); renderFin(); renderEvList(); renderCal(); 
+  if(msg) toast(msg);
 }
 function delBill(id){ if(confirm('Excluir este lançamento permanentemente?')){ bills = bills.filter(b => b.id !== id); save(); renderFin(); renderEvList(); renderCal(); } }
 
@@ -1266,27 +1260,20 @@ function endTutorial(){
     setTimeout(() => { if(typeof Notification !== 'undefined' && Notification.permission === 'default') { if(confirm("Deseja ativar as notificações para ser lembrado das suas tarefas e hábitos?")) { reqN(); } } }, 400);
 }
 
-// ── INIT BLINDADO ABSOLUTO ──
+// ── INIT BLINDADO ──
 function initApp() {
     try {
         load(); loadCfg(); loadHabits();
         applyTheme(); applyName();
         if(typeof chgBillType === 'function') chgBillType(); 
         
-        document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
-        document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
-        document.getElementById('sec-agenda').classList.add('active');
-        document.getElementById('tb-agenda').classList.add('active');
-        
-        calView = 'month';
-        cY = TY; cM = TM; selD = null;
+        calView = 'month'; cY = TY; cM = TM; selD = null;
 
         try{ renderTasks(); } catch(e){}
         try{ renderNotes(); } catch(e){}
         try{ renderHabits(); } catch(e){}
-        try{ if(typeof renderFin==='function') renderFin(); } catch(e){}
-        
-        renderCal();
+        try{ chgBillType(); renderFin(); } catch(e){}
+        try{ renderCal(); } catch(e){}
 
         try {
             bindDrag('ngrid', '.nc', () => { const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id)))); notes=arr.filter(Boolean); save(); });
