@@ -1,6 +1,6 @@
 {
   "name": "Organizador Premium",
-  "short_name": "Premium",
+  "short_name": "Org Premium",
   "description": "Tarefas, notas, agenda, finanças e hábitos",
   "start_url": "./",
   "scope": "./",
