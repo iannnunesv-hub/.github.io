@@ -765,18 +765,8 @@ function bindDrag(containerId, itemClass, onReorder) {
 }
 
 // CALENDAR BLINDADO
-function checkDot(k) {
-    let dot = false;
-    try {
-        let rawE = (events || {})[k];
-        if (Array.isArray(rawE) && rawE.length > 0) dot = true;
-        if (!dot && Array.isArray(tasks) && tasks.some(t => t && t.dk === k)) dot = true;
-        if (!dot && Array.isArray(bills) && bills.some(b => b && b.date === k)) dot = true;
-    } catch(e) {}
-    return dot;
-}
-
 let cY=TY,cM=TM,selD=null,calView='month',wkOff=0;
+
 function ckSel(){return selD!==null?ck(cY,cM,selD):null;}
 function setView(v){
   calView=v;
@@ -797,6 +787,17 @@ function selDay(d){
     const hol=getHol(cY,cM,d),hr=document.getElementById('hol-row');
     if(hol){hr.style.display='flex';document.getElementById('hol-nm').textContent=hol;}else hr.style.display='none';
     renderEvList();
+}
+
+function checkDot(k) {
+    let dot = false;
+    try {
+        let rawE = (events || {})[k];
+        if (Array.isArray(rawE) && rawE.length > 0) dot = true;
+        if (!dot && Array.isArray(tasks) && tasks.some(t => t && t.dk === k)) dot = true;
+        if (!dot && Array.isArray(bills) && bills.some(b => b && b.date === k)) dot = true;
+    } catch(e) {}
+    return dot;
 }
 
 function addEvent(){const text=document.getElementById('ev-in').value.trim();if(!text||selD===null)return;const time=document.getElementById('ev-time').value||null,nb=parseInt(document.getElementById('ev-ntf').value)||0;const k=ckSel();if(!events[k])events[k]=[];events[k].push({id:Date.now(),text,time,nb,done:false});document.getElementById('ev-in').value='';document.getElementById('ev-time').value='';save();schedAll();renderEvList();renderCal();renderTasks();}
@@ -822,12 +823,6 @@ function renderEvList(){
       
       el.innerHTML=(dBills.length?`<p class="lbl" style="margin-bottom:5px">Finanças</p>`+bh:'')+(dT.length?`<p class="lbl" style="margin-top:${dBills.length?7:0}px;margin-bottom:5px">Tarefas</p>`+th:'')+(evs.length?`<p class="lbl" style="margin-top:${dT.length||dBills.length?7:0}px;margin-bottom:5px">Eventos</p>`+eh:'');
   } catch(e){}
-}
-
-function renderCal(){
-    if(calView==='month') renderMonth();
-    else if(calView==='week') renderWeek();
-    else renderDay();
 }
 
 function renderMonth(){
@@ -858,12 +853,9 @@ function renderMonth(){
       }
       
       const html = `<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span>${MO[cM]} ${cY}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="cdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div class="cgrid">${h}</div>`;
-      const calMain = document.getElementById('cal-main');
-      if(calMain) calMain.innerHTML = html;
+      document.getElementById('cal-main').innerHTML = html;
   } catch(e) {
-      console.error('Erro na renderização do Mês:', e);
-      const calMain = document.getElementById('cal-main');
-      if(calMain) calMain.innerHTML = '<div style="padding:20px;text-align:center;color:red;font-size:12px;">Houve um problema de compatibilidade com versões antigas. Tente limpar os dados do navegador.</div>';
+      document.getElementById('cal-main').innerHTML = '<div style="padding:20px;text-align:center;color:gray;font-size:12px;">Organizando calendário...</div>';
   }
 }
 
@@ -875,11 +867,7 @@ function renderWeek(){
       const lbl=`${ws.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})} – ${we.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})}`;
       let strip='';
       for(let i=0;i<7;i++){
-          const d=new Date(ws);d.setDate(ws.getDate()+i);const y=d.getFullYear(),mo=d.getMonth(),dy=d.getDate();
-          const past=d<new Date(TY,TM,TD);
-          const isT=dy===TD&&mo===TM&&y===TY;
-          const isSel=selD===dy&&cM===mo&&cY===y;
-          const k=ck(y,mo,dy);
+          const d=new Date(ws);d.setDate(ws.getDate()+i);const y=d.getFullYear(),mo=d.getMonth(),dy=d.getDate(),past=d<new Date(TY,TM,TD),isT=dy===TD&&mo===TM&&y===TY,isSel=selD===dy&&cM===mo&&cY===y,k=ck(y,mo,dy);
           const hasDot=checkDot(k);
           const hol=getHol(y,mo,dy);
           
@@ -924,6 +912,7 @@ function renderDay(){
 }
 function renderSearch(){const q=document.getElementById('cal-srch').value.trim().toLowerCase(),res=document.getElementById('srch-res');if(!q){res.style.display='none';return;}const R=[];(tasks||[]).forEach(t=>{if(t&&t.text&&t.text.toLowerCase().includes(q))R.push({title:t.text,meta:`📅 ${t.dk?fmtDt(t.dk,t.dt):'Sem data'}`,dk:t.dk,type:'tarefa'});});Object.keys(events||{}).forEach(k=>{((events||{})[k]||[]).filter(Boolean).forEach(ev=>{if(ev&&ev.text&&ev.text.toLowerCase().includes(q)){const[y,m,d]=k.split('-').map(Number);R.push({title:ev.text,meta:`📅 ${new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'})}${ev.time?' '+ev.time:''}`,dk:k,type:'evento'});}});});res.style.display='block';res.innerHTML=!R.length?'<p style="font-size:13px;color:var(--txt4);text-align:center;padding:8px">Nenhum resultado.</p>':R.slice(0,7).map(r=>`<div class="sri" onclick="jumpDK('${r.dk||''}')"><div class="sri-t">${esc(r.title)} <span class="ebdg">${r.type}</span></div><div class="sri-m">${esc(r.meta)}</div></div>`).join('');}
 function jumpDK(dk){if(!dk)return;const[y,m,d]=dk.split('-').map(Number);cY=y;cM=m-1;selD=d;document.getElementById('cal-srch').value='';document.getElementById('srch-res').style.display='none';if(calView!=='month')setView('month');else{renderCal();selDay(d);}}
+function renderCal(){if(calView==='month')renderMonth();else if(calView==='week')renderWeek();else renderDay();}
 
 // HABITS
 let habits=[],hfd={id:null,icon:'⭐',name:'',color:'#54A0FF',target:1,times:[],frequency:'daily',customDays:[],reminderTime:''},focusH=null,focTmr=null;
@@ -1181,26 +1170,21 @@ function initApp() {
         applyTheme(); applyName();
         if(typeof chgBillType === 'function') chgBillType(); 
         
-        // Define aba ativa silenciosamente para garantir altura pro calendário
         document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
         document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
         document.getElementById('sec-agenda').classList.add('active');
         document.getElementById('tb-agenda').classList.add('active');
         
-        // Define variáveis globais e limpa seleção inicial
         calView = 'month';
         cY = TY; cM = TM; selD = null;
 
-        // Renderiza tudo
         try{ renderTasks(); } catch(e){}
         try{ renderNotes(); } catch(e){}
         try{ renderHabits(); } catch(e){}
         try{ if(typeof renderFin==='function') renderFin(); } catch(e){}
         
-        // Renderiza calendário
         renderCal();
 
-        // Listeners e Drag
         try {
             bindDrag('ngrid', '.nc', () => {
                 const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id))));
@@ -1224,12 +1208,9 @@ function initApp() {
         
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         
-        // Remove Splash 100% via JS pra nao sobrar rastro
         setTimeout(() => {
-            const sp = document.getElementById('splash');
-            if(sp) sp.remove(); 
-            startTutorial();
-        }, 2200);
+            selDay(TD);
+        }, 100);
 
         schedAll();
     } catch (err) {
@@ -1237,7 +1218,7 @@ function initApp() {
     }
 }
 
-// Executa assim que o script é lido
+// Inicia imediatamente
 initApp();
 </script>
 </body>
