@@ -15,13 +15,13 @@
 body{font-family:system-ui,sans-serif;background:var(--bg4);display:flex;justify-content:center;min-height:100vh;padding:.6rem;transition:background .2s}
 #app{width:100%;max-width:490px;background:var(--bg);border-radius:18px;border:.5px solid var(--brd);overflow:hidden;display:flex;flex-direction:column;min-height:96vh; position:relative;}
 
-/* SPLASH SCREEN PREMIUM */
+/* SPLASH SCREEN PREMIUM 100% CSS */
 #splash {
   position: absolute; inset: 0; background: var(--bg); z-index: 9999;
   display: flex; align-items: center; justify-content: center; flex-direction: column;
   border-radius: 18px;
-  animation: fadeOutSplash 0.6s ease-in-out forwards;
-  animation-delay: 1.4s;
+  animation: fadeOutSplash 0.5s ease-in-out forwards;
+  animation-delay: 1.2s;
   pointer-events: none; 
 }
 .sp-ico { font-size: 54px; margin-bottom: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
@@ -670,10 +670,9 @@ document.getElementById('cnt').addEventListener('touchend',e=>{
   else{const i=TABS.indexOf(cur),n=dx<0?i+1:i-1;if(n>=0&&n<TABS.length)swTab(TABS[n],document.getElementById('tb-'+TABS[n]));}
 },{passive:true});
 
-// TOAST
 function toast(msg){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ac);color:var(--acfg);padding:8px 18px;border-radius:20px;font-size:13px;z-index:999;white-space:nowrap;pointer-events:none;box-shadow:0 2px 14px rgba(0,0,0,.18)';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>{t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(()=>t.remove(),300);},2200);}
 
-// TASKS + EVENTS COMBINED
+// TASKS + EVENTS
 let doneExp=false;
 function getEvItems(){const today=getToday(),res=[];Object.keys(events||{}).sort().forEach(k=>{if(k>=today)((events||{})[k]||[]).filter(Boolean).forEach(ev=>res.push({id:ev.id,text:ev.text,done:ev.done||false,dk:k,dt:ev.time,isEv:true,evKey:k}));});return res;}
 function togTask(id){tasks=tasks.map(t=>t.id===id?{...t,done:!t.done}:t);save();renderTasks();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
@@ -726,7 +725,7 @@ function renderNotes(){
 }
 window.addEventListener('popstate',()=>{if(document.getElementById('nev').classList.contains('open'))closeNote(true);});
 
-// TOUCH DRAG & DROP
+// TOUCH DRAG & DROP FOR ALL
 function bindDrag(containerId, itemClass, onReorder) {
     const g = document.getElementById(containerId);
     if(!g) return;
@@ -784,7 +783,8 @@ function selDay(d){
 function checkDot(k) {
     let dot = false;
     try {
-        if (events && Array.isArray(events[k]) && events[k].length > 0) dot = true;
+        let rawE = (events || {})[k];
+        if (Array.isArray(rawE) && rawE.length > 0) dot = true;
         if (!dot && Array.isArray(tasks) && tasks.some(t => t && t.dk === k)) dot = true;
         if (!dot && Array.isArray(bills) && bills.some(b => b && b.date === k)) dot = true;
     } catch(e) {}
@@ -798,14 +798,11 @@ function renderEvList(){
       if(selD===null)return;
       const k=ckSel();
       
-      let evs = [];
-      if(events && Array.isArray(events[k])) evs = events[k].slice().sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+      let rawE = (events||{})[k];
+      let evs = Array.isArray(rawE) ? rawE.slice().sort((a,b)=>(a.time||'').localeCompare(b.time||'')) : [];
       
-      let dT = [];
-      if(Array.isArray(tasks)) dT = tasks.filter(Boolean).filter(t=>t.dk===k);
-      
-      let dBills = [];
-      if(Array.isArray(bills)) dBills = bills.filter(Boolean).filter(b=>b.date===k);
+      let dT = Array.isArray(tasks) ? tasks.filter(Boolean).filter(t=>t.dk===k) : [];
+      let dBills = Array.isArray(bills) ? bills.filter(Boolean).filter(b=>b.date===k) : [];
       
       const el=document.getElementById('ev-list');
       if(!evs.length&&!dT.length&&!dBills.length){el.innerHTML='<p style="font-size:13px;color:var(--txt4)">Sem eventos, tarefas ou finanças neste dia.</p>';return;}
@@ -844,7 +841,7 @@ function renderMonth(){
       const cmHTML = `<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span>${MO[cM]} ${cY}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="cdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div class="cgrid">${h}</div>`;
       const calMain = document.getElementById('cal-main');
       if(calMain) calMain.innerHTML = cmHTML;
-  } catch(e){ console.error('Erro na renderização do Mês:', e); }
+  } catch(e){}
 }
 
 function renderWeek(){
@@ -875,7 +872,7 @@ function renderWeek(){
       const cmHTML = `<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${lbl}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="wstrip">${strip}</div>`;
       const calMain = document.getElementById('cal-main');
       if(calMain) calMain.innerHTML = cmHTML;
-  } catch(e){ console.error('Erro na renderização da Semana:', e); }
+  } catch(e){}
 }
 
 function renderDay(){
@@ -884,7 +881,8 @@ function renderDay(){
       const d=new Date(cY,cM,selD),k=ck(cY,cM,selD),hol=getHol(cY,cM,selD);
       
       let evs = [];
-      if(events && Array.isArray(events[k])) evs = events[k].slice().sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+      let rawE = (events||{})[k];
+      if(Array.isArray(rawE)) evs = rawE.slice().sort((a,b)=>(a.time||'ZZ').localeCompare(b.time||'ZZ'));
       
       let dT = [];
       if(Array.isArray(tasks)) dT = tasks.filter(Boolean).filter(t=>t.dk===k).sort((a,b)=>(a.dt||'ZZ').localeCompare(b.dt||'ZZ'));
@@ -908,12 +906,10 @@ function renderDay(){
       document.getElementById('ev-dlbl').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
       document.getElementById('hol-row').style.display='none';
       renderEvList();
-  } catch(e){ console.error('Erro na renderização do Dia:', e); }
+  } catch(e){}
 }
-
 function renderSearch(){const q=document.getElementById('cal-srch').value.trim().toLowerCase(),res=document.getElementById('srch-res');if(!q){res.style.display='none';return;}const R=[];(tasks||[]).forEach(t=>{if(t&&t.text&&t.text.toLowerCase().includes(q))R.push({title:t.text,meta:`📅 ${t.dk?fmtDt(t.dk,t.dt):'Sem data'}`,dk:t.dk,type:'tarefa'});});Object.keys(events||{}).forEach(k=>{((events||{})[k]||[]).filter(Boolean).forEach(ev=>{if(ev&&ev.text&&ev.text.toLowerCase().includes(q)){const[y,m,d]=k.split('-').map(Number);R.push({title:ev.text,meta:`📅 ${new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'})}${ev.time?' '+ev.time:''}`,dk:k,type:'evento'});}});});res.style.display='block';res.innerHTML=!R.length?'<p style="font-size:13px;color:var(--txt4);text-align:center;padding:8px">Nenhum resultado.</p>':R.slice(0,7).map(r=>`<div class="sri" onclick="jumpDK('${r.dk||''}')"><div class="sri-t">${esc(r.title)} <span class="ebdg">${r.type}</span></div><div class="sri-m">${esc(r.meta)}</div></div>`).join('');}
 function jumpDK(dk){if(!dk)return;const[y,m,d]=dk.split('-').map(Number);cY=y;cM=m-1;selD=d;document.getElementById('cal-srch').value='';document.getElementById('srch-res').style.display='none';if(calView!=='month')setView('month');else{renderCal();selDay(d);}}
-function renderCal(){if(calView==='month')renderMonth();else if(calView==='week')renderWeek();else renderDay();}
 
 // HABITS
 let habits=[],hfd={id:null,icon:'⭐',name:'',color:'#54A0FF',target:1,times:[],frequency:'daily',customDays:[],reminderTime:''},focusH=null,focTmr=null;
@@ -1167,26 +1163,25 @@ function endTutorial(){
 // ── INIT BLINDADO ──
 window.onload = () => {
     try {
+        // 1. Carrega dados e configurações
         load(); loadCfg(); loadHabits();
         applyTheme(); applyName();
         if(typeof chgBillType === 'function') chgBillType(); 
         
-        // Ativa a aba da Agenda ANTES de renderizar, garantindo que o DOM tem tamanho para o Grid
+        // 2. Garante que a Agenda é ativada antes da primeira pintura
         swTab('agenda', document.getElementById('tb-agenda'));
         
-        // Define Hoje como selecionado sem abrir o painel expansivo
+        // 3. Foca em "Hoje"
         selD = TD;
         
-        // Try/Catch individuais para não travar a inicialização
+        // 4. Constrói o calendário (BLINDADO) e as outras abas
+        renderCal();
         try{ renderTasks(); } catch(e){}
         try{ renderNotes(); } catch(e){}
         try{ renderHabits(); } catch(e){}
         try{ if(typeof renderFin==='function') renderFin(); } catch(e){}
-        
-        try{ renderCal(); } catch(e){ 
-            document.getElementById('cal-main').innerHTML = '<div style="padding:20px;text-align:center;color:gray;">Carregando calendário...</div>';
-        }
 
+        // 5. Drag and Drop
         try {
             bindDrag('ngrid', '.nc', () => {
                 const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id))));
@@ -1198,11 +1193,14 @@ window.onload = () => {
             });
         } catch(e) {}
         
+        // 6. Feriados
         try{ ensureHols(TY); ensureHols(TY+1); } catch(e) {}
         
+        // 7. Inputs
         document.getElementById('task-in').addEventListener('keydown', e => { if(e.key==='Enter') addTask(); });
         document.getElementById('ev-in').addEventListener('keydown', e => { if(e.key==='Enter') addEvent(); });
         
+        // 8. Compartilhamento Web
         try {
             const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();
             if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}
@@ -1210,13 +1208,15 @@ window.onload = () => {
         
         if(window._shared){swTab('notes',document.getElementById('tb-notes'));toast('✓ Texto salvo nas notas!');}
         
+        // 9. Background e Notificações
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         
+        // 10. Splash Screen Auto-Destrutiva
         setTimeout(() => {
             const sp = document.getElementById('splash');
             if(sp) sp.remove(); 
             startTutorial();
-        }, 2200);
+        }, 1500);
 
         schedAll();
     } catch (err) {
