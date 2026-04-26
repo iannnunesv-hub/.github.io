@@ -82,11 +82,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 .dtoggle .arr{margin-left:auto;transition:transform .2s;font-size:14px}
 .dtoggle.open .arr{transform:rotate(90deg)}
 /* NOTES & CARDS SELECTION LOCK */
-.nc, .hcard {
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-}
+.nc, .hcard { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 .ng{display:flex;flex-direction:column;gap:9px;flex:1;overflow-y:auto;overflow-x:hidden}
 .nc{border-radius:11px;border:.5px solid var(--brd);padding:14px;cursor:pointer;background:var(--card);transition:transform 0.2s, opacity 0.2s, box-shadow 0.2s}
 .nc.dragging, .hcard.dragging { z-index: 10; position: relative; }
@@ -268,7 +264,6 @@ textarea{resize:none;line-height:1.65;width:100%}
 .f-card{background:var(--card);border-radius:13px;border:.5px solid var(--brd);padding:13px;margin-bottom:1rem;flex-shrink:0}
 .f-bal{display:flex;justify-content:space-between;align-items:flex-start}
 .f-v{font-size:26px;font-weight:600;color:var(--txt);margin-top:2px}
-.f-proj{font-size:12px;color:var(--txt3);margin-top:6px;padding-top:6px;border-top:.5px dashed var(--brd2)}
 .acc-list{margin-top:10px;display:flex;flex-direction:column;gap:5px}
 .acc-it{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--bg3);border-radius:8px;font-size:13px;color:var(--txt)}
 .acc-nm{font-weight:500;display:flex;align-items:center;gap:5px}
@@ -289,25 +284,7 @@ textarea{resize:none;line-height:1.65;width:100%}
     </div>
   </div>
   <div class="cnt" id="cnt">
-    <div id="sec-tasks" class="sec active">
-      <div class="tf">
-        <div class="tftop"><input type="text" id="task-in" placeholder="Nova tarefa..."/><button class="ib" onclick="addTask()">+</button></div>
-        <div class="tf2">
-          <div class="tff"><label>Dia</label><input type="date" id="task-date"/></div>
-          <div class="tff"><label>Hora</label><input type="time" id="task-time"/></div>
-          <div class="tff"><label>Notificar</label>
-            <select id="task-ntf">
-              <option value="0">Sem aviso</option><option value="5">5 min</option>
-              <option value="10" selected>10 min</option><option value="15">15 min</option>
-              <option value="30">30 min</option><option value="60">1 hora</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div id="t-pend" style="overflow-y:auto;flex:1"></div>
-      <div id="t-done-wrap"></div>
-    </div>
-    <div id="sec-agenda" class="sec">
+    <div id="sec-agenda" class="sec active">
       <div class="vrow">
         <button class="vbtn sel" id="vbtn-month" onclick="setView('month')">Mês</button>
         <button class="vbtn" id="vbtn-week" onclick="setView('week')">Semana</button>
@@ -336,6 +313,24 @@ textarea{resize:none;line-height:1.65;width:100%}
         <div id="ev-list" style="overflow-y:auto;max-height:35vh"></div>
       </div>
     </div>
+    <div id="sec-tasks" class="sec">
+      <div class="tf">
+        <div class="tftop"><input type="text" id="task-in" placeholder="Nova tarefa..."/><button class="ib" onclick="addTask()">+</button></div>
+        <div class="tf2">
+          <div class="tff"><label>Dia</label><input type="date" id="task-date"/></div>
+          <div class="tff"><label>Hora</label><input type="time" id="task-time"/></div>
+          <div class="tff"><label>Notificar</label>
+            <select id="task-ntf">
+              <option value="0">Sem aviso</option><option value="5">5 min</option>
+              <option value="10" selected>10 min</option><option value="15">15 min</option>
+              <option value="30">30 min</option><option value="60">1 hora</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="t-pend" style="overflow-y:auto;flex:1"></div>
+      <div id="t-done-wrap"></div>
+    </div>
     <div id="sec-notes" class="sec">
       <div id="nlv"><button class="bnn" onclick="openNote('new')">+ Nova anotação</button><div id="ngrid" class="ng"></div></div>
       <div id="nev">
@@ -358,24 +353,31 @@ textarea{resize:none;line-height:1.65;width:100%}
               <div class="lbl">Saldo Total (Soma das Carteiras)</div>
               <div class="f-v" id="fin-total">R$ 0,00</div>
             </div>
-            <button class="ib" style="font-size:14px; padding:6px 12px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="addAccount()">+ Conta</button>
+            <button class="ib" style="font-size:14px; padding:6px 12px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="addAccount()">+ Carteira</button>
          </div>
          <div id="acc-list" class="acc-list"></div>
-         <div class="f-proj" id="fin-proj">Previsão após pagar contas pendentes: R$ 0,00</div>
+      </div>
+      <div style="margin-bottom:1rem">
+         <div class="lbl" style="margin-bottom:8px">Projeção Mês a Mês</div>
+         <div id="fin-proj" style="overflow-x:auto; display:flex; gap:8px; padding-bottom:8px;"></div>
       </div>
       <div class="tf">
-        <div class="tftop"><input type="text" id="bill-desc" placeholder="Nova conta a pagar..."/><button class="ib" onclick="addBill()">+</button></div>
+        <div class="tftop">
+           <select id="bill-type" style="padding:9px 6px; font-size:16px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp); flex-shrink:0"><option value="-">🔴</option><option value="+">🟢</option></select>
+           <input type="text" id="bill-desc" placeholder="Transação (ex: Aluguel)" style="flex:1"/>
+           <button class="ib" onclick="addBill()">+</button>
+        </div>
         <div class="tf2">
           <div class="tff"><label>Vencimento</label><input type="date" id="bill-date"/></div>
-          <div class="tff"><label>Valor (R$)</label><input type="number" id="bill-val" step="0.01" placeholder="0.00"/></div>
+          <div class="tff"><label>Valor (R$)</label><input type="number" id="bill-val" step="0.01" placeholder="0.00" min="0"/></div>
         </div>
       </div>
       <div id="bill-list" style="overflow-y:auto; flex:1"></div>
     </div>
   </div>
   <div class="tabbar">
-    <button id="tb-tasks" class="tb active" onclick="swTab('tasks',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.3"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Tarefas</button>
-    <button id="tb-agenda" class="tb" onclick="swTab('agenda',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 2v3M12 2v3M2 8h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Agenda</button>
+    <button id="tb-agenda" class="tb active" onclick="swTab('agenda',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 2v3M12 2v3M2 8h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Agenda</button>
+    <button id="tb-tasks" class="tb" onclick="swTab('tasks',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.3"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Tarefas</button>
     <button id="tb-notes" class="tb" onclick="swTab('notes',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 6h6M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Notas</button>
     <button id="tb-habitos" class="tb" onclick="swTab('habitos',this)"><svg viewBox="0 0 18 18" fill="none"><path d="M9 3a6 6 0 1 1 0 12A6 6 0 0 1 9 3zm0 2v4l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Hábitos</button>
     <button id="tb-fin" class="tb" onclick="swTab('fin',this)"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M16 12h.01M3 10h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Finanças</button>
@@ -450,7 +452,7 @@ const QUOTES=[
   'A jornada de mil milhas começa com um passo.', 'A disciplina é a ponte entre metas e realizações.'
 ];
 const NOW=new Date(),TY=NOW.getFullYear(),TM=NOW.getMonth(),TD=NOW.getDate();
-const TABS=['tasks','agenda','notes','habitos','fin'];
+const TABS=['agenda','tasks','notes','habitos','fin'];
 
 const EMOJI_CATS=[
   {cat:'💪 Saúde',e:['💧','🏃','🧘','🍎','💊','🛏','🚴','🏋','🥗','🦷','🧴','❤️','🫁','🩺','🥤','🧃']},
@@ -487,14 +489,13 @@ const BADGE_DEFS=[
 ];
 
 const TUT_STEPS=[
-  {ico:'👋',ttl:'Bem-vindo!',txt:'Seu organizador pessoal. Vamos mostrar as principais funções em alguns passos.',tab:null},
-  {ico:'✅',ttl:'Tarefas',txt:'Crie tarefas com data, hora e notificação. Deslize a tela para navegar entre as abas.',tab:'tasks'},
-  {ico:'📅',ttl:'Agenda',txt:'Visualize tudo no calendário. Deslize no meio do calendário para trocar o mês/semana.',tab:'agenda'},
-  {ico:'📝',ttl:'Notas',txt:'Anote ideias e ordene-as segurando a nota por meio segundo. O botão voltar do celular salva a nota.',tab:'notes'},
-  {ico:'⏰',ttl:'Hábitos',txt:'Crie hábitos e reordene segurando o card. Toque nas bolhas para marcar progresso.',tab:'habitos'},
-  {ico:'💵',ttl:'Finanças',txt:'Subdivida seus saldos e veja suas contas a pagar integradas direto na sua Agenda.',tab:'fin'},
+  {ico:'👋',ttl:'Bem-vindo!',txt:'Seu organizador pessoal. Vamos mostrar as principais funções.',tab:null},
+  {ico:'📅',ttl:'Agenda',txt:'Visualize tudo no calendário. Deslize no meio do calendário para trocar o mês.',tab:'agenda'},
+  {ico:'✅',ttl:'Tarefas',txt:'Crie tarefas com data, hora e notificação.',tab:'tasks'},
+  {ico:'📝',ttl:'Notas',txt:'Anote ideias e ordene-as segurando a nota por meio segundo. O app confere se você quer salvar antes de sair.',tab:'notes'},
+  {ico:'⏰',ttl:'Hábitos',txt:'Crie hábitos e reordene segurando o card. O Timer vibra ao final.',tab:'habitos'},
+  {ico:'💵',ttl:'Finanças',txt:'Crie carteiras, adicione receitas/despesas e veja a projeção automática para os próximos 6 meses.',tab:'fin'},
   {ico:'🏆',ttl:'Conquistas',txt:'Acumule sequências e ganhe badges! Toque no troféu 🏆 no topo para ver.',tab:null},
-  {ico:'⚙️',ttl:'Tudo pronto!',txt:'Configure tudo na engrenagem. Bom uso! 🚀',tab:null},
 ];
 let tutStep=0;
 
@@ -503,6 +504,7 @@ const getDK=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${S
 const getToday=()=>getDK(new Date());
 const addDays=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r;};
 const ck=(y,m,d)=>`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+const fmtC=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 function fmtDt(dk,dt){if(!dk)return'';const[y,m,d]=dk.split('-').map(Number);const s=new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'numeric',month:'short'});return dt?`${s} · ${dt}`:s;}
 function isOv(dk,dt){if(!dk)return false;const[y,m,d]=dk.split('-').map(Number);if(dt){const[h,mi]=dt.split(':').map(Number);return new Date(y,m-1,d,h,mi)<NOW;}return new Date(y,m-1,d,23,59)<NOW;}
 
@@ -520,10 +522,8 @@ function load(){
   try{events=JSON.parse(localStorage.getItem('o_events'))||{};}catch(e){events={};}
   try{accounts=JSON.parse(localStorage.getItem('o_accs'))||[];}catch(e){accounts=[];}
   try{bills=JSON.parse(localStorage.getItem('o_bills'))||[];}catch(e){bills=[];}
-  
-  // Migration fallback for old balance
   const oldB = parseFloat(localStorage.getItem('o_balance'));
-  if(accounts.length === 0 && !isNaN(oldB) && oldB > 0) { accounts.push({id:Date.now(), name:'Carteira Principal', val:oldB}); }
+  if(accounts.length===0&&!isNaN(oldB)&&oldB>0){accounts.push({id:Date.now(),name:'Carteira Principal',val:oldB});}
 }
 function save(){
   localStorage.setItem('o_tasks',JSON.stringify(tasks));
@@ -561,7 +561,6 @@ function schedAll(){
   const nl=n=>n>=60?`${n/60}h`:`${n}min`;
   tasks.filter(t=>!t.done&&t.dk&&t.dt&&t.nb).forEach(t=>{const[y,m,d]=t.dk.split('-').map(Number);const[h,mi]=t.dt.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-t.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`✅ "${t.text}" — faltam ${nl(t.nb)}`,delay,`t-${t.id}`);});
   Object.keys(events).forEach(key=>{const[y,m,d]=key.split('-').map(Number);(events[key]||[]).forEach(ev=>{if(!ev.time||!ev.nb)return;const[h,mi]=ev.time.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-ev.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`📅 "${ev.text}" às ${ev.time} — faltam ${nl(ev.nb)}`,delay,`e-${ev.id}`);});});
-  
   if(cfg.nHab !== false) {
     habits.forEach(h=>{
       if(!isSchedOn(h,new Date()))return;
@@ -625,10 +624,13 @@ function renderTasks(){
   dEl.innerHTML=done.length?`<button class="dtoggle ${doneExp?'open':''}" onclick="doneExp=!doneExp;renderTasks()"><svg width="12" height="12" viewBox="0 0 11 11" fill="none"><rect x="1" y="1" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M3 5.5l1.5 1.5 3.5-3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Concluídas · ${done.length}<span class="arr">›</span></button><div style="display:${doneExp?'block':'none'}">${done.map(t=>tiHTML(t,true)).join('')}</div>`:'';}
 
 // NOTES
-let enid=null;
-function openNote(id){enid=id;const n=id==='new'?null:notes.find(n=>n.id===id);document.getElementById('nt-ttl').value=n?n.title:'';document.getElementById('nt-bdy').value=n?n.body:'';document.getElementById('nlv').style.display='none';document.getElementById('nev').classList.add('open');history.pushState({note:true},'');}
+let enid=null, origNTitle='', origNBody='';
+function openNote(id){enid=id;const n=id==='new'?null:notes.find(n=>n.id===id);origNTitle=n?n.title:'';origNBody=n?n.body:'';document.getElementById('nt-ttl').value=origNTitle;document.getElementById('nt-bdy').value=origNBody;document.getElementById('nlv').style.display='none';document.getElementById('nev').classList.add('open');history.pushState({note:true},'');}
 function closeNote(auto=false){
-  if(auto){const title=document.getElementById('nt-ttl').value.trim()||'Sem título',body=document.getElementById('nt-bdy').value.trim();if(title!=='Sem título'||body){if(enid==='new')notes.unshift({id:Date.now(),title,body,date:NOW.toLocaleDateString('pt-BR')});else notes=notes.map(n=>n.id===enid?{...n,title,body}:n);save();renderNotes();toast('Nota salva automaticamente ✓');}}
+  const ct=document.getElementById('nt-ttl').value.trim(), cb=document.getElementById('nt-bdy').value.trim();
+  if(ct!==origNTitle || cb!==origNBody){
+     if(confirm("Existem alterações não salvas. Deseja salvar agora?")){ saveNote(); return; }
+  }
   document.getElementById('nlv').style.display='flex';document.getElementById('nev').classList.remove('open');enid=null;
 }
 function saveNote(){const title=document.getElementById('nt-ttl').value.trim()||'Sem título',body=document.getElementById('nt-bdy').value.trim();if(enid==='new')notes.unshift({id:Date.now(),title,body,date:NOW.toLocaleDateString('pt-BR')});else notes=notes.map(n=>n.id===enid?{...n,title,body}:n);save();renderNotes();document.getElementById('nlv').style.display='flex';document.getElementById('nev').classList.remove('open');enid=null;}
@@ -656,21 +658,14 @@ function bindDrag(containerId, itemClass, onReorder) {
         if(!t || e.target.closest('button') || e.target.closest('.bub')) return;
         sx = e.touches[0].clientX; sy = e.touches[0].clientY;
         dTimer = setTimeout(() => {
-            dEl = t;
-            dEl.classList.add('dragging');
-            dEl.style.opacity = '0.5';
-            dEl.style.transform = 'scale(0.95)';
-            dEl.style.transition = 'none';
+            dEl = t; dEl.classList.add('dragging');
+            dEl.style.opacity = '0.5'; dEl.style.transform = 'scale(0.95)'; dEl.style.transition = 'none';
             if(navigator.vibrate) navigator.vibrate(50);
         }, 500); 
     }, {passive:true});
 
     g.addEventListener('touchmove', e => {
-        if(!dEl && dTimer) { 
-            if(Math.abs(e.touches[0].clientX - sx)>15 || Math.abs(e.touches[0].clientY - sy)>15) { 
-                clearTimeout(dTimer); dTimer=null; 
-            } 
-        }
+        if(!dEl && dTimer) { if(Math.abs(e.touches[0].clientX - sx)>15 || Math.abs(e.touches[0].clientY - sy)>15) { clearTimeout(dTimer); dTimer=null; } }
         if(dEl) {
             e.preventDefault();
             const y = e.touches[0].clientY;
@@ -686,8 +681,7 @@ function bindDrag(containerId, itemClass, onReorder) {
         if(dEl) {
             dEl.classList.remove('dragging');
             dEl.style.opacity = ''; dEl.style.transform = ''; dEl.style.transition = '';
-            dEl = null;
-            onReorder();
+            dEl = null; onReorder();
         }
     };
     g.addEventListener('touchend', endDrag); g.addEventListener('touchcancel', endDrag);
@@ -701,25 +695,38 @@ function chMonth(dir){if(calView==='month'){cM+=dir;if(cM<0){cM=11;cY--;}if(cM>1
 function selDay(d){selD=d;renderCal();document.getElementById('ev-sec').style.display='block';document.getElementById('ev-dlbl').textContent=new Date(cY,cM,d).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});const hol=getHol(cY,cM,d),hr=document.getElementById('hol-row');if(hol){hr.style.display='flex';document.getElementById('hol-nm').textContent=hol;}else hr.style.display='none';renderEvList();}
 function addEvent(){const text=document.getElementById('ev-in').value.trim();if(!text||selD===null)return;const time=document.getElementById('ev-time').value||null,nb=parseInt(document.getElementById('ev-ntf').value)||0;const k=ckSel();if(!events[k])events[k]=[];events[k].push({id:Date.now(),text,time,nb,done:false});document.getElementById('ev-in').value='';document.getElementById('ev-time').value='';save();schedAll();renderEvList();renderCal();renderTasks();}
 
-function renderEvList(){if(selD===null)return;const k=ckSel(),evs=(events[k]||[]).slice().sort((a,b)=>(a.time||'').localeCompare(b.time||'')),dT=tasks.filter(t=>t.dk===k),dBills=bills.filter(b=>b.date===k),el=document.getElementById('ev-list');
-  if(!evs.length&&!dT.length&&!dBills.length){el.innerHTML='<p style="font-size:13px;color:var(--txt4)">Sem eventos, tarefas ou contas neste dia.</p>';return;}
+function renderEvList(){
+  if(selD===null)return;
+  const k=ckSel(), evs=(events[k]||[]).slice().sort((a,b)=>(a.time||'').localeCompare(b.time||'')), dT=tasks.filter(t=>t.dk===k), dBills=bills.filter(b=>b.date===k), el=document.getElementById('ev-list');
+  if(!evs.length&&!dT.length&&!dBills.length){el.innerHTML='<p style="font-size:13px;color:var(--txt4)">Sem eventos, tarefas ou finanças neste dia.</p>';return;}
   const nl=n=>n>=60?`${n/60}h antes`:`${n}min antes`;
   
-  const bh=dBills.map(b=>`<div class="evi ${b.paid?'done-ev':''}"><div class="tck ${b.paid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id});renderEvList()">...</div><div class="ei2"><div class="et2">${esc(b.desc)}<span class="ebdg" style="background:#e8f5e9;color:#2e7d32">conta</span></div><div class="em2">${Number(b.val).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div><button class="bd" onclick="delBill(${b.id});renderEvList()">×</button></div>`).join('');
+  const bh=dBills.map(b=>`<div class="evi ${b.paid?'done-ev':''}"><div class="tck ${b.paid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id});renderEvList()">...</div><div class="ei2"><div class="et2">${esc(b.desc)} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="em2">${fmtC(b.val)}</div></div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id})">✏️</button><button class="bd" onclick="delBill(${b.id});renderEvList()">×</button></div>`).join('');
   const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}<span class="ebdg etask">tarefa</span></div>${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`).join('');
   const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}${ev.nb?`<span class="ebdg">🔔 ${nl(ev.nb)}</span>`:''}</div></div><button class="bd" onclick="delEvGlobal('${k}',${ev.id})">×</button></div>`).join('');
   
-  el.innerHTML=(dBills.length?`<p class="lbl" style="margin-bottom:5px">Contas a Pagar</p>`+bh:'')+(dT.length?`<p class="lbl" style="margin-top:${dBills.length?7:0}px;margin-bottom:5px">Tarefas</p>`+th:'')+(evs.length?`<p class="lbl" style="margin-top:${dT.length||dBills.length?7:0}px;margin-bottom:5px">Eventos</p>`+eh:'');
+  el.innerHTML=(dBills.length?`<p class="lbl" style="margin-bottom:5px">Finanças</p>`+bh:'')+(dT.length?`<p class="lbl" style="margin-top:${dBills.length?7:0}px;margin-bottom:5px">Tarefas</p>`+th:'')+(evs.length?`<p class="lbl" style="margin-top:${dT.length||dBills.length?7:0}px;margin-bottom:5px">Eventos</p>`+eh:'');
 }
 
 function renderCal(){if(calView==='month')renderMonth();else if(calView==='week')renderWeek();else renderDay();}
 function renderMonth(){ensureHols(cY);document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span>${MO[cM]} ${cY}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="cdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div id="cgrid" class="cgrid"></div>`;const fd=new Date(cY,cM,1).getDay(),dim=new Date(cY,cM+1,0).getDate();let h='';for(let i=0;i<fd;i++)h+='<div class="cc emp"></div>';for(let d=1;d<=dim;d++){const past=cY<TY||(cY===TY&&cM<TM)||(cY===TY&&cM===TM&&d<TD),isT=d===TD&&cM===TM&&cY===TY,isSel=d===selD,k=ck(cY,cM,d),hasDot=(events[k]||[]).length>0||tasks.some(t=>t.dk===k)||bills.some(b=>b.date===k),hol=getHol(cY,cM,d);h+=`<div class="${['cc',past?'past':'',isT?'today':'',isSel?'sel':'',hasDot?'dot':'',hol?'hol':''].filter(Boolean).join(' ')}" onclick="selDay(${d})" title="${esc(hol||'')}">${d}</div>`;}document.getElementById('cgrid').innerHTML=h;}
 function renderWeek(){const ref=new Date(TY,TM,TD);ref.setDate(ref.getDate()+wkOff*7);const ws=new Date(ref);ws.setDate(ref.getDate()-ref.getDay());const we=new Date(ws);we.setDate(ws.getDate()+6);const lbl=`${ws.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})} – ${we.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})}`;let strip='';for(let i=0;i<7;i++){const d=new Date(ws);d.setDate(ws.getDate()+i);const y=d.getFullYear(),mo=d.getMonth(),dy=d.getDate(),past=d<new Date(TY,TM,TD),isT=dy===TD&&mo===TM&&y===TY,isSel=selD===dy&&cM===mo&&cY===y,k=ck(y,mo,dy),hasDot=(events[k]||[]).length>0||tasks.some(t=>t.dk===k)||bills.some(b=>b.date===k),hol=getHol(y,mo,dy);strip+=`<div class="${['wd',past?'past':'',isT?'today':'',isSel?'sel':'',hasDot?'dot':'',hol?'hol':''].filter(Boolean).join(' ')}" onclick="cY=${y};cM=${mo};selDay(${dy})" title="${esc(hol||'')}"><span class="wdn">${DL[d.getDay()].substring(0,3)}</span><span class="wdd">${dy}</span></div>`;}document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${lbl}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="wstrip">${strip}</div>`;}
-function renderDay(){if(selD===null){selD=TD;cY=TY;cM=TM;}const d=new Date(cY,cM,selD),k=ck(cY,cM,selD),hol=getHol(cY,cM,selD);const evs=(events[k]||[]).slice().sort((a,b)=>(a.time||'ZZ').localeCompare(b.time||'ZZ')),dT=tasks.filter(t=>t.dk===k).sort((a,b)=>(a.dt||'ZZ').localeCompare(b.dt||'ZZ')),dBills=bills.filter(b=>b.date===k);const items=[...dT.map(t=>({type:'task',time:t.dt||'',obj:t})),...evs.map(e=>({type:'ev',time:e.time||'',obj:e,k})),...dBills.map(b=>({type:'bill',time:'',obj:b}))].sort((a,b)=>a.time.localeCompare(b.time));const ihtml=items.length?items.map(it=>{
-  if(it.type==='task'){const t=it.obj;return`<div class="dti"><span class="dtt">${t.dt||'—'}</span><div class="dtb2"><div class="dttl ${t.done?'done':''}">${esc(t.text)}<span class="ebdg etask">tarefa</span></div></div><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id});renderDay()">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`;}
-  else if(it.type==='ev'){const e=it.obj;return`<div class="dti"><span class="dtt">${e.time||'—'}</span><div class="dtb2"><div class="dttl ${e.done?'done':''}">${esc(e.text)}<span class="ebdg eev">evento</span></div></div><div class="tck ${e.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${it.k}',${e.id});renderDay()">${e.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delEvGlobal('${it.k}',${e.id})">×</button></div>`;}
-  else if(it.type==='bill'){const b=it.obj;return `<div class="dti"><span class="dtt">—</span><div class="dtb2"><div class="dttl ${b.paid?'done':''}">${esc(b.desc)} <span class="ebdg" style="background:#e8f5e9;color:#2e7d32">conta</span></div><div class="tm">${Number(b.val).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div><div class="tck ${b.paid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id});renderDay()">...</div><button class="bd" onclick="delBill(${b.id});renderDay()">×</button></div>`;}
-}).join(''):'<p class="empty" style="margin-top:1rem">Nenhum item neste dia.</p>';document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="cnv" onclick="chMonth(1)">›</button></div>${hol?`<div class="holbanner">🎉 ${esc(hol)}</div>`:''}<div class="dtl">${ihtml}</div>`;document.getElementById('ev-sec').style.display='block';document.getElementById('ev-dlbl').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});document.getElementById('hol-row').style.display='none';renderEvList();}
+function renderDay(){
+  if(selD===null){selD=TD;cY=TY;cM=TM;}
+  const d=new Date(cY,cM,selD),k=ck(cY,cM,selD),hol=getHol(cY,cM,selD);
+  const evs=(events[k]||[]).slice().sort((a,b)=>(a.time||'ZZ').localeCompare(b.time||'ZZ')),dT=tasks.filter(t=>t.dk===k).sort((a,b)=>(a.dt||'ZZ').localeCompare(b.dt||'ZZ')),dBills=bills.filter(b=>b.date===k);
+  const items=[...dT.map(t=>({type:'task',time:t.dt||'',obj:t})),...evs.map(e=>({type:'ev',time:e.time||'',obj:e,k})),...dBills.map(b=>({type:'bill',time:'',obj:b}))].sort((a,b)=>a.time.localeCompare(b.time));
+  const ihtml=items.length?items.map(it=>{
+    if(it.type==='task'){const t=it.obj;return`<div class="dti"><span class="dtt">${t.dt||'—'}</span><div class="dtb2"><div class="dttl ${t.done?'done':''}">${esc(t.text)}<span class="ebdg etask">tarefa</span></div></div><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id});renderDay()">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`;}
+    else if(it.type==='ev'){const e=it.obj;return`<div class="dti"><span class="dtt">${e.time||'—'}</span><div class="dtb2"><div class="dttl ${e.done?'done':''}">${esc(e.text)}<span class="ebdg eev">evento</span></div></div><div class="tck ${e.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${it.k}',${e.id});renderDay()">${e.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delEvGlobal('${it.k}',${e.id})">×</button></div>`;}
+    else if(it.type==='bill'){const b=it.obj;return `<div class="dti"><span class="dtt">—</span><div class="dtb2"><div class="dttl ${b.paid?'done':''}">${esc(b.desc)} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">${fmtC(b.val)}</div></div><div class="tck ${b.paid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id});renderDay()">...</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id});renderDay()">✏️</button><button class="bd" onclick="delBill(${b.id});renderDay()">×</button></div>`;}
+  }).join(''):'<p class="empty" style="margin-top:1rem">Nenhum item neste dia.</p>';
+  document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="cnv" onclick="chMonth(1)">›</button></div>${hol?`<div class="holbanner">🎉 ${esc(hol)}</div>`:''}<div class="dtl">${ihtml}</div>`;
+  document.getElementById('ev-sec').style.display='block';
+  document.getElementById('ev-dlbl').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('hol-row').style.display='none';
+  renderEvList();
+}
 function renderSearch(){const q=document.getElementById('cal-srch').value.trim().toLowerCase(),res=document.getElementById('srch-res');if(!q){res.style.display='none';return;}const R=[];tasks.forEach(t=>{if(t.text.toLowerCase().includes(q))R.push({title:t.text,meta:`📅 ${t.dk?fmtDt(t.dk,t.dt):'Sem data'}`,dk:t.dk,type:'tarefa'});});Object.keys(events).forEach(k=>{(events[k]||[]).forEach(ev=>{if(ev.text.toLowerCase().includes(q)){const[y,m,d]=k.split('-').map(Number);R.push({title:ev.text,meta:`📅 ${new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'})}${ev.time?' '+ev.time:''}`,dk:k,type:'evento'});}});});res.style.display='block';res.innerHTML=!R.length?'<p style="font-size:13px;color:var(--txt4);text-align:center;padding:8px">Nenhum resultado.</p>':R.slice(0,7).map(r=>`<div class="sri" onclick="jumpDK('${r.dk||''}')"><div class="sri-t">${esc(r.title)} <span class="ebdg">${r.type}</span></div><div class="sri-m">${esc(r.meta)}</div></div>`).join('');}
 function jumpDK(dk){if(!dk)return;const[y,m,d]=dk.split('-').map(Number);cY=y;cM=m-1;selD=d;document.getElementById('cal-srch').value='';document.getElementById('srch-res').style.display='none';if(calView!=='month')setView('month');else{renderCal();selDay(d);}}
 
@@ -768,24 +775,63 @@ function renderFocusBody(){if(!focusH)return;const h=habits.find(x=>x.id===focus
 function showCT(){const r=document.getElementById('ct-row');if(r)r.style.display=r.style.display==='none'?'flex':'none';}
 function applyCT(){const v=Math.max(1,Math.min(360,parseInt(document.getElementById('ct-in').value)||25));setTmr(v);}
 function setTmr(min){if(focTmr)clearInterval(focTmr.intv);focTmr={dur:min,remaining:min*60,running:false,intv:null};renderFocusBody();}
-function togTmr(){if(!focTmr)return;if(focTmr.running){clearInterval(focTmr.intv);focTmr.running=false;focTmr.intv=null;const b=document.getElementById('t-btn');if(b)b.textContent='Continuar';}else{focTmr.running=true;focTmr.intv=setInterval(()=>{focTmr.remaining--;const d=document.getElementById('t-disp');if(d)d.textContent=fmtTimer(focTmr.remaining);if(focTmr.remaining<=0){clearInterval(focTmr.intv);focTmr.running=false;focTmr.intv=null;const d2=document.getElementById('t-disp');if(d2)d2.textContent='00:00';const b=document.getElementById('t-btn');if(b){b.textContent='Reiniciar';b.onclick=()=>setTmr(focTmr.dur);}toast(`⏱ ${focusH?focusH.icon:''} Tempo concluído!`);if(Notification.permission==='granted')new Notification('Meu Organizador',{body:`⏱ Timer concluído: ${focusH?focusH.icon+' '+focusH.name:''}`});}},1000);const b=document.getElementById('t-btn');if(b)b.textContent='Pausar';}}
+function togTmr(){
+  if(!focTmr)return;
+  if(focTmr.running){
+    clearInterval(focTmr.intv);focTmr.running=false;focTmr.intv=null;const b=document.getElementById('t-btn');if(b)b.textContent='Continuar';
+  }else{
+    focTmr.running=true;focTmr.intv=setInterval(()=>{
+      focTmr.remaining--;const d=document.getElementById('t-disp');if(d)d.textContent=fmtTimer(focTmr.remaining);
+      if(focTmr.remaining<=0){
+        clearInterval(focTmr.intv);focTmr.running=false;focTmr.intv=null;
+        const d2=document.getElementById('t-disp');if(d2)d2.textContent='00:00';
+        const b=document.getElementById('t-btn');if(b){b.textContent='Reiniciar';b.onclick=()=>setTmr(focTmr.dur);}
+        toast(`⏱ ${focusH?focusH.icon:''} Tempo concluído!`);
+        if(navigator.vibrate) navigator.vibrate([500, 200, 500]);
+        if(Notification.permission==='granted')new Notification('Meu Organizador',{body:`⏱ Timer concluído: ${focusH?focusH.icon+' '+focusH.name:''}`});
+      }
+    },1000);
+    const b=document.getElementById('t-btn');if(b)b.textContent='Pausar';
+  }
+}
 function fmtTimer(s){return`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
 
 // FINANCES
 function renderFin(){
   const totalBal = accounts.reduce((acc, curr) => acc + Number(curr.val), 0);
-  document.getElementById('fin-total').textContent = totalBal.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  document.getElementById('fin-total').textContent = fmtC(totalBal);
   
-  const pendingBills = bills.filter(b => !b.paid).reduce((acc, curr) => acc + Number(curr.val||0), 0);
-  const proj = totalBal - pendingBills;
-  document.getElementById('fin-proj').textContent = `Previsão após pagar contas pendentes: ${proj.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`;
+  // Projection Month by Month
+  let projHtml = '';
+  let runBal = totalBal;
+  const now = new Date();
+  for(let i=0; i<6; i++) {
+      let mDate = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      let y = mDate.getFullYear(), m = mDate.getMonth();
+      let k = `${y}-${String(m+1).padStart(2,'0')}`;
+      let inM=0, outM=0;
+      bills.forEach(b => {
+          if(!b.paid && b.date && b.date.startsWith(k)) {
+              if(b.type === '+') inM += Number(b.val||0); else outM += Number(b.val||0);
+          }
+      });
+      runBal = runBal + inM - outM;
+      projHtml += `<div style="min-width:125px; padding:10px; background:var(--bg3); border:.5px solid var(--brd2); border-radius:10px; flex-shrink:0;">
+         <div style="font-size:11px; color:var(--txt3); font-weight:600; text-transform:uppercase">${MO[m].substring(0,3)}/${y}</div>
+         <div style="font-size:14px; font-weight:600; color:${runBal<0?'#e44':'var(--txt)'}; margin-top:4px">${fmtC(runBal)}</div>
+         <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:10px;">
+           <span style="color:#2e7d32">↑ ${fmtC(inM)}</span> <span style="color:#e44">↓ ${fmtC(outM)}</span>
+         </div>
+      </div>`;
+  }
+  document.getElementById('fin-proj').innerHTML = projHtml;
 
   const accList = document.getElementById('acc-list');
   accList.innerHTML = accounts.map(a => `
     <div class="acc-it">
        <span class="acc-nm"><button class="bd" style="font-size:14px;color:#e44" onclick="delAccount(${a.id})">×</button> ${esc(a.name)}</span>
        <div style="display:flex;gap:8px;align-items:center">
-          <span class="acc-val">${Number(a.val).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+          <span class="acc-val">${fmtC(a.val)}</span>
           <button class="bd" style="font-size:12px;color:var(--txt3)" onclick="editAccount(${a.id})">✏️</button>
        </div>
     </div>
@@ -796,16 +842,17 @@ function renderFin(){
   list.innerHTML = sortedBills.map(b => `
     <div class="ti ${b.paid?'done-item':''}">
       <div class="tck ${b.paid?'done':''}" onclick="togBill(${b.id})">${b.paid?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
-      <div class="tb2"><div class="tt">${esc(b.desc)}</div><div class="tm">📅 ${fmtDt(b.date)} ${b.val ? ` · ${Number(b.val).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}` : ''}</div></div>
+      <div class="tb2"><div class="tt">${esc(b.desc)} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">📅 ${fmtDt(b.date)} ${b.val ? ` · ${fmtC(b.val)}` : ''}</div></div>
+      <button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id})">✏️</button>
       <button class="bd" onclick="delBill(${b.id})">×</button>
     </div>
-  `).join('') || '<p class="empty" style="margin-top:1rem">Nenhuma conta na lista.</p>';
+  `).join('') || '<p class="empty" style="margin-top:1rem">Nenhum lançamento.</p>';
 }
 
 function addAccount(){
   const nm = prompt("Nome da Carteira/Banco:");
   if(!nm || !nm.trim()) return;
-  const vl = prompt(`Saldo inicial para '${nm}':`, "0.00");
+  const vl = prompt(`Saldo inicial para '${nm}' (use ponto para centavos):`, "0.00");
   if(vl !== null && !isNaN(parseFloat(vl.replace(',','.')))) {
      accounts.push({id:Date.now(), name:nm.trim(), val:parseFloat(vl.replace(',','.'))});
      save(); renderFin();
@@ -820,21 +867,33 @@ function editAccount(id){
      save(); renderFin();
   }
 }
-function delAccount(id){ if(confirm("Remover esta carteira?")) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
+function delAccount(id){ if(confirm("Remover esta carteira permanentemente?")) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
 
 function addBill(){
   const desc = document.getElementById('bill-desc').value.trim();
   if(!desc) return;
+  const type = document.getElementById('bill-type').value;
   const date = document.getElementById('bill-date').value;
   const val = document.getElementById('bill-val').value;
-  bills.push({id: Date.now(), desc, date, val, paid: false});
+  bills.push({id: Date.now(), type, desc, date, val, paid: false});
   document.getElementById('bill-desc').value='';
   document.getElementById('bill-date').value='';
   document.getElementById('bill-val').value='';
   save(); renderFin(); renderCal();
 }
+function editBill(id){
+  const b = bills.find(x => x.id === id);
+  if(!b) return;
+  const ndesc = prompt("Nova descrição:", b.desc); if(ndesc === null) return;
+  const nval = prompt("Novo valor (use ponto para centavos):", b.val); if(nval === null) return;
+  const ndate = prompt("Nova data (YYYY-MM-DD):", b.date); if(ndate === null) return;
+  b.desc = ndesc.trim() || b.desc;
+  b.val = parseFloat(nval.replace(',','.')) || b.val;
+  b.date = ndate || b.date;
+  save(); renderFin(); renderEvList(); renderCal();
+}
 function togBill(id){ bills = bills.map(b => b.id === id ? {...b, paid: !b.paid} : b); save(); renderFin(); renderEvList(); renderCal(); }
-function delBill(id){ if(confirm('Excluir esta conta permanentemente?')){ bills = bills.filter(b => b.id !== id); save(); renderFin(); renderEvList(); renderCal(); } }
+function delBill(id){ if(confirm('Excluir este lançamento permanentemente?')){ bills = bills.filter(b => b.id !== id); save(); renderFin(); renderEvList(); renderCal(); } }
 
 // ACHIEVEMENTS & SUGGESTIONS
 function openAch(){
