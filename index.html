@@ -589,11 +589,11 @@ function schedAll(){
   if(typeof Notification === 'undefined' || Notification.permission!=='granted')return;
   navigator.serviceWorker.ready.then(r=>{if(r.active)r.active.postMessage({type:'CLEAR_ALL'});}).catch(()=>{});
   const nl=n=>n>=60?`${n/60}h`:`${n}min`;
-  tasks.filter(t=>!t.done&&t.dk&&t.dt&&t.nb).forEach(t=>{const[y,m,d]=t.dk.split('-').map(Number);const[h,mi]=t.dt.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-t.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`✅ "${t.text}" — faltam ${nl(t.nb)}`,delay,`t-${t.id}`);});
-  Object.keys(events).forEach(key=>{const[y,m,d]=key.split('-').map(Number);(events[key]||[]).forEach(ev=>{if(!ev.time||!ev.nb)return;const[h,mi]=ev.time.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-ev.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`📅 "${ev.text}" às ${ev.time} — faltam ${nl(ev.nb)}`,delay,`e-${ev.id}`);});});
+  (tasks||[]).filter(t=>!t.done&&t.dk&&t.dt&&t.nb).forEach(t=>{const[y,m,d]=t.dk.split('-').map(Number);const[h,mi]=t.dt.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-t.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`✅ "${t.text}" — faltam ${nl(t.nb)}`,delay,`t-${t.id}`);});
+  Object.keys(events||{}).forEach(key=>{const[y,m,d]=key.split('-').map(Number);(events[key]||[]).forEach(ev=>{if(!ev.time||!ev.nb)return;const[h,mi]=ev.time.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-ev.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`📅 "${ev.text}" às ${ev.time} — faltam ${nl(ev.nb)}`,delay,`e-${ev.id}`);});});
   
   if(cfg.nHab !== false) {
-    habits.forEach(h=>{
+    (habits||[]).forEach(h=>{
       if(!isSchedOn(h,new Date()))return;
       if(h.times&&h.times.length){
         const cnt=getHabCnt(h);
@@ -635,7 +635,7 @@ function toast(msg){const t=document.createElement('div');t.style.cssText='posit
 
 // TASKS + EVENTS COMBINED
 let doneExp=false;
-function getEvItems(){const today=getToday(),res=[];Object.keys(events).sort().forEach(k=>{if(k>=today)(events[k]||[]).forEach(ev=>res.push({id:ev.id,text:ev.text,done:ev.done||false,dk:k,dt:ev.time,isEv:true,evKey:k}));});return res;}
+function getEvItems(){const today=getToday(),res=[];Object.keys(events||{}).sort().forEach(k=>{if(k>=today)(events[k]||[]).forEach(ev=>res.push({id:ev.id,text:ev.text,done:ev.done||false,dk:k,dt:ev.time,isEv:true,evKey:k}));});return res;}
 function togTask(id){tasks=tasks.map(t=>t.id===id?{...t,done:!t.done}:t);save();renderTasks();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function delTask(id){if(!confirm('Excluir esta tarefa permanentemente?'))return;tasks=tasks.filter(t=>t.id!==id);save();schedAll();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function reactivate(id){tasks=tasks.map(t=>t.id===id?{...t,done:false}:t);save();renderTasks();}
@@ -651,8 +651,8 @@ function tiHTML(item,isDone=false){
 }
 function renderTasks(){
   const evI=getEvItems();
-  const pend=[...tasks.filter(t=>!t.done).map(t=>({...t,isEv:false})),...evI.filter(e=>!e.done)].sort((a,b)=>{if(!a.dk&&!b.dk)return 0;if(!a.dk)return 1;if(!b.dk)return-1;return a.dk.localeCompare(b.dk);});
-  const done=[...tasks.filter(t=>t.done).map(t=>({...t,isEv:false})),...evI.filter(e=>e.done)];
+  const pend=[...(tasks||[]).filter(t=>!t.done).map(t=>({...t,isEv:false})),...evI.filter(e=>!e.done)].sort((a,b)=>{if(!a.dk&&!b.dk)return 0;if(!a.dk)return 1;if(!b.dk)return-1;return a.dk.localeCompare(b.dk);});
+  const done=[...(tasks||[]).filter(t=>t.done).map(t=>({...t,isEv:false})),...evI.filter(e=>e.done)];
   const pEl=document.getElementById('t-pend'),dEl=document.getElementById('t-done-wrap');
   pEl.innerHTML=!pend.length&&!done.length?'<p class="empty">Nenhuma tarefa ainda.</p>':pend.length?`<p class="lbl">Pendentes · ${pend.length}</p>`+pend.map(t=>tiHTML(t)).join(''):'';
   dEl.innerHTML=done.length?`<button class="dtoggle ${doneExp?'open':''}" onclick="doneExp=!doneExp;renderTasks()"><svg width="12" height="12" viewBox="0 0 11 11" fill="none"><rect x="1" y="1" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M3 5.5l1.5 1.5 3.5-3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Concluídas · ${done.length}<span class="arr">›</span></button><div style="display:${doneExp?'block':'none'}">${done.map(t=>tiHTML(t,true)).join('')}</div>`:'';}
@@ -671,7 +671,7 @@ function saveNote(){const title=document.getElementById('nt-ttl').value.trim()||
 function delNote(id){if(!confirm('Excluir esta nota permanentemente?'))return;notes=notes.filter(n=>n.id!==id);save();renderNotes();}
 function renderNotes(){
   const g=document.getElementById('ngrid');
-  if(!notes.length){g.innerHTML='<p class="empty">Nenhuma anotação ainda.</p>';return;}
+  if(!notes||!notes.length){g.innerHTML='<p class="empty">Nenhuma anotação ainda.</p>';return;}
   g.innerHTML=notes.map(n=>`<div class="nc" data-id="${n.id}">
     <div onclick="openNote(${n.id})">
       <h3>${esc(n.title)}</h3><p>${esc(n.body||'Sem conteúdo')}</p>
@@ -730,7 +730,7 @@ function addEvent(){const text=document.getElementById('ev-in').value.trim();if(
 
 function renderEvList(){
   if(selD===null)return;
-  const k=ckSel(), evs=(events[k]||[]).slice().sort((a,b)=>(a.time||'').localeCompare(b.time||'')), dT=tasks.filter(t=>t.dk===k), dBills=bills.filter(b=>b.date===k), el=document.getElementById('ev-list');
+  const k=ckSel(), evs=(events[k]||[]).slice().sort((a,b)=>(a.time||'').localeCompare(b.time||'')), dT=(tasks||[]).filter(t=>t.dk===k), dBills=(bills||[]).filter(b=>b.date===k), el=document.getElementById('ev-list');
   if(!evs.length&&!dT.length&&!dBills.length){el.innerHTML='<p style="font-size:13px;color:var(--txt4)">Sem eventos, tarefas ou finanças neste dia.</p>';return;}
   const nl=n=>n>=60?`${n/60}h antes`:`${n}min antes`;
   
@@ -742,25 +742,52 @@ function renderEvList(){
 }
 
 function renderCal(){if(calView==='month')renderMonth();else if(calView==='week')renderWeek();else renderDay();}
-function renderMonth(){ensureHols(cY);document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span>${MO[cM]} ${cY}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="cdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div id="cgrid" class="cgrid"></div>`;const fd=new Date(cY,cM,1).getDay(),dim=new Date(cY,cM+1,0).getDate();let h='';for(let i=0;i<fd;i++)h+='<div class="cc emp"></div>';for(let d=1;d<=dim;d++){const past=cY<TY||(cY===TY&&cM<TM)||(cY===TY&&cM===TM&&d<TD),isT=d===TD&&cM===TM&&cY===TY,isSel=d===selD,k=ck(cY,cM,d),hasDot=(events[k]||[]).length>0||tasks.some(t=>t.dk===k)||bills.some(b=>b.date===k),hol=getHol(cY,cM,d);h+=`<div class="${['cc',past?'past':'',isT?'today':'',isSel?'sel':'',hasDot?'dot':'',hol?'hol':''].filter(Boolean).join(' ')}" onclick="selDay(${d})" title="${esc(hol||'')}">${d}</div>`;}document.getElementById('cgrid').innerHTML=h;}
-function renderWeek(){const ref=new Date(TY,TM,TD);ref.setDate(ref.getDate()+wkOff*7);const ws=new Date(ref);ws.setDate(ref.getDate()-ref.getDay());const we=new Date(ws);we.setDate(ws.getDate()+6);const lbl=`${ws.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})} – ${we.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})}`;let strip='';for(let i=0;i<7;i++){const d=new Date(ws);d.setDate(ws.getDate()+i);const y=d.getFullYear(),mo=d.getMonth(),dy=d.getDate(),past=d<new Date(TY,TM,TD),isT=dy===TD&&mo===TM&&y===TY,isSel=selD===dy&&cM===mo&&cY===y,k=ck(y,mo,dy),hasDot=(events[k]||[]).length>0||tasks.some(t=>t.dk===k)||bills.some(b=>b.date===k),hol=getHol(y,mo,dy);strip+=`<div class="${['wd',past?'past':'',isT?'today':'',isSel?'sel':'',hasDot?'dot':'',hol?'hol':''].filter(Boolean).join(' ')}" onclick="cY=${y};cM=${mo};selDay(${dy})" title="${esc(hol||'')}"><span class="wdn">${DL[d.getDay()].substring(0,3)}</span><span class="wdd">${dy}</span></div>`;}document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${lbl}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="wstrip">${strip}</div>`;}
-function renderDay(){
-  if(selD===null){selD=TD;cY=TY;cM=TM;}
-  const d=new Date(cY,cM,selD),k=ck(cY,cM,selD),hol=getHol(cY,cM,selD);
-  const evs=(events[k]||[]).slice().sort((a,b)=>(a.time||'ZZ').localeCompare(b.time||'ZZ')),dT=tasks.filter(t=>t.dk===k).sort((a,b)=>(a.dt||'ZZ').localeCompare(b.dt||'ZZ')),dBills=bills.filter(b=>b.date===k);
-  const items=[...dT.map(t=>({type:'task',time:t.dt||'',obj:t})),...evs.map(e=>({type:'ev',time:e.time||'',obj:e,k})),...dBills.map(b=>({type:'bill',time:'',obj:b}))].sort((a,b)=>a.time.localeCompare(b.time));
-  const ihtml=items.length?items.map(it=>{
-    if(it.type==='task'){const t=it.obj;return`<div class="dti"><span class="dtt">${t.dt||'—'}</span><div class="dtb2"><div class="dttl ${t.done?'done':''}">${esc(t.text)}<span class="ebdg etask">tarefa</span></div></div><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id});renderDay()">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`;}
-    else if(it.type==='ev'){const e=it.obj;return`<div class="dti"><span class="dtt">${e.time||'—'}</span><div class="dtb2"><div class="dttl ${e.done?'done':''}">${esc(e.text)}<span class="ebdg eev">evento</span></div></div><div class="tck ${e.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${it.k}',${e.id});renderDay()">${e.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delEvGlobal('${it.k}',${e.id})">×</button></div>`;}
-    else if(it.type==='bill'){const b=it.obj; const cEmoji=b.cat?b.cat.split(' ')[0]:''; return `<div class="dti"><span class="dtt">—</span><div class="dtb2"><div class="dttl ${b.paid?'done':''}">${cEmoji} ${esc(b.desc)} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">${fmtC(b.val)}</div></div><div class="tck ${b.paid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id});renderDay()">...</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id});renderDay()">✏️</button><button class="bd" onclick="delBill(${b.id});renderDay()">×</button></div>`;}
-  }).join(''):'<p class="empty" style="margin-top:1rem">Nenhum item neste dia.</p>';
-  document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="cnv" onclick="chMonth(1)">›</button></div>${hol?`<div class="holbanner">🎉 ${esc(hol)}</div>`:''}<div class="dtl">${ihtml}</div>`;
-  document.getElementById('ev-sec').style.display='block';
-  document.getElementById('ev-dlbl').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  document.getElementById('hol-row').style.display='none';
-  renderEvList();
+function renderMonth(){
+  try {
+      ensureHols(cY);
+      document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span>${MO[cM]} ${cY}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="cdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div id="cgrid" class="cgrid"></div>`;
+      const fd=new Date(cY,cM,1).getDay(),dim=new Date(cY,cM+1,0).getDate();let h='';
+      for(let i=0;i<fd;i++)h+='<div class="cc emp"></div>';
+      for(let d=1;d<=dim;d++){
+          const past=cY<TY||(cY===TY&&cM<TM)||(cY===TY&&cM===TM&&d<TD),isT=d===TD&&cM===TM&&cY===TY,isSel=d===selD,k=ck(cY,cM,d),hasDot=(events[k]||[]).length>0||(tasks||[]).some(t=>t.dk===k)||(bills||[]).some(b=>b.date===k),hol=getHol(cY,cM,d);
+          h+=`<div class="${['cc',past?'past':'',isT?'today':'',isSel?'sel':'',hasDot?'dot':'',hol?'hol':''].filter(Boolean).join(' ')}" onclick="selDay(${d})" title="${esc(hol||'')}">${d}</div>`;
+      }
+      document.getElementById('cgrid').innerHTML=h;
+  } catch(e){ console.error('Erro na renderização do Mês:', e); }
 }
-function renderSearch(){const q=document.getElementById('cal-srch').value.trim().toLowerCase(),res=document.getElementById('srch-res');if(!q){res.style.display='none';return;}const R=[];tasks.forEach(t=>{if(t.text.toLowerCase().includes(q))R.push({title:t.text,meta:`📅 ${t.dk?fmtDt(t.dk,t.dt):'Sem data'}`,dk:t.dk,type:'tarefa'});});Object.keys(events).forEach(k=>{(events[k]||[]).forEach(ev=>{if(ev.text.toLowerCase().includes(q)){const[y,m,d]=k.split('-').map(Number);R.push({title:ev.text,meta:`📅 ${new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'})}${ev.time?' '+ev.time:''}`,dk:k,type:'evento'});}});});res.style.display='block';res.innerHTML=!R.length?'<p style="font-size:13px;color:var(--txt4);text-align:center;padding:8px">Nenhum resultado.</p>':R.slice(0,7).map(r=>`<div class="sri" onclick="jumpDK('${r.dk||''}')"><div class="sri-t">${esc(r.title)} <span class="ebdg">${r.type}</span></div><div class="sri-m">${esc(r.meta)}</div></div>`).join('');}
+function renderWeek(){
+  try {
+      const ref=new Date(TY,TM,TD);ref.setDate(ref.getDate()+wkOff*7);
+      const ws=new Date(ref);ws.setDate(ref.getDate()-ref.getDay());
+      const we=new Date(ws);we.setDate(ws.getDate()+6);
+      const lbl=`${ws.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})} – ${we.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})}`;
+      let strip='';
+      for(let i=0;i<7;i++){
+          const d=new Date(ws);d.setDate(ws.getDate()+i);const y=d.getFullYear(),mo=d.getMonth(),dy=d.getDate(),past=d<new Date(TY,TM,TD),isT=dy===TD&&mo===TM&&y===TY,isSel=selD===dy&&cM===mo&&cY===y,k=ck(y,mo,dy),hasDot=(events[k]||[]).length>0||(tasks||[]).some(t=>t.dk===k)||(bills||[]).some(b=>b.date===k),hol=getHol(y,mo,dy);
+          strip+=`<div class="${['wd',past?'past':'',isT?'today':'',isSel?'sel':'',hasDot?'dot':'',hol?'hol':''].filter(Boolean).join(' ')}" onclick="cY=${y};cM=${mo};selDay(${dy})" title="${esc(hol||'')}"><span class="wdn">${DL[d.getDay()].substring(0,3)}</span><span class="wdd">${dy}</span></div>`;
+      }
+      document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${lbl}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="wstrip">${strip}</div>`;
+  } catch(e){ console.error('Erro na renderização da Semana:', e); }
+}
+function renderDay(){
+  try {
+      if(selD===null){selD=TD;cY=TY;cM=TM;}
+      const d=new Date(cY,cM,selD),k=ck(cY,cM,selD),hol=getHol(cY,cM,selD);
+      const evs=(events[k]||[]).slice().sort((a,b)=>(a.time||'ZZ').localeCompare(b.time||'ZZ')),dT=(tasks||[]).filter(t=>t.dk===k).sort((a,b)=>(a.dt||'ZZ').localeCompare(b.dt||'ZZ')),dBills=(bills||[]).filter(b=>b.date===k);
+      const items=[...dT.map(t=>({type:'task',time:t.dt||'',obj:t})),...evs.map(e=>({type:'ev',time:e.time||'',obj:e,k})),...dBills.map(b=>({type:'bill',time:'',obj:b}))].sort((a,b)=>a.time.localeCompare(b.time));
+      const ihtml=items.length?items.map(it=>{
+        if(it.type==='task'){const t=it.obj;return`<div class="dti"><span class="dtt">${t.dt||'—'}</span><div class="dtb2"><div class="dttl ${t.done?'done':''}">${esc(t.text)}<span class="ebdg etask">tarefa</span></div></div><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id});renderDay()">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`;}
+        else if(it.type==='ev'){const e=it.obj;return`<div class="dti"><span class="dtt">${e.time||'—'}</span><div class="dtb2"><div class="dttl ${e.done?'done':''}">${esc(e.text)}<span class="ebdg eev">evento</span></div></div><div class="tck ${e.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${it.k}',${e.id});renderDay()">${e.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delEvGlobal('${it.k}',${e.id})">×</button></div>`;}
+        else if(it.type==='bill'){const b=it.obj; const cEmoji=b.cat?b.cat.split(' ')[0]:''; return `<div class="dti"><span class="dtt">—</span><div class="dtb2"><div class="dttl ${b.paid?'done':''}">${cEmoji} ${esc(b.desc)} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">${fmtC(b.val)}</div></div><div class="tck ${b.paid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id});renderDay()">...</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id});renderDay()">✏️</button><button class="bd" onclick="delBill(${b.id});renderDay()">×</button></div>`;}
+      }).join(''):'<p class="empty" style="margin-top:1rem">Nenhum item neste dia.</p>';
+      document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="cnv" onclick="chMonth(1)">›</button></div>${hol?`<div class="holbanner">🎉 ${esc(hol)}</div>`:''}<div class="dtl">${ihtml}</div>`;
+      document.getElementById('ev-sec').style.display='block';
+      document.getElementById('ev-dlbl').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+      document.getElementById('hol-row').style.display='none';
+      renderEvList();
+  } catch(e){ console.error('Erro na renderização do Dia:', e); }
+}
+function renderSearch(){const q=document.getElementById('cal-srch').value.trim().toLowerCase(),res=document.getElementById('srch-res');if(!q){res.style.display='none';return;}const R=[];(tasks||[]).forEach(t=>{if(t.text.toLowerCase().includes(q))R.push({title:t.text,meta:`📅 ${t.dk?fmtDt(t.dk,t.dt):'Sem data'}`,dk:t.dk,type:'tarefa'});});Object.keys(events||{}).forEach(k=>{(events[k]||[]).forEach(ev=>{if(ev.text.toLowerCase().includes(q)){const[y,m,d]=k.split('-').map(Number);R.push({title:ev.text,meta:`📅 ${new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'})}${ev.time?' '+ev.time:''}`,dk:k,type:'evento'});}});});res.style.display='block';res.innerHTML=!R.length?'<p style="font-size:13px;color:var(--txt4);text-align:center;padding:8px">Nenhum resultado.</p>':R.slice(0,7).map(r=>`<div class="sri" onclick="jumpDK('${r.dk||''}')"><div class="sri-t">${esc(r.title)} <span class="ebdg">${r.type}</span></div><div class="sri-m">${esc(r.meta)}</div></div>`).join('');}
 function jumpDK(dk){if(!dk)return;const[y,m,d]=dk.split('-').map(Number);cY=y;cM=m-1;selD=d;document.getElementById('cal-srch').value='';document.getElementById('srch-res').style.display='none';if(calView!=='month')setView('month');else{renderCal();selDay(d);}}
 
 // HABITS
@@ -787,7 +814,7 @@ function habCardHTML(h){
   const bubtip=cnt===0&&sched?`<span class="bubtip">← toque</span>`:'';
   return`<div class="hcard ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
 }
-function renderHabits(){const tod=habits.filter(h=>isSchedOn(h,new Date())),dn=tod.filter(h=>isHabDone(h)),pct=tod.length?Math.round(dn.length/tod.length*100):0;const g=pct===100?'#1DD1A1,#48DBFB':'#54A0FF,#A29BFE';document.getElementById('hab-list').innerHTML=`<div class="hprog"><div class="hph"><span>${dn.length}/${tod.length} hoje</span><span style="font-size:12px;color:var(--txt3)">${pct}%</span></div><div class="pbw"><div class="pbf" style="width:${pct}%;background:linear-gradient(90deg,${g})"></div></div>${pct===100&&tod.length?'<div class="pbm">🎉 Todos concluídos hoje!</div>':''}</div>${habits.length?habits.map(habCardHTML).join(''):'<p class="empty">Nenhum hábito ainda.</p>'}`;}
+function renderHabits(){const tod=(habits||[]).filter(h=>isSchedOn(h,new Date())),dn=tod.filter(h=>isHabDone(h)),pct=tod.length?Math.round(dn.length/tod.length*100):0;const g=pct===100?'#1DD1A1,#48DBFB':'#54A0FF,#A29BFE';document.getElementById('hab-list').innerHTML=`<div class="hprog"><div class="hph"><span>${dn.length}/${tod.length} hoje</span><span style="font-size:12px;color:var(--txt3)">${pct}%</span></div><div class="pbw"><div class="pbf" style="width:${pct}%;background:linear-gradient(90deg,${g})"></div></div>${pct===100&&tod.length?'<div class="pbm">🎉 Todos concluídos hoje!</div>':''}</div>${habits.length?habits.map(habCardHTML).join(''):'<p class="empty">Nenhum hábito ainda.</p>'}`;}
 function openHF(id){if(id){const h=habits.find(h=>h.id===id);if(h)hfd={...h,customDays:[...(h.customDays||[])],times:[...(h.times||[])]};document.getElementById('hf-ttl').textContent='Editar hábito';}else{hfd={id:null,icon:'⭐',name:'',color:COLORS[5],target:1,times:[],frequency:'daily',customDays:[],reminderTime:''};document.getElementById('hf-ttl').textContent='Novo hábito';}renderHF();document.getElementById('mo-hf').classList.add('open');}
 function closeHF(){document.getElementById('mo-hf').classList.remove('open');}
 function setHabTime(i,v){if(!hfd.times)hfd.times=[];hfd.times[i]=v;}
@@ -991,58 +1018,55 @@ function endTutorial(){
 
 // ── INIT BLINDADO ──
 window.onload = () => {
-    // 1. Carrega os dados silenciosamente
-    load(); loadCfg(); loadHabits();
-    
-    // 2. Aplica as customizações do usuário
-    applyTheme(); applyName();
-    
-    // 3. Processa URLs compartilhadas (sem atrapalhar o fluxo principal)
     try {
-        const p = new URLSearchParams(location.search);
-        const txt = (p.get('text') || p.get('url') || '').trim();
-        if (txt) {
-            notes.unshift({ id: Date.now(), title: p.get('title') || 'Compartilhado', body: txt, date: NOW.toLocaleDateString('pt-BR') });
-            save(); history.replaceState(null, '', location.pathname); window._shared = true;
-        }
-    } catch(e) {}
-
-    // 4. Prepara o motor visual
-    chgBillType(); 
-    ensureHols(TY); ensureHols(TY+1);
-
-    // 5. Renderiza TODAS as abas para a memória (Resolve o problema de itens sumindo)
-    renderTasks();
-    renderNotes();
-    renderHabits();
-    renderFin();
-    
-    // 6. Força a tela inicial ser a Agenda focado no dia de hoje
-    swTab('agenda', document.getElementById('tb-agenda'));
-    selDay(TD); 
-
-    // 7. Ativa as interações (Teclado e Arrastar)
-    bindDrag('ngrid', '.nc', () => {
-        const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id))));
-        notes=arr.filter(Boolean); save();
-    });
-    bindDrag('hab-list', '.hcard', () => {
-        const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id))));
-        habits=arr.filter(Boolean); saveHabits();
-    });
-    
-    document.getElementById('task-in').addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); });
-    document.getElementById('ev-in').addEventListener('keydown', e => { if (e.key === 'Enter') addEvent(); });
-
-    if (window._shared) { swTab('notes', document.getElementById('tb-notes')); toast('✓ Texto salvo nas notas!'); }
-
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) schedAll(); });
-    
-    // 8. Só depois que a tela toda estiver desenhada, ele aciona os alarmes e o tutorial (Evita bloqueios)
-    setTimeout(() => {
+        // 1. Carrega dados do celular
+        load(); loadCfg(); loadHabits();
+        
+        // 2. Aplica personalizações visuais
+        applyTheme(); applyName();
+        chgBillType(); 
+        
+        // 3. Reseta a seleção do dia para o Calendário aparecer perfeitamente
+        selD = null;
+        
+        // 4. Desenha toda a interface antes de qualquer processamento assíncrono
+        renderTasks(); renderNotes(); renderHabits(); renderFin(); renderCal();
+        
+        // 5. Liga o Drag & Drop (Arrastar)
+        bindDrag('ngrid', '.nc', () => {
+            const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id))));
+            notes=arr.filter(Boolean); save();
+        });
+        bindDrag('hab-list', '.hcard', () => {
+            const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id))));
+            habits=arr.filter(Boolean); saveHabits();
+        });
+        
+        // 6. Prepara calendários de feriados
+        ensureHols(TY); ensureHols(TY+1);
+        
+        // 7. Eventos de Teclado
+        document.getElementById('task-in').addEventListener('keydown', e => { if(e.key==='Enter') addTask(); });
+        document.getElementById('ev-in').addEventListener('keydown', e => { if(e.key==='Enter') addEvent(); });
+        
+        // 8. Tratamento de links compartilhados
+        try {
+            const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();
+            if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}
+        } catch(e) {}
+        
+        if(window._shared){swTab('notes',document.getElementById('tb-notes'));toast('✓ Texto salvo nas notas!');}
+        
+        // 9. Agendamentos de Notificações
+        document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         schedAll();
-        startTutorial();
-    }, 300);
+        
+        // 10. Chama tutorial se for a primeira vez
+        setTimeout(startTutorial, 200);
+
+    } catch (err) {
+        console.error("Erro na inicialização do App:", err);
+    }
 }
 </script>
 </body>
