@@ -15,13 +15,13 @@
 body{font-family:system-ui,sans-serif;background:var(--bg4);display:flex;justify-content:center;min-height:100vh;padding:.6rem;transition:background .2s}
 #app{width:100%;max-width:490px;background:var(--bg);border-radius:18px;border:.5px solid var(--brd);overflow:hidden;display:flex;flex-direction:column;min-height:96vh; position:relative;}
 
-/* SPLASH SCREEN PREMIUM 100% CSS */
+/* SPLASH SCREEN PREMIUM */
 #splash {
   position: absolute; inset: 0; background: var(--bg); z-index: 9999;
   display: flex; align-items: center; justify-content: center; flex-direction: column;
   border-radius: 18px;
-  animation: fadeOutSplash 0.5s ease-in-out forwards;
-  animation-delay: 1.2s;
+  animation: fadeOutSplash 0.6s ease-in-out forwards;
+  animation-delay: 1.4s;
   pointer-events: none; 
 }
 .sp-ico { font-size: 54px; margin-bottom: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
@@ -673,7 +673,6 @@ document.getElementById('cnt').addEventListener('touchend',e=>{
 function toast(msg){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ac);color:var(--acfg);padding:8px 18px;border-radius:20px;font-size:13px;z-index:999;white-space:nowrap;pointer-events:none;box-shadow:0 2px 14px rgba(0,0,0,.18)';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>{t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(()=>t.remove(),300);},2200);}
 
 // TASKS + EVENTS
-let doneExp=false;
 function getEvItems(){const today=getToday(),res=[];Object.keys(events||{}).sort().forEach(k=>{if(k>=today)((events||{})[k]||[]).filter(Boolean).forEach(ev=>res.push({id:ev.id,text:ev.text,done:ev.done||false,dk:k,dt:ev.time,isEv:true,evKey:k}));});return res;}
 function togTask(id){tasks=tasks.map(t=>t.id===id?{...t,done:!t.done}:t);save();renderTasks();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function delTask(id){if(!confirm('Excluir esta tarefa permanentemente?'))return;tasks=tasks.filter(t=>t.id!==id);save();schedAll();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
@@ -766,8 +765,28 @@ function bindDrag(containerId, itemClass, onReorder) {
 }
 
 // CALENDAR BLINDADO
+function checkDot(k) {
+    let dot = false;
+    try {
+        let rawE = (events || {})[k];
+        if (Array.isArray(rawE) && rawE.length > 0) dot = true;
+        if (!dot && Array.isArray(tasks) && tasks.some(t => t && t.dk === k)) dot = true;
+        if (!dot && Array.isArray(bills) && bills.some(b => b && b.date === k)) dot = true;
+    } catch(e) {}
+    return dot;
+}
+
+let cY=TY,cM=TM,selD=null,calView='month',wkOff=0;
 function ckSel(){return selD!==null?ck(cY,cM,selD):null;}
-function setView(v){calView=v;['month','week','day'].forEach(x=>document.getElementById('vbtn-'+x).classList.toggle('sel',x===v));if(v==='week')wkOff=0;document.getElementById('ev-sec').style.display='none';selD=null;renderCal();}
+function setView(v){
+  calView=v;
+  ['month','week','day'].forEach(x=>document.getElementById('vbtn-'+x).classList.toggle('sel',x===v));
+  if(v==='week')wkOff=0;
+  document.getElementById('ev-sec').style.display='none';
+  if(v==='month') { cY=TY; cM=TM; selD=null; }
+  else if(v==='week') { selD=null; }
+  renderCal();
+}
 function chMonth(dir){if(calView==='month'){cM+=dir;if(cM<0){cM=11;cY--;}if(cM>11){cM=0;cY++;}selD=null;document.getElementById('ev-sec').style.display='none';renderCal();}else if(calView==='week'){wkOff+=dir;renderCal();}else{if(selD===null){selD=TD;}const d=addDays(new Date(cY,cM,selD),dir);cY=d.getFullYear();cM=d.getMonth();selD=d.getDate();renderCal();selDay(selD);}}
 
 function selDay(d){
@@ -778,17 +797,6 @@ function selDay(d){
     const hol=getHol(cY,cM,d),hr=document.getElementById('hol-row');
     if(hol){hr.style.display='flex';document.getElementById('hol-nm').textContent=hol;}else hr.style.display='none';
     renderEvList();
-}
-
-function checkDot(k) {
-    let dot = false;
-    try {
-        let rawE = (events || {})[k];
-        if (Array.isArray(rawE) && rawE.length > 0) dot = true;
-        if (!dot && Array.isArray(tasks) && tasks.some(t => t && t.dk === k)) dot = true;
-        if (!dot && Array.isArray(bills) && bills.some(b => b && b.date === k)) dot = true;
-    } catch(e) {}
-    return dot;
 }
 
 function addEvent(){const text=document.getElementById('ev-in').value.trim();if(!text||selD===null)return;const time=document.getElementById('ev-time').value||null,nb=parseInt(document.getElementById('ev-ntf').value)||0;const k=ckSel();if(!events[k])events[k]=[];events[k].push({id:Date.now(),text,time,nb,done:false});document.getElementById('ev-in').value='';document.getElementById('ev-time').value='';save();schedAll();renderEvList();renderCal();renderTasks();}
@@ -816,32 +824,47 @@ function renderEvList(){
   } catch(e){}
 }
 
+function renderCal(){
+    if(calView==='month') renderMonth();
+    else if(calView==='week') renderWeek();
+    else renderDay();
+}
+
 function renderMonth(){
   try {
-      ensureHols(cY);
-      const fd=new Date(cY,cM,1).getDay(),dim=new Date(cY,cM+1,0).getDate();let h='';
-      for(let i=0;i<fd;i++)h+='<div class="cc emp"></div>';
-      for(let d=1;d<=dim;d++){
-          const past=cY<TY||(cY===TY&&cM<TM)||(cY===TY&&cM===TM&&d<TD);
-          const isT=d===TD&&cM===TM&&cY===TY;
-          const isSel=d===selD;
-          const k=ck(cY,cM,d);
-          const hasDot=checkDot(k);
-          const hol=getHol(cY,cM,d);
+      const hols = ensureHols(cY) || {};
+      let h = '';
+      const fd = new Date(cY, cM, 1).getDay();
+      const dim = new Date(cY, cM + 1, 0).getDate();
+      
+      for(let i=0; i<fd; i++) h += '<div class="cc emp"></div>';
+      
+      for(let d=1; d<=dim; d++){
+          const past = (cY < TY) || (cY === TY && cM < TM) || (cY === TY && cM === TM && d < TD);
+          const isT = (d === TD && cM === TM && cY === TY);
+          const isSel = (d === selD);
+          const k = ck(cY, cM, d);
+          const hasDot = checkDot(k);
+          const hol = hols[k] || null;
           
           let cls = 'cc';
-          if(past) cls+=' past';
-          if(isT) cls+=' today';
-          if(isSel) cls+=' sel';
-          if(hasDot) cls+=' dot';
-          if(hol) cls+=' hol';
+          if(past) cls += ' past';
+          if(isT) cls += ' today';
+          if(isSel) cls += ' sel';
+          if(hasDot) cls += ' dot';
+          if(hol) cls += ' hol';
 
-          h+=`<div class="${cls}" onclick="selDay(${d})" title="${esc(hol||'')}">${d}</div>`;
+          h += `<div class="${cls}" onclick="selDay(${d})" title="${esc(hol||'')}">${d}</div>`;
       }
-      const cmHTML = `<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span>${MO[cM]} ${cY}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="cdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div class="cgrid">${h}</div>`;
+      
+      const html = `<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span>${MO[cM]} ${cY}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="cdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div class="cgrid">${h}</div>`;
       const calMain = document.getElementById('cal-main');
-      if(calMain) calMain.innerHTML = cmHTML;
-  } catch(e){}
+      if(calMain) calMain.innerHTML = html;
+  } catch(e) {
+      console.error('Erro na renderização do Mês:', e);
+      const calMain = document.getElementById('cal-main');
+      if(calMain) calMain.innerHTML = '<div style="padding:20px;text-align:center;color:red;font-size:12px;">Houve um problema de compatibilidade com versões antigas. Tente limpar os dados do navegador.</div>';
+  }
 }
 
 function renderWeek(){
@@ -869,26 +892,18 @@ function renderWeek(){
 
           strip+=`<div class="${cls}" onclick="cY=${y};cM=${mo};selDay(${dy})" title="${esc(hol||'')}"><span class="wdn">${DL[d.getDay()].substring(0,3)}</span><span class="wdd">${dy}</span></div>`;
       }
-      const cmHTML = `<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${lbl}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="wstrip">${strip}</div>`;
-      const calMain = document.getElementById('cal-main');
-      if(calMain) calMain.innerHTML = cmHTML;
+      document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${lbl}</span><button class="cnv" onclick="chMonth(1)">›</button></div><div class="wstrip">${strip}</div>`;
   } catch(e){}
 }
-
 function renderDay(){
   try {
       if(selD===null){selD=TD;cY=TY;cM=TM;}
       const d=new Date(cY,cM,selD),k=ck(cY,cM,selD),hol=getHol(cY,cM,selD);
       
-      let evs = [];
       let rawE = (events||{})[k];
-      if(Array.isArray(rawE)) evs = rawE.slice().sort((a,b)=>(a.time||'ZZ').localeCompare(b.time||'ZZ'));
-      
-      let dT = [];
-      if(Array.isArray(tasks)) dT = tasks.filter(Boolean).filter(t=>t.dk===k).sort((a,b)=>(a.dt||'ZZ').localeCompare(b.dt||'ZZ'));
-      
-      let dBills = [];
-      if(Array.isArray(bills)) dBills = bills.filter(Boolean).filter(b=>b.date===k);
+      let evs = Array.isArray(rawE) ? rawE.slice().sort((a,b)=>(a.time||'ZZ').localeCompare(b.time||'ZZ')) : [];
+      let dT = Array.isArray(tasks) ? tasks.filter(Boolean).filter(t=>t.dk===k).sort((a,b)=>(a.dt||'ZZ').localeCompare(b.dt||'ZZ')) : [];
+      let dBills = Array.isArray(bills) ? bills.filter(Boolean).filter(b=>b.date===k) : [];
       
       const items=[...dT.map(t=>({type:'task',time:t.dt||'',obj:t})),...evs.map(e=>({type:'ev',time:e.time||'',obj:e,k})),...dBills.map(b=>({type:'bill',time:'',obj:b}))].sort((a,b)=>a.time.localeCompare(b.time));
       
@@ -899,8 +914,7 @@ function renderDay(){
       }).join(''):'<p class="empty" style="margin-top:1rem">Nenhum item neste dia.</p>';
       
       const cmHTML = `<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="cnv" onclick="chMonth(1)">›</button></div>${hol?`<div class="holbanner">🎉 ${esc(hol)}</div>`:''}<div class="dtl">${ihtml}</div>`;
-      const calMain = document.getElementById('cal-main');
-      if(calMain) calMain.innerHTML = cmHTML;
+      document.getElementById('cal-main').innerHTML = cmHTML;
       
       document.getElementById('ev-sec').style.display='block';
       document.getElementById('ev-dlbl').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
@@ -1160,28 +1174,33 @@ function endTutorial(){
     }, 400);
 }
 
-// ── INIT BLINDADO ──
-window.onload = () => {
+// ── INIT BLINDADO ABSOLUTO ──
+function initApp() {
     try {
-        // 1. Carrega dados e configurações
         load(); loadCfg(); loadHabits();
         applyTheme(); applyName();
         if(typeof chgBillType === 'function') chgBillType(); 
         
-        // 2. Garante que a Agenda é ativada antes da primeira pintura
-        swTab('agenda', document.getElementById('tb-agenda'));
+        // Define aba ativa silenciosamente para garantir altura pro calendário
+        document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+        document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+        document.getElementById('sec-agenda').classList.add('active');
+        document.getElementById('tb-agenda').classList.add('active');
         
-        // 3. Foca em "Hoje"
-        selD = TD;
-        
-        // 4. Constrói o calendário (BLINDADO) e as outras abas
-        renderCal();
+        // Define variáveis globais e limpa seleção inicial
+        calView = 'month';
+        cY = TY; cM = TM; selD = null;
+
+        // Renderiza tudo
         try{ renderTasks(); } catch(e){}
         try{ renderNotes(); } catch(e){}
         try{ renderHabits(); } catch(e){}
         try{ if(typeof renderFin==='function') renderFin(); } catch(e){}
+        
+        // Renderiza calendário
+        renderCal();
 
-        // 5. Drag and Drop
+        // Listeners e Drag
         try {
             bindDrag('ngrid', '.nc', () => {
                 const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id))));
@@ -1193,14 +1212,9 @@ window.onload = () => {
             });
         } catch(e) {}
         
-        // 6. Feriados
-        try{ ensureHols(TY); ensureHols(TY+1); } catch(e) {}
-        
-        // 7. Inputs
         document.getElementById('task-in').addEventListener('keydown', e => { if(e.key==='Enter') addTask(); });
         document.getElementById('ev-in').addEventListener('keydown', e => { if(e.key==='Enter') addEvent(); });
         
-        // 8. Compartilhamento Web
         try {
             const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();
             if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}
@@ -1208,21 +1222,23 @@ window.onload = () => {
         
         if(window._shared){swTab('notes',document.getElementById('tb-notes'));toast('✓ Texto salvo nas notas!');}
         
-        // 9. Background e Notificações
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         
-        // 10. Splash Screen Auto-Destrutiva
+        // Remove Splash 100% via JS pra nao sobrar rastro
         setTimeout(() => {
             const sp = document.getElementById('splash');
             if(sp) sp.remove(); 
             startTutorial();
-        }, 1500);
+        }, 2200);
 
         schedAll();
     } catch (err) {
-        console.error("Erro critico na inicializacao:", err);
+        console.error("Erro na inicialização:", err);
     }
 }
+
+// Executa assim que o script é lido
+initApp();
 </script>
 </body>
 </html>
