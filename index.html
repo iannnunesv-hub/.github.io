@@ -27,7 +27,10 @@ body{font-family:system-ui,sans-serif;background:var(--bg4);display:flex;justify
 .sp-ico { font-size: 54px; margin-bottom: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
 .sp-title { font-size: 24px; font-weight: 300; color: var(--txt); letter-spacing: 1px; }
 .sp-prem { font-weight: 700; color: #d4af37; font-style: italic; letter-spacing: 0; }
-@keyframes fadeOutSplash { 0% { opacity: 1; visibility: visible; } 100% { opacity: 0; visibility: hidden; z-index: -1; display: none; } }
+@keyframes fadeOutSplash {
+  0% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; z-index: -1; display: none; }
+}
 
 .hdr{background:var(--bg2);border-bottom:.5px solid var(--brd);padding:14px 17px 11px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
 .hdr h1{font-size:18px;font-weight:500;color:var(--txt)}
@@ -83,10 +86,10 @@ textarea{resize:none;line-height:1.65;width:100%}
 .tf{background:var(--card);border-radius:13px;border:.5px solid var(--brd);padding:13px;margin-bottom:1rem;flex-shrink:0}
 .tftop{display:flex;gap:7px;margin-bottom:10px}
 .tftop input{flex:1}
-.tf2{display:flex;gap:4px;flex-wrap:nowrap; align-items:center;}
+.tf2{display:flex;gap:6px;flex-wrap:wrap; align-items:flex-start;}
 .tff{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0;}
 .tff label{font-size:9px;color:var(--txt3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.tff input,.tff select{font-size:11px;padding:6px 4px;height:30px;}
+.tff input,.tff select{font-size:12px;padding:7px 5px;height:32px;}
 .ti{display:flex;align-items:flex-start;gap:9px;padding:11px 13px;border-radius:10px;border:.5px solid var(--brd);margin-bottom:6px;background:var(--card)}
 .ti.done-item .tt{text-decoration:line-through;color:var(--txt4)}
 .tck{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--txt4);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .15s}
@@ -381,7 +384,7 @@ textarea{resize:none;line-height:1.65;width:100%}
         </div>
 
         <div id="sec-notes" class="sec">
-          <div id="nlv"><button class="bnn" onclick="openNote('new')">+ Nova anotação</button><div id="ngrid" class="ng"></div></div>
+          <div id="nlv"><button class="bnn" onclick="openNote('new')">+ Nova anotação</button><div id="ngrid" class="ng no-swipe"></div></div>
           <div id="nev">
             <div class="neh"><button class="bbk" onclick="closeNote(true)">← Voltar</button><button class="bsv" onclick="saveNote()">Salvar</button></div>
             <input type="text" id="nt-ttl" placeholder="Título"/>
@@ -394,7 +397,7 @@ textarea{resize:none;line-height:1.65;width:100%}
             <button class="bnn" style="margin-bottom:0;flex:1" onclick="openHF(null)">+ Novo Hábito</button>
             <button class="bnn" style="margin-bottom:0;flex:1;border-style:solid;background:var(--bg2)" onclick="openSug()">💡 Sugestões</button>
           </div>
-          <div id="hab-list" style="flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:15px"></div>
+          <div id="hab-list" class="no-swipe" style="flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:15px"></div>
         </div>
 
         <div id="sec-fin" class="sec">
@@ -432,9 +435,9 @@ textarea{resize:none;line-height:1.65;width:100%}
             <div class="tf2">
               <div class="tff"><label id="lbl-bill-date">Vencimento</label><input type="date" id="bill-date"/></div>
               <div class="tff"><label>Valor (R$)</label><input type="number" id="bill-val" step="0.01" placeholder="0.00" min="0"/></div>
-              <div class="tff" style="flex:100%; flex-direction:row; align-items:center; gap:8px; margin-top:4px">
-                 <input type="checkbox" id="bill-rep" style="width:16px;height:16px;"/>
-                 <label for="bill-rep" style="margin:0; text-transform:none; font-size:12px; font-weight:500; cursor:pointer">🔁 Repetir todo mês</label>
+              <div style="flex-basis: 100%; display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                 <input type="checkbox" id="bill-rep" style="width:16px;height:16px; margin:0;"/>
+                 <label for="bill-rep" style="margin:0; text-transform:none; font-size:13px; font-weight:500; cursor:pointer; color:var(--txt);">🔁 Repetir todo mês</label>
               </div>
             </div>
           </div>
@@ -548,13 +551,12 @@ const BADGE_DEFS=[
 const TUT_STEPS=[
   {ico:'✨',ttl:'Bem-vindo ao Organizador Premium!',txt:'Para começarmos, como você se chama?', html:'<input type="text" id="tut-name" placeholder="Seu nome..." style="width:100%; text-align:center; padding:12px; font-size:16px; border-radius:10px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt); margin-top:10px; outline:none; font-family:inherit;"/>',tab:null},
   {ico:'📅',ttl:'Agenda Inteligente',txt:'Deslize a tela para navegar! O Mês mostra seus compromissos, finanças e tarefas juntos.',tab:'agenda'},
-  {ico:'💵',ttl:'Finanças Recorrentes',txt:'Agora você pode criar contas que se repetem todo mês e ver a projeção do que vai sobrar.',tab:'fin'},
+  {ico:'💵',ttl:'Finanças Inteligentes',txt:'Agora o app debita o valor automaticamente da sua Carteira quando você marca a conta como paga!',tab:'fin'},
   {ico:'⏰',ttl:'Foco e Hábitos',txt:'Segure os itens por meio segundo para organizar. O Timer Pomodoro agora vibra ao final!',tab:'habitos'},
   {ico:'🏆',ttl:'Tudo pronto!',txt:'Explore o menu da engrenagem para ativar as notificações e o modo escuro. Bom uso! 🚀',tab:null},
 ];
 let tutStep=0;
 
-// NOVAS CATEGORIAS
 const CATS_OUT=['📄 Assinaturas','🛍️ Compra pessoal','🍔 Delivery','🎓 Educação','🏦 Empréstimo','📌 Fixos','🎬 Lazer','🔧 Manutenção','💸 Outros','🏥 Saúde','🛒 Supermercado','🚗 Transporte'];
 const CATS_IN=['💰 Comissões/bônus','💸 Outros','📈 Renda variável','💼 Salário'];
 
@@ -606,6 +608,7 @@ function load(){
 
   const oldB = parseFloat(localStorage.getItem('o_balance'));
   if(accounts.length===0&&!isNaN(oldB)&&oldB>0){accounts.push({id:Date.now(),name:'Carteira Principal',val:oldB});}
+  else if(accounts.length===0) {accounts.push({id:Date.now(),name:'Carteira Principal',val:0});}
 }
 function save(){
   localStorage.setItem('o_tasks',JSON.stringify(tasks));
@@ -678,7 +681,7 @@ function schedAll(){
   }
 }
 
-// TABS E SWIPE
+// TABS E SWIPE NATIVO
 let curTab = 0;
 function swTab(name,btn){
   curTab = TABS.indexOf(name);
@@ -741,6 +744,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function toast(msg){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ac);color:var(--acfg);padding:8px 18px;border-radius:20px;font-size:13px;z-index:999;white-space:nowrap;pointer-events:none;box-shadow:0 2px 14px rgba(0,0,0,.18)';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>{t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(()=>t.remove(),300);},2200);}
 
 // TASKS + EVENTS
+let doneExp=false;
 function getEvItems(){const today=getToday(),res=[];Object.keys(events||{}).sort().forEach(k=>{if(k>=today)((events||{})[k]||[]).filter(Boolean).forEach(ev=>res.push({id:ev.id,text:ev.text,done:ev.done||false,dk:k,dt:ev.time,isEv:true,evKey:k}));});return res;}
 function togTask(id){tasks=tasks.map(t=>t.id===id?{...t,done:!t.done}:t);save();renderTasks();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function delTask(id){if(!confirm('Excluir esta tarefa permanentemente?'))return;tasks=tasks.filter(t=>t.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
@@ -792,7 +796,47 @@ function renderNotes(){
 }
 window.addEventListener('popstate',()=>{if(document.getElementById('nev').classList.contains('open'))closeNote(true);});
 
-// CALENDAR & BILLS LOGIC
+// TOUCH DRAG FOR ALL
+function bindDrag(containerId, itemClass, onReorder) {
+    const g = document.getElementById(containerId);
+    if(!g) return;
+    let dTimer=null, dEl=null, sx=0, sy=0;
+
+    g.addEventListener('touchstart', e => {
+        const t = e.target.closest(itemClass);
+        if(!t || e.target.closest('button') || e.target.closest('.bub')) return;
+        sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+        dTimer = setTimeout(() => {
+            dEl = t; dEl.classList.add('dragging');
+            dEl.style.opacity = '0.5'; dEl.style.transform = 'scale(0.95)'; dEl.style.transition = 'none';
+            if(navigator.vibrate) navigator.vibrate(50);
+        }, 500); 
+    }, {passive:true});
+
+    g.addEventListener('touchmove', e => {
+        if(!dEl && dTimer) { if(Math.abs(e.touches[0].clientX - sx)>15 || Math.abs(e.touches[0].clientY - sy)>15) { clearTimeout(dTimer); dTimer=null; } }
+        if(dEl) {
+            e.preventDefault();
+            const y = e.touches[0].clientY;
+            const els = [...g.querySelectorAll(`${itemClass}:not(.dragging)`)];
+            const afterEl = els.find(el => y <= el.getBoundingClientRect().top + el.getBoundingClientRect().height / 2);
+            if(afterEl) { if(dEl.nextSibling !== afterEl) g.insertBefore(dEl, afterEl); } 
+            else { if(g.lastChild !== dEl) g.appendChild(dEl); }
+        }
+    }, {passive:false});
+
+    const endDrag = () => {
+        if(dTimer) { clearTimeout(dTimer); dTimer=null; }
+        if(dEl) {
+            dEl.classList.remove('dragging');
+            dEl.style.opacity = ''; dEl.style.transform = ''; dEl.style.transition = '';
+            dEl = null; onReorder();
+        }
+    };
+    g.addEventListener('touchend', endDrag); g.addEventListener('touchcancel', endDrag);
+}
+
+// CALENDAR BLINDADO & RECORRÊNCIA
 let cY=TY,cM=TM,selD=null,calView='month',wkOff=0;
 
 function isBillInDay(b, dk) {
@@ -825,6 +869,16 @@ function checkDot(k) {
 }
 
 function ckSel(){return selD!==null?ck(cY,cM,selD):null;}
+
+function triggerCalAnim(dir) {
+    const cm = document.getElementById('cal-main');
+    if(cm) {
+        cm.classList.remove('cal-next', 'cal-prev');
+        void cm.offsetWidth; 
+        cm.classList.add(dir > 0 ? 'cal-next' : 'cal-prev');
+    }
+}
+
 function setView(v){
   calView=v;
   ['month','week','day'].forEach(x=>document.getElementById('vbtn-'+x).classList.toggle('sel',x===v));
@@ -839,14 +893,7 @@ function chMonth(dir){
   if(calView==='month'){cM+=dir;if(cM<0){cM=11;cY--;}if(cM>11){cM=0;cY++;}selD=null;document.getElementById('ev-sec').style.display='none';renderCal();}
   else if(calView==='week'){wkOff+=dir;renderCal();}
   else{if(selD===null){selD=TD;}const d=addDays(new Date(cY,cM,selD),dir);cY=d.getFullYear();cM=d.getMonth();selD=d.getDate();renderCal();selDay(selD);}
-
-  // Slide Animation for Calendar
-  const cm = document.getElementById('cal-main');
-  if(cm) {
-      cm.classList.remove('cal-next', 'cal-prev');
-      void cm.offsetWidth; // trigger reflow
-      cm.classList.add(dir > 0 ? 'cal-next' : 'cal-prev');
-  }
+  triggerCalAnim(dir);
 }
 
 function selDay(d){
@@ -1040,15 +1087,6 @@ function togTmr(){
 function fmtTimer(s){return`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
 
 // FINANCES
-let fY=TY, fM=TM;
-
-function chgFinM(dir) {
-    fM += dir;
-    if(fM > 11) { fM = 0; fY++; }
-    if(fM < 0) { fM = 11; fY--; }
-    renderFin();
-}
-
 function chgBillType(){
   const t = document.getElementById('bill-type').value;
   document.getElementById('lbl-bill-date').textContent = t === '+' ? 'Entrada' : 'Vencimento';
@@ -1069,7 +1107,7 @@ function expandMonth(k, name) {
       if(!cats[key]) cats[key] = {in:0, out:0};
       if(x.type === '+') cats[key].in += Number(x.val); else cats[key].out += Number(x.val);
   });
-  for(let c in cats) {
+  for(let c in Object.keys(cats).sort()) {
       if(cats[c].in > 0) html += `<div class="cat-it"><span>${c}</span><span style="color:#2e7d32">+${fmtC(cats[c].in)}</span></div>`;
       if(cats[c].out > 0) html += `<div class="cat-it"><span>${c}</span><span style="color:#e44">-${fmtC(cats[c].out)}</span></div>`;
   }
@@ -1087,17 +1125,17 @@ function renderFin(){
       for(let i=0; i<6; i++) {
           let mDate = new Date(now.getFullYear(), now.getMonth() + i, 1);
           let y = mDate.getFullYear(), m = mDate.getMonth();
-          let k = `${y}-${String(m+1).padStart(2,'0')}`;
+          let mk = `${y}-${String(m+1).padStart(2,'0')}`;
           let inM=0, outM=0;
           (bills||[]).filter(Boolean).forEach(b => {
               if(!b.paidMap) b.paidMap = {};
-              const isPaid = b.paidMap[k];
-              if(!isPaid && isBillInMonth(b, k)) { 
+              const isPaid = b.paidMap[mk];
+              if(!isPaid && isBillInMonth(b, mk)) { 
                   if(b.type === '+') inM += Number(b.val||0); else outM += Number(b.val||0); 
               }
           });
           runBal = runBal + inM - outM;
-          projHtml += `<div class="no-swipe" onclick="expandMonth('${k}', '${MO[m]}/${y}')" style="min-width:125px; padding:10px; cursor:pointer; background:var(--bg3); border:.5px solid var(--brd2); border-radius:10px; flex-shrink:0;">
+          projHtml += `<div class="no-swipe" onclick="expandMonth('${mk}', '${MO[m]}/${y}')" style="min-width:125px; padding:10px; cursor:pointer; background:var(--bg3); border:.5px solid var(--brd2); border-radius:10px; flex-shrink:0;">
              <div style="font-size:11px; color:var(--txt3); font-weight:600; text-transform:uppercase">${MO[m].substring(0,3)}/${y}</div>
              <div style="font-size:14px; font-weight:600; color:${runBal<0?'#e44':'var(--txt)'}; margin-top:4px">${fmtC(runBal)}</div>
              <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:10px;">
