@@ -67,7 +67,6 @@ textarea{resize:none;line-height:1.65;width:100%}
 .mc{background:none;border:none;font-size:23px;cursor:pointer;color:var(--txt3);line-height:1}
 .mb{overflow-y:auto;flex:1;padding:14px 19px}
 .mf{padding:12px 19px 20px;flex-shrink:0;border-top:.5px solid var(--brd)}
-
 /* SETTINGS */
 .cst{font-size:11px;color:var(--txt3);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin:15px 0 9px}
 .cst:first-child{margin-top:0}
@@ -87,11 +86,10 @@ textarea{resize:none;line-height:1.65;width:100%}
 .tf{background:var(--card);border-radius:13px;border:.5px solid var(--brd);padding:13px;margin-bottom:1rem;flex-shrink:0}
 .tftop{display:flex;gap:7px;margin-bottom:10px}
 .tftop input{flex:1}
-/* AJUSTE ANTI-SOBREPOSIÇÃO */
-.tf2{display:flex;gap:8px;flex-wrap:wrap; align-items:center;}
-.tff{display:flex;flex-direction:column;gap:4px;flex:1;min-width:80px;}
+.tf2{display:flex;gap:8px;flex-wrap:wrap; align-items:flex-start;}
+.tff{display:flex;flex-direction:column;gap:4px;flex:1;min-width:85px;}
 .tff label{font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.tff input,.tff select{font-size:13px;padding:8px;height:36px;width:100%;box-sizing:border-box;}
+.tff input,.tff select{font-size:13px;padding:7px;height:34px;}
 
 .ti{display:flex;align-items:flex-start;gap:9px;padding:11px 13px;border-radius:10px;border:.5px solid var(--brd);margin-bottom:6px;background:var(--card)}
 .ti.done-item .tt{text-decoration:line-through;color:var(--txt4)}
@@ -363,7 +361,7 @@ textarea{resize:none;line-height:1.65;width:100%}
                 <button onclick="addEvent()" style="margin-bottom:1px">+ Evento</button>
               </div>
             </div>
-            <div id="ev-list" style="overflow-y:auto;max-height:35vh"></div>
+            <div id="ev-list" style="overflow-y:auto;max-height:35vh;padding-bottom:20px;"></div>
           </div>
         </div>
         
@@ -421,15 +419,18 @@ textarea{resize:none;line-height:1.65;width:100%}
           </div>
           
           <div class="cnr" style="margin:1.2rem 0 .5rem">
-            <button class="cnv no-swipe" onclick="chgFinM(-1)">‹</button>
+            <button class="cnv" onclick="chgFinM(-1)">‹</button>
             <span id="fin-mlbl" style="font-size:13px;font-weight:600"></span>
-            <button class="cnv no-swipe" onclick="chgFinM(1)">›</button>
+            <button class="cnv" onclick="chgFinM(1)">›</button>
           </div>
 
           <div class="tf">
-            <div class="tftop" style="gap:6px; margin-bottom:8px">
-               <select id="bill-type" onchange="chgBillType()" style="padding:8px 4px; font-size:16px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp); flex-shrink:0"><option value="-">🔴</option><option value="+">🟢</option></select>
-               <select id="bill-cat" style="flex:1"></select>
+            <div class="tftop" style="gap:8px; margin-bottom:8px; align-items:center;">
+               <select id="bill-type" onchange="chgBillType()" style="padding:8px 6px; font-size:14px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp); flex:0 0 auto;">
+                   <option value="-">🔴 Saída</option>
+                   <option value="+">🟢 Entrada</option>
+               </select>
+               <select id="bill-cat" style="flex:1; padding:8px 6px; font-size:14px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp);"></select>
             </div>
             <div class="tftop">
                <input type="text" id="bill-desc" placeholder="Descrição (Opcional)" style="flex:1"/>
@@ -438,7 +439,7 @@ textarea{resize:none;line-height:1.65;width:100%}
             <div class="tf2">
               <div class="tff"><label id="lbl-bill-date">Vencimento</label><input type="date" id="bill-date"/></div>
               <div class="tff"><label>Valor (R$)</label><input type="number" id="bill-val" step="0.01" placeholder="0.00" min="0"/></div>
-              <div style="flex-basis: 100%; display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+              <div class="tff" style="flex-basis: 100%; flex-direction:row; align-items:center; gap:8px; margin-top:4px">
                  <input type="checkbox" id="bill-rep" style="width:16px;height:16px; margin:0;"/>
                  <label for="bill-rep" style="margin:0; text-transform:none; font-size:13px; font-weight:500; cursor:pointer; color:var(--txt);">🔁 Repetir todo mês</label>
               </div>
@@ -554,9 +555,9 @@ const BADGE_DEFS=[
 const TUT_STEPS=[
   {ico:'✨',ttl:'Bem-vindo ao Organizador Premium!',txt:'Para começarmos, como você se chama?', html:'<input type="text" id="tut-name" placeholder="Seu nome..." style="width:100%; text-align:center; padding:12px; font-size:16px; border-radius:10px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt); margin-top:10px; outline:none; font-family:inherit;"/>',tab:null},
   {ico:'📅',ttl:'Agenda Inteligente',txt:'Deslize a tela para navegar! O Mês mostra seus compromissos, finanças e tarefas juntos.',tab:'agenda'},
-  {ico:'💵',ttl:'Finanças Recorrentes',txt:'Agora você pode criar contas que se repetem todo mês e ver a projeção do que vai sobrar.',tab:'fin'},
+  {ico:'💵',ttl:'Finanças Inteligentes',txt:'O app debita o valor automaticamente da sua Carteira quando você marca a conta como paga!',tab:'fin'},
   {ico:'⏰',ttl:'Foco e Hábitos',txt:'Segure os itens por meio segundo para organizar. O Timer Pomodoro agora vibra ao final!',tab:'habitos'},
-  {ico:'🏆',ttl:'Tudo pronto!',txt:'Explore o menu da engrenagem para ativar as notificações e o modo escuro. Bom uso! 🚀',tab:null},
+  {ico:'🏆',ttl:'Tudo pronto!',txt:'Explore o menu da engrenagem para ativar notificações e modo escuro. Bom uso! 🚀',tab:null},
 ];
 let tutStep=0;
 
@@ -703,14 +704,16 @@ document.addEventListener('DOMContentLoaded', () => {
     cnt.addEventListener('touchstart', e => {
         tsX = e.touches[0].clientX; tsY = e.touches[0].clientY;
         isSwipe = false; isScroll = false;
-        tsNoSwipe = !!e.target.closest('.no-swipe') || !!e.target.closest('input') || !!e.target.closest('button') || !!e.target.closest('select') || !!e.target.closest('textarea') || !!e.target.closest('.nc') || !!e.target.closest('.hcard');
+        
+        const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+        tsNoSwipe = !!e.target.closest('.no-swipe') || isInput;
         tsOnCal = !!e.target.closest('#cal-main') && curTab === 0;
         
         if(!tsNoSwipe && !tsOnCal) slider.style.transition = 'none';
     }, {passive:true});
 
     cnt.addEventListener('touchmove', e => {
-        if(tsNoSwipe || tsOnCal || isScroll) return;
+        if(tsNoSwipe || tsOnCal || isScroll || document.querySelector('.dragging')) return;
         const dx = e.touches[0].clientX - tsX;
         const dy = e.touches[0].clientY - tsY;
         
@@ -734,7 +737,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) chMonth(dx < 0 ? 1 : -1);
             return;
         }
-        if(tsNoSwipe) return;
+        if(tsNoSwipe || document.querySelector('.dragging')) return;
         if(isSwipe) {
             const dx = e.changedTouches[0].clientX - tsX;
             if(dx < -60 && curTab < TABS.length-1) curTab++;
@@ -754,13 +757,24 @@ function reactivate(id){tasks=tasks.map(t=>t.id===id?{...t,done:false}:t);save()
 function togEvDone(k,id){events[k]=(events[k]||[]).map(e=>e.id===id?{...e,done:!e.done}:e);save();renderTasks();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function delEvGlobal(k,id){if(!confirm('Excluir este evento permanentemente?'))return;events[k]=(events[k]||[]).filter(e=>e.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function addTask(){const inp=document.getElementById('task-in'),text=inp.value.trim();if(!text)return;const dk=document.getElementById('task-date').value||null,dt=document.getElementById('task-time').value||null,nb=parseInt(document.getElementById('task-ntf').value)||0;tasks.unshift({id:Date.now(),text,done:false,dk,dt,nb});inp.value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';save();schedAll();renderTasks();renderCal();}
+
+function editTask(id) {
+    const t = tasks.find(x => x.id === id); if(!t) return;
+    const nd = prompt("Reprogramar para data (YYYY-MM-DD):", t.dk || getToday()); if(nd === null) return;
+    const nt = prompt("Reprogramar para hora (HH:MM):", t.dt || ''); if(nt === null) return;
+    t.dk = nd; t.dt = nt;
+    save(); renderTasks(); renderCal(); if(selD !== null) renderEvList(); schedAll();
+}
+
 function tiHTML(item,isDone=false){
   const meta=fmtDt(item.dk,item.dt),ov=!item.done&&isOv(item.dk,item.dt),badge=item.isEv?`<span class="ebdg eev">evento</span>`:'';
   const tf=item.isEv?`togEvDone('${item.evKey}',${item.id})`:`togTask(${item.id})`;
   const df=item.isEv?`delEvGlobal('${item.evKey}',${item.id})`:`delTask(${item.id})`;
-  const acts=isDone?`<div class="dtb">${!item.isEv?`<button class="brev" onclick="reactivate(${item.id})">↩</button>`:''}<button class="bperm" onclick="${df}">🗑</button></div>`:`<button class="bd" onclick="${df}">×</button>`;
+  const editBtn = (!isDone && !item.isEv) ? `<button class="bd" style="font-size:13px;margin-right:6px" onclick="editTask(${item.id})">✏️</button>` : '';
+  const acts=isDone?`<div class="dtb">${!item.isEv?`<button class="brev" onclick="reactivate(${item.id})">↩</button>`:''}<button class="bperm" onclick="${df}">🗑</button></div>`:`<div class="dtb">${editBtn}<button class="bd" onclick="${df}">×</button></div>`;
   return`<div class="ti ${item.done?'done-item':''}"><div class="tck ${item.done?'done':''}" onclick="${tf}">${item.done?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="tb2"><div class="tt">${esc(item.text)}${badge}</div>${meta?`<div class="tm ${ov?'ov':''}">${ov?'⚠ ':'📅 '}${esc(meta)}</div>`:''}</div>${acts}</div>`;
 }
+
 function renderTasks(){
   try {
       const evI=getEvItems();
@@ -791,52 +805,12 @@ function renderNotes(){
       g.innerHTML=notes.map(n=>`<div class="nc" data-id="${n.id}">
         <div onclick="openNote(${n.id})">
           <h3>${esc(n.title)}</h3><p>${esc(n.body||'Sem conteúdo')}</p>
-          <div class="nf"><span class="nd">${n.date}</span><button class="bd no-swipe" onclick="event.stopPropagation();delNote(${n.id})">×</button></div>
+          <div class="nf"><span class="nd">${n.date}</span><button class="bd" onclick="event.stopPropagation();delNote(${n.id})">×</button></div>
         </div>
       </div>`).join('');
   } catch(e){}
 }
 window.addEventListener('popstate',()=>{if(document.getElementById('nev').classList.contains('open'))closeNote(true);});
-
-// TOUCH DRAG FOR ALL
-function bindDrag(containerId, itemClass, onReorder) {
-    const g = document.getElementById(containerId);
-    if(!g) return;
-    let dTimer=null, dEl=null, sx=0, sy=0;
-
-    g.addEventListener('touchstart', e => {
-        const t = e.target.closest(itemClass);
-        if(!t || e.target.closest('button') || e.target.closest('.bub')) return;
-        sx = e.touches[0].clientX; sy = e.touches[0].clientY;
-        dTimer = setTimeout(() => {
-            dEl = t; dEl.classList.add('dragging');
-            dEl.style.opacity = '0.5'; dEl.style.transform = 'scale(0.95)'; dEl.style.transition = 'none';
-            if(navigator.vibrate) navigator.vibrate(50);
-        }, 500); 
-    }, {passive:true});
-
-    g.addEventListener('touchmove', e => {
-        if(!dEl && dTimer) { if(Math.abs(e.touches[0].clientX - sx)>15 || Math.abs(e.touches[0].clientY - sy)>15) { clearTimeout(dTimer); dTimer=null; } }
-        if(dEl) {
-            e.preventDefault();
-            const y = e.touches[0].clientY;
-            const els = [...g.querySelectorAll(`${itemClass}:not(.dragging)`)];
-            const afterEl = els.find(el => y <= el.getBoundingClientRect().top + el.getBoundingClientRect().height / 2);
-            if(afterEl) { if(dEl.nextSibling !== afterEl) g.insertBefore(dEl, afterEl); } 
-            else { if(g.lastChild !== dEl) g.appendChild(dEl); }
-        }
-    }, {passive:false});
-
-    const endDrag = () => {
-        if(dTimer) { clearTimeout(dTimer); dTimer=null; }
-        if(dEl) {
-            dEl.classList.remove('dragging');
-            dEl.style.opacity = ''; dEl.style.transform = ''; dEl.style.transition = '';
-            dEl = null; onReorder();
-        }
-    };
-    g.addEventListener('touchend', endDrag); g.addEventListener('touchcancel', endDrag);
-}
 
 // CALENDAR BLINDADO & RECORRÊNCIA
 let cY=TY,cM=TM,selD=null,calView='month',wkOff=0;
@@ -931,7 +905,7 @@ function renderEvList(){
           const isPaid=b.paidMap&&b.paidMap[mK];
           return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="em2">${fmtC(b.val)}</div></div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd" onclick="delBill(${b.id})">×</button></div>`
       }).join('');
-      const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}<span class="ebdg etask">tarefa</span></div>${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`).join('');
+      const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}<span class="ebdg etask">tarefa</span></div>${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd" onclick="delTask(${t.id})">×</button></div>`).join('');
       const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}</div></div><button class="bd" onclick="delEvGlobal('${k}',${ev.id})">×</button></div>`).join('');
       
       el.innerHTML=(dBills.length?`<p class="lbl" style="margin-bottom:5px">Finanças</p>`+bh:'')+(dT.length?`<p class="lbl" style="margin-top:${dBills.length?7:0}px;margin-bottom:5px">Tarefas</p>`+th:'')+(evs.length?`<p class="lbl" style="margin-top:${dT.length||dBills.length?7:0}px;margin-bottom:5px">Eventos</p>`+eh:'');
@@ -1000,7 +974,7 @@ function renderDay(){
       const items=[...dT.map(t=>({type:'task',time:t.dt||'',obj:t})),...evs.map(e=>({type:'ev',time:e.time||'',obj:e,k})),...dBills.map(b=>({type:'bill',time:'',obj:b}))].sort((a,b)=>a.time.localeCompare(b.time));
       
       const ihtml=items.length?items.map(it=>{
-        if(it.type==='task'){const t=it.obj;return`<div class="dti"><span class="dtt">${t.dt||'—'}</span><div class="dtb2"><div class="dttl ${t.done?'done':''}">${esc(t.text)}<span class="ebdg etask">tarefa</span></div></div><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id});renderDay()">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delTask(${t.id})">×</button></div>`;}
+        if(it.type==='task'){const t=it.obj;return`<div class="dti"><span class="dtt">${t.dt||'—'}</span><div class="dtb2"><div class="dttl ${t.done?'done':''}">${esc(t.text)}<span class="ebdg etask">tarefa</span></div></div><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id});renderDay()">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id});renderDay()">✏️</button><button class="bd" onclick="delTask(${t.id})">×</button></div>`;}
         else if(it.type==='ev'){const e=it.obj;return`<div class="dti"><span class="dtt">${e.time||'—'}</span><div class="dtb2"><div class="dttl ${e.done?'done':''}">${esc(e.text)}<span class="ebdg eev">evento</span></div></div><div class="tck ${e.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${it.k}',${e.id});renderDay()">${e.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delEvGlobal('${it.k}',${e.id})">×</button></div>`;}
         else if(it.type==='bill'){const b=it.obj; const isP=b.paidMap&&b.paidMap[mK]; const cEmoji=b.cat?b.cat.split(' ')[0]:''; const cName=b.cat?b.cat.substring(cEmoji.length).trim():''; const dText=b.desc?esc(b.desc):cName; return `<div class="dti"><span class="dtt">—</span><div class="dtb2"><div class="dttl ${isP?'done':''}">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">${fmtC(b.val)}</div></div><div class="tck ${isP?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}');renderDay()">...</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}');renderDay()">✏️</button><button class="bd" onclick="delBill(${b.id});renderDay()">×</button></div>`;}
       }).join(''):'<p class="empty" style="margin-top:1rem">Nenhum item neste dia.</p>';
@@ -1038,7 +1012,7 @@ function habCardHTML(h){
     bubs+=`<div class="hbwrap"><div class="bub ${bsz} ${i<cnt?'filled':''}" style="color:${h.color}" onclick="event.stopPropagation();setBubble(${h.id},${i})"></div>${tl}</div>`;
   }
   const bubtip=cnt===0&&sched?`<span class="bubtip">← toque</span>`:'';
-  return`<div class="hcard no-swipe ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
+  return`<div class="hcard ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
 }
 function renderHabits(){
   try {
@@ -1333,9 +1307,11 @@ function initApp() {
         try{ renderNotes(); } catch(e){}
         try{ renderHabits(); } catch(e){}
         try{ if(typeof renderFin==='function') renderFin(); } catch(e){}
-        
-        // Renderiza o calendário, focando no dia de hoje automaticamente
-        try{ selDay(TD); } catch(e){}
+
+        // Aguarda UI e então desenha a agenda selecionando o dia de hoje
+        setTimeout(() => {
+            try { selDay(TD); } catch(e){}
+        }, 50);
 
         try {
             bindDrag('ngrid', '.nc', () => { const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id)))); notes=arr.filter(Boolean); save(); });
@@ -1354,6 +1330,7 @@ function initApp() {
         
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         
+        // Remove Splash
         setTimeout(() => {
             const sp = document.getElementById('splash');
             if(sp) sp.remove(); 
