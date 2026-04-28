@@ -333,7 +333,7 @@ textarea{resize:none;line-height:1.65;width:100%}
       <button class="ibt" onclick="openAch()" title="Conquistas">🏆</button>
       <button class="gear-btn" onclick="openCfg()" title="Configurações">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
         </svg>
       </button>
     </div>
@@ -759,7 +759,8 @@ document.addEventListener('DOMContentLoaded', () => {
         tsX = e.touches[0].clientX; tsY = e.touches[0].clientY;
         isSwipe = false; isScroll = false;
         
-        tsNoSwipe = !!e.target.closest('.no-swipe') || !!e.target.closest('.mo');
+        // Removemos o bloqueio rígido do formulário para permitir deslizar pela tela
+        tsNoSwipe = !!e.target.closest('.mo');
         tsOnCal = !!e.target.closest('#cal-main') && curTab === 0;
         
         if(!tsNoSwipe && !tsOnCal) slider.style.transition = 'none';
@@ -847,8 +848,8 @@ function renderTasks(){
   } catch(e){}
 }
 
-// NOTES
-let enid=null, origNTitle='', origNBody='', origNType='text', curList=[];
+// NOTES COM CHECKLIST
+let enid=null, origNTitle='', origNBody='', origNType='text', curList=[], origNList=[];
 function openNote(id, type='text'){
     enid=id;
     const n = id==='new'?null:(notes||[]).find(x=>x.id===id);
@@ -856,6 +857,7 @@ function openNote(id, type='text'){
     origNType = n?(n.type||'text'):type;
     origNBody = n?(n.body||''):'';
     curList = n?JSON.parse(JSON.stringify(n.list||[])):[];
+    origNList = JSON.parse(JSON.stringify(curList)); // Salva o estado original da lista
     
     document.getElementById('nt-ttl').value=origNTitle;
     
@@ -882,7 +884,7 @@ function renderListItems() {
             <div class="nli-chk ${item.d?'done':''}" onclick="togListItem(${i})">
                 ${item.d ? `<svg width="10" height="8" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
             </div>
-            <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..."/>
+            <input type="text" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..."/>
             <button class="bd" style="font-size:22px; color:var(--txt4)" onclick="delListItem(${i})">×</button>
         </div>
     `).join('');
@@ -900,7 +902,8 @@ function closeNote(auto=false){
         if(JSON.stringify(cl) !== JSON.stringify(origNList)) changed = true;
     }
     
-    if(changed && confirm("Existem alterações não salvas. Deseja salvá-las?")){ saveNote(); return; }
+    if(changed && confirm("Existem alterações não salvas nesta nota. Deseja salvá-las agora?")){ saveNote(); return; }
+    
     document.getElementById('nlv').style.display='flex';
     document.getElementById('nev').classList.remove('open');
     enid=null;
@@ -921,6 +924,7 @@ function saveNote(){
     } else {
         notes = notes.map(n => n.id===enid ? {...n, title, type:origNType, body, list:listToSave} : n);
     }
+    
     save(); renderNotes();
     document.getElementById('nlv').style.display='flex';
     document.getElementById('nev').classList.remove('open');
@@ -1264,42 +1268,76 @@ function chgBillType(){
 function expandMonth(k, name) {
   const b = (bills||[]).filter(Boolean).filter(x => isBillInMonth(x, k));
   
-  let html = `<div class="ach-stat" style="margin-bottom:15px; font-size:13px">Lançamentos de <strong>${name}</strong></div>`;
+  let totalIn = 0, totalOut = 0;
+  const catsIn = {}, catsOut = {};
+  
+  b.forEach(x => {
+      const key = x.cat || 'Outro';
+      const val = Number(x.val||0);
+      if(x.type === '+') {
+          totalIn += val;
+          if(!catsIn[key]) catsIn[key] = {total:0, items:[]};
+          catsIn[key].total += val;
+          catsIn[key].items.push(x);
+      } else {
+          totalOut += val;
+          if(!catsOut[key]) catsOut[key] = {total:0, items:[]};
+          catsOut[key].total += val;
+          catsOut[key].items.push(x);
+      }
+  });
+  
+  let html = `
+    <div style="display:flex; justify-content:space-between; margin-bottom:15px; background:var(--bg3); padding:14px; border-radius:12px;">
+        <div style="text-align:center; flex:1; border-right:.5px solid var(--brd2);">
+            <div style="font-size:10px; color:var(--txt3); font-weight:600; text-transform:uppercase;">Entradas</div>
+            <div style="font-size:16px; font-weight:600; color:#2e7d32; margin-top:4px;">+${fmtC(totalIn)}</div>
+        </div>
+        <div style="text-align:center; flex:1;">
+            <div style="font-size:10px; color:var(--txt3); font-weight:600; text-transform:uppercase;">Saídas</div>
+            <div style="font-size:16px; font-weight:600; color:#e44; margin-top:4px;">-${fmtC(totalOut)}</div>
+        </div>
+    </div>`;
+
   if(!b.length) {
       html += `<p class="empty" style="margin-top:0">Nenhum lançamento previsto.</p>`;
   } else {
-      const cats = {};
-      b.forEach(x => {
-          const key = x.cat || 'Outro';
-          if(!cats[key]) cats[key] = {in:0, out:0, items:[]};
-          if(x.type === '+') cats[key].in += Number(x.val); else cats[key].out += Number(x.val);
-          cats[key].items.push(x);
-      });
-      
-      const sortedKeys = Object.keys(cats).sort();
-      for(let i=0; i<sortedKeys.length; i++) {
-          const c = sortedKeys[i];
-          const cc = cats[c];
-          html += `<div style="background:var(--bg3); border-radius:10px; padding:10px; margin-bottom:10px;">
-                     <div style="display:flex; justify-content:space-between; font-weight:600; font-size:13px; margin-bottom:5px; color:var(--txt)">
+      const renderGrp = (grp, title, color) => {
+          const keys = Object.keys(grp).sort();
+          if(!keys.length) return '';
+          let res = `<div style="font-size:11px; font-weight:600; color:var(--txt3); margin:18px 0 8px; text-transform:uppercase; letter-spacing:0.05em;">${title}</div>`;
+          keys.forEach((c) => {
+              const cc = grp[c];
+              res += `
+              <div style="background:var(--card); border:.5px solid var(--brd); border-radius:10px; margin-bottom:8px; overflow:hidden;">
+                 <div onclick="const n=this.nextElementSibling; const a=this.querySelector('.arr'); if(n.style.display==='none'){n.style.display='block';a.style.transform='rotate(90deg)';}else{n.style.display='none';a.style.transform='rotate(0deg)';}" style="display:flex; justify-content:space-between; align-items:center; padding:12px; cursor:pointer; font-weight:500; font-size:13px; color:var(--txt); background:var(--bg3);">
+                     <div style="display:flex; align-items:center; gap:8px;">
+                         <span class="arr" style="display:inline-block; transition:transform 0.2s; color:var(--txt3); font-size:16px; line-height:1;">›</span>
                          <span>${c}</span>
-                         <span>
-                             ${cc.in>0 ? `<span style="color:#2e7d32">+${fmtC(cc.in)}</span> ` : ''}
-                             ${cc.out>0 ? `<span style="color:#e44">-${fmtC(cc.out)}</span>` : ''}
-                         </span>
-                     </div>`;
-          cc.items.forEach(it => {
-              const dText = it.desc || c;
-              const isPaid = it.paidMap && it.paidMap[k];
-              html += `<div style="display:flex; justify-content:space-between; font-size:12px; color:var(--txt2); padding:3px 0;">
-                         <span style="${isPaid ? 'text-decoration:line-through;color:var(--txt4)' : ''}">${esc(dText)} ${it.rep?' 🔁':''}</span>
-                         <span style="${isPaid ? 'color:var(--txt4)' : ''}">${fmtC(it.val)}</span>
-                       </div>`;
+                     </div>
+                     <span style="color:${color}; font-weight:600">${fmtC(cc.total)}</span>
+                 </div>
+                 <div style="display:none; padding:4px 12px 12px 12px;">`;
+              cc.items.forEach(it => {
+                  const dText = it.desc || c;
+                  const isPaid = it.paidMap && it.paidMap[k];
+                  res += `
+                    <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--txt2); padding:8px 0; border-bottom:.5px dashed var(--brd2);">
+                      <span style="flex:1; padding-right:10px; ${isPaid ? 'text-decoration:line-through;color:var(--txt4)' : ''}">${esc(dText)} ${it.rep?' 🔁':''}</span>
+                      <span style="${isPaid ? 'color:var(--txt4)' : ''}">${fmtC(it.val)}</span>
+                    </div>`;
+              });
+              res = res.replace(/border-bottom:\.5px dashed var\(--brd2\);(">.*?<\/div>)$/, '">$1');
+              res += `</div></div>`;
           });
-          html += `</div>`;
-      }
+          return res;
+      };
+
+      html += renderGrp(catsIn, 'Receitas Detalhadas', '#2e7d32');
+      html += renderGrp(catsOut, 'Despesas Detalhadas', '#e44');
   }
-  document.getElementById('proj-m-ttl').textContent = 'Resumo do Mês';
+  
+  document.getElementById('proj-m-ttl').textContent = `Resumo: ${name}`;
   document.getElementById('proj-m-body').innerHTML = html;
   document.getElementById('mo-proj').classList.add('open');
 }
