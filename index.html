@@ -475,7 +475,7 @@ textarea{resize:none;line-height:1.65;width:100%}
   <div class="mb">
     <input type="hidden" id="acc-m-id">
     <div class="hff"><label>Nome da Carteira</label><input type="text" id="acc-m-nm" placeholder="Ex: NuBank"></div>
-    <div class="hff"><label>Saldo (R$)</label><input type="number" id="acc-m-val" step="0.01" placeholder="0.00"></div>
+    <div class="hff"><label>Saldo Atual (R$)</label><input type="number" id="acc-m-val" step="0.01" placeholder="0.00"></div>
   </div>
   <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveAccModal()">Salvar Carteira</button></div>
 </div></div>
@@ -484,6 +484,7 @@ textarea{resize:none;line-height:1.65;width:100%}
   <div class="mh"><h2>Editar Lançamento</h2><button class="mc" onclick="closeM('mo-ebill')">×</button></div>
   <div class="mb">
     <input type="hidden" id="ebill-m-id">
+    <div class="hff"><label>Data</label><input type="date" id="ebill-m-date"></div>
     <div class="hff"><label>Descrição (deixe em branco para usar a categoria)</label><input type="text" id="ebill-m-desc" placeholder="Nova descrição..."></div>
     <div class="hff"><label>Valor (R$)</label><input type="number" id="ebill-m-val" step="0.01" placeholder="0.00"></div>
   </div>
@@ -815,6 +816,7 @@ function tiHTML(item,isDone=false){
   const acts=isDone?`<div class="dtb">${!item.isEv?`<button class="brev" onclick="reactivate(${item.id})">↩</button>`:''}<button class="bperm" onclick="${df}">🗑</button></div>`:`<div class="dtb">${editBtn}<button class="bd" onclick="${df}">×</button></div>`;
   return`<div class="ti ${item.done?'done-item':''}"><div class="tck ${item.done?'done':''}" onclick="${tf}">${item.done?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="tb2"><div class="tt">${esc(item.text)}${badge}</div>${meta?`<div class="tm ${ov?'ov':''}">${ov?'⚠ ':'📅 '}${esc(meta)}</div>`:''}</div>${acts}</div>`;
 }
+
 function renderTasks(){
   try {
       const evI=getEvItems();
@@ -1092,7 +1094,7 @@ function habCardHTML(h){
     bubs+=`<div class="hbwrap"><div class="bub ${bsz} ${i<cnt?'filled':''}" style="color:${h.color}" onclick="event.stopPropagation();setBubble(${h.id},${i})"></div>${tl}</div>`;
   }
   const bubtip=cnt===0&&sched?`<span class="bubtip">← toque</span>`:'';
-  return`<div class="hcard no-swipe ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
+  return`<div class="hcard ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
 }
 function renderHabits(){
   try {
@@ -1303,6 +1305,7 @@ function addBill(){
 function editBill(id, mk){
   const b = bills.find(x => x.id === id); if(!b) return;
   document.getElementById('ebill-m-id').value = id;
+  document.getElementById('ebill-m-date').value = b.date || '';
   document.getElementById('ebill-m-desc').value = b.desc || '';
   document.getElementById('ebill-m-val').value = b.val || '';
   document.getElementById('mo-ebill').classList.add('open');
@@ -1310,9 +1313,14 @@ function editBill(id, mk){
 function saveEditBill(){
   const id = Number(document.getElementById('ebill-m-id').value);
   const b = bills.find(x => x.id === id); if(!b) return;
+  
+  const ndate = document.getElementById('ebill-m-date').value;
+  if(ndate) b.date = ndate;
+  
   b.desc = document.getElementById('ebill-m-desc').value.trim();
   const valStr = document.getElementById('ebill-m-val').value;
   if(valStr) b.val = parseFloat(valStr.replace(',','.')) || 0;
+  
   save(); renderFin(); renderEvList(); renderCal(); closeM('mo-ebill');
 }
 
