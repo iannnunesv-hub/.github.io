@@ -419,18 +419,18 @@ textarea{resize:none;line-height:1.65;width:100%}
           </div>
           
           <div class="cnr" style="margin:1.2rem 0 .5rem">
-            <button class="cnv" onclick="chgFinM(-1)">‹</button>
+            <button class="cnv no-swipe" onclick="chgFinM(-1)">‹</button>
             <span id="fin-mlbl" style="font-size:13px;font-weight:600"></span>
-            <button class="cnv" onclick="chgFinM(1)">›</button>
+            <button class="cnv no-swipe" onclick="chgFinM(1)">›</button>
           </div>
 
           <div class="tf">
-            <div class="tftop" style="gap:8px; margin-bottom:8px; align-items:center;">
-               <select id="bill-type" onchange="chgBillType()" style="padding:8px 6px; font-size:14px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp); flex:0 0 auto;">
+            <div style="display:flex; gap:8px; width:100%; margin-bottom:8px;">
+               <select id="bill-type" onchange="chgBillType()" style="width:35%; flex-shrink:0; padding:9px; font-size:14px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp);">
                    <option value="-">🔴 Saída</option>
                    <option value="+">🟢 Entrada</option>
                </select>
-               <select id="bill-cat" style="flex:1; padding:8px 6px; font-size:14px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp);"></select>
+               <select id="bill-cat" style="width:65%; flex-shrink:1; padding:9px; font-size:14px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp);"></select>
             </div>
             <div class="tftop">
                <input type="text" id="bill-desc" placeholder="Descrição (Opcional)" style="flex:1"/>
@@ -439,7 +439,7 @@ textarea{resize:none;line-height:1.65;width:100%}
             <div class="tf2">
               <div class="tff"><label id="lbl-bill-date">Vencimento</label><input type="date" id="bill-date"/></div>
               <div class="tff"><label>Valor (R$)</label><input type="number" id="bill-val" step="0.01" placeholder="0.00" min="0"/></div>
-              <div class="tff" style="flex-basis: 100%; flex-direction:row; align-items:center; gap:8px; margin-top:4px">
+              <div style="flex-basis: 100%; display: flex; align-items: center; gap: 8px; margin-top: 6px;">
                  <input type="checkbox" id="bill-rep" style="width:16px;height:16px; margin:0;"/>
                  <label for="bill-rep" style="margin:0; text-transform:none; font-size:13px; font-weight:500; cursor:pointer; color:var(--txt);">🔁 Repetir todo mês</label>
               </div>
@@ -704,9 +704,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cnt.addEventListener('touchstart', e => {
         tsX = e.touches[0].clientX; tsY = e.touches[0].clientY;
         isSwipe = false; isScroll = false;
-        
-        const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-        tsNoSwipe = !!e.target.closest('.no-swipe') || isInput;
+        tsNoSwipe = !!e.target.closest('.no-swipe'); 
         tsOnCal = !!e.target.closest('#cal-main') && curTab === 0;
         
         if(!tsNoSwipe && !tsOnCal) slider.style.transition = 'none';
@@ -805,12 +803,52 @@ function renderNotes(){
       g.innerHTML=notes.map(n=>`<div class="nc" data-id="${n.id}">
         <div onclick="openNote(${n.id})">
           <h3>${esc(n.title)}</h3><p>${esc(n.body||'Sem conteúdo')}</p>
-          <div class="nf"><span class="nd">${n.date}</span><button class="bd" onclick="event.stopPropagation();delNote(${n.id})">×</button></div>
+          <div class="nf"><span class="nd">${n.date}</span><button class="bd no-swipe" onclick="event.stopPropagation();delNote(${n.id})">×</button></div>
         </div>
       </div>`).join('');
   } catch(e){}
 }
 window.addEventListener('popstate',()=>{if(document.getElementById('nev').classList.contains('open'))closeNote(true);});
+
+// TOUCH DRAG FOR ALL
+function bindDrag(containerId, itemClass, onReorder) {
+    const g = document.getElementById(containerId);
+    if(!g) return;
+    let dTimer=null, dEl=null, sx=0, sy=0;
+
+    g.addEventListener('touchstart', e => {
+        const t = e.target.closest(itemClass);
+        if(!t || e.target.closest('button') || e.target.closest('.bub')) return;
+        sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+        dTimer = setTimeout(() => {
+            dEl = t; dEl.classList.add('dragging');
+            dEl.style.opacity = '0.5'; dEl.style.transform = 'scale(0.95)'; dEl.style.transition = 'none';
+            if(navigator.vibrate) navigator.vibrate(50);
+        }, 500); 
+    }, {passive:true});
+
+    g.addEventListener('touchmove', e => {
+        if(!dEl && dTimer) { if(Math.abs(e.touches[0].clientX - sx)>15 || Math.abs(e.touches[0].clientY - sy)>15) { clearTimeout(dTimer); dTimer=null; } }
+        if(dEl) {
+            e.preventDefault();
+            const y = e.touches[0].clientY;
+            const els = [...g.querySelectorAll(`${itemClass}:not(.dragging)`)];
+            const afterEl = els.find(el => y <= el.getBoundingClientRect().top + el.getBoundingClientRect().height / 2);
+            if(afterEl) { if(dEl.nextSibling !== afterEl) g.insertBefore(dEl, afterEl); } 
+            else { if(g.lastChild !== dEl) g.appendChild(dEl); }
+        }
+    }, {passive:false});
+
+    const endDrag = () => {
+        if(dTimer) { clearTimeout(dTimer); dTimer=null; }
+        if(dEl) {
+            dEl.classList.remove('dragging');
+            dEl.style.opacity = ''; dEl.style.transform = ''; dEl.style.transition = '';
+            dEl = null; onReorder();
+        }
+    };
+    g.addEventListener('touchend', endDrag); g.addEventListener('touchcancel', endDrag);
+}
 
 // CALENDAR BLINDADO & RECORRÊNCIA
 let cY=TY,cM=TM,selD=null,calView='month',wkOff=0;
@@ -1012,7 +1050,7 @@ function habCardHTML(h){
     bubs+=`<div class="hbwrap"><div class="bub ${bsz} ${i<cnt?'filled':''}" style="color:${h.color}" onclick="event.stopPropagation();setBubble(${h.id},${i})"></div>${tl}</div>`;
   }
   const bubtip=cnt===0&&sched?`<span class="bubtip">← toque</span>`:'';
-  return`<div class="hcard ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
+  return`<div class="hcard ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
 }
 function renderHabits(){
   try {
@@ -1307,11 +1345,9 @@ function initApp() {
         try{ renderNotes(); } catch(e){}
         try{ renderHabits(); } catch(e){}
         try{ if(typeof renderFin==='function') renderFin(); } catch(e){}
-
-        // Aguarda UI e então desenha a agenda selecionando o dia de hoje
-        setTimeout(() => {
-            try { selDay(TD); } catch(e){}
-        }, 50);
+        
+        // Renderiza o calendário, focando no dia de hoje automaticamente
+        try{ selDay(TD); } catch(e){}
 
         try {
             bindDrag('ngrid', '.nc', () => { const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id)))); notes=arr.filter(Boolean); save(); });
@@ -1330,7 +1366,7 @@ function initApp() {
         
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         
-        // Remove Splash
+        // Remove Splash 
         setTimeout(() => {
             const sp = document.getElementById('splash');
             if(sp) sp.remove(); 
