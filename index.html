@@ -106,7 +106,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 .dtoggle .arr{margin-left:auto;transition:transform .2s;font-size:14px}
 .dtoggle.open .arr{transform:rotate(90deg)}
 
-/* NOTES & CARDS SELECTION LOCK */
+/* NOTES, LISTS & CARDS SELECTION LOCK */
 .nc, .hcard { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 .ng{display:flex;flex-direction:column;gap:9px;flex:1;overflow-y:auto;overflow-x:hidden; padding-bottom:10px;}
 .nc{border-radius:11px;border:.5px solid var(--brd);padding:14px;cursor:pointer;background:var(--card);transition:transform 0.2s, opacity 0.2s, box-shadow 0.2s; flex-shrink:0;}
@@ -122,6 +122,12 @@ textarea{resize:none;line-height:1.65;width:100%}
 #nt-bdy{border:none;outline:none;font-size:14px;color:var(--txt2);padding:0;border-radius:0;background:transparent;flex:1;min-height:0;height:calc(100svh - 230px)}
 #nev{flex:1;display:none;flex-direction:column;overflow:hidden}
 #nev.open{display:flex}
+
+.nli { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.nli input[type=text] { flex: 1; padding: 8px 10px; font-size: 13px; }
+.nli-chk { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--txt4); display: flex; align-items: center; justify-content: center; cursor: pointer; color: transparent; flex-shrink:0; transition:all 0.15s;}
+.nli-chk.done { background: var(--ac); border-color: var(--ac); color: var(--acfg); }
+.nli.done input { text-decoration: line-through; color: var(--txt4); }
 
 /* CALENDAR */
 .vrow{display:flex;gap:6px;margin-bottom:.8rem;flex-shrink:0}
@@ -385,11 +391,21 @@ textarea{resize:none;line-height:1.65;width:100%}
         </div>
 
         <div id="sec-notes" class="sec">
-          <div id="nlv"><button class="bnn" onclick="openNote('new')">+ Nova anotação</button><div id="ngrid" class="ng"></div></div>
+          <div id="nlv">
+            <div style="display:flex; gap:8px; margin-bottom:1rem; flex-shrink:0;">
+                <button class="bnn" style="margin:0;flex:1;" onclick="openNote('new','text')">+ Texto</button>
+                <button class="bnn" style="margin:0;flex:1;" onclick="openNote('new','list')">+ Lista</button>
+            </div>
+            <div id="ngrid" class="ng"></div>
+          </div>
           <div id="nev">
             <div class="neh"><button class="bbk" onclick="closeNote(true)">← Voltar</button><button class="bsv" onclick="saveNote()">Salvar</button></div>
             <input type="text" id="nt-ttl" placeholder="Título"/>
-            <textarea id="nt-bdy" placeholder="Escreva sua nota..."></textarea>
+            <textarea id="nt-bdy" class="no-swipe" placeholder="Escreva sua nota..."></textarea>
+            <div id="nt-list-wrap" class="no-swipe" style="display:none; flex:1; flex-direction:column; overflow-y:auto;">
+               <div id="nt-list-items"></div>
+               <button class="bnn" style="border-style:dashed; margin-top:8px;" onclick="addListItem()">+ Adicionar item</button>
+            </div>
           </div>
         </div>
 
@@ -415,7 +431,6 @@ textarea{resize:none;line-height:1.65;width:100%}
           <div style="margin-bottom:1rem">
              <div class="lbl" style="margin-bottom:8px">Projeção Mês a Mês</div>
              <div id="fin-proj" class="no-swipe" style="overflow-x:auto; display:flex; gap:8px; padding-bottom:8px; scroll-behavior:smooth"></div>
-             <div id="fin-proj-details" style="display:none; background:var(--card); border:.5px solid var(--brd); border-radius:10px; padding:10px; margin-top:5px;"></div>
           </div>
           
           <div class="cnr" style="margin:1.2rem 0 .5rem">
@@ -499,6 +514,11 @@ textarea{resize:none;line-height:1.65;width:100%}
     <div class="hff"><label>Nova Hora</label><input type="time" id="etask-m-time"></div>
   </div>
   <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditTask()">Salvar Alterações</button></div>
+</div></div>
+
+<div class="mo" id="mo-proj" onclick="bgC(event,'mo-proj')"><div class="md">
+  <div class="mh"><h2 id="proj-m-ttl">Resumo</h2><button class="mc" onclick="closeM('mo-proj')">×</button></div>
+  <div class="mb" id="proj-m-body"></div>
 </div></div>
 
 <div class="mo" id="mo-cfg" onclick="bgC(event,'mo-cfg')"><div class="md">
@@ -739,8 +759,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tsX = e.touches[0].clientX; tsY = e.touches[0].clientY;
         isSwipe = false; isScroll = false;
         
-        const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-        tsNoSwipe = !!e.target.closest('.no-swipe') || isInput || !!e.target.closest('.mo');
+        tsNoSwipe = !!e.target.closest('.no-swipe') || !!e.target.closest('.mo');
         tsOnCal = !!e.target.closest('#cal-main') && curTab === 0;
         
         if(!tsNoSwipe && !tsOnCal) slider.style.transition = 'none';
@@ -829,27 +848,105 @@ function renderTasks(){
 }
 
 // NOTES
-let enid=null, origNTitle='', origNBody='';
-function openNote(id){enid=id;const n=id==='new'?null:(notes||[]).find(n=>n.id===id);origNTitle=n?n.title:'';origNBody=n?n.body:'';document.getElementById('nt-ttl').value=origNTitle;document.getElementById('nt-bdy').value=origNBody;document.getElementById('nlv').style.display='none';document.getElementById('nev').classList.add('open');history.pushState({note:true},'');}
-function closeNote(auto=false){
-  const ct=document.getElementById('nt-ttl').value.trim(), cb=document.getElementById('nt-bdy').value.trim();
-  if(ct!==origNTitle || cb!==origNBody){
-     if(confirm("Existem alterações não salvas nesta nota. Deseja salvá-las agora?")){ saveNote(); return; }
-  }
-  document.getElementById('nlv').style.display='flex';document.getElementById('nev').classList.remove('open');enid=null;
+let enid=null, origNTitle='', origNBody='', origNType='text', curList=[];
+function openNote(id, type='text'){
+    enid=id;
+    const n = id==='new'?null:(notes||[]).find(x=>x.id===id);
+    origNTitle = n?n.title:'';
+    origNType = n?(n.type||'text'):type;
+    origNBody = n?(n.body||''):'';
+    curList = n?JSON.parse(JSON.stringify(n.list||[])):[];
+    
+    document.getElementById('nt-ttl').value=origNTitle;
+    
+    if(origNType === 'list') {
+        document.getElementById('nt-bdy').style.display = 'none';
+        document.getElementById('nt-list-wrap').style.display = 'flex';
+        if(curList.length === 0) curList.push({t:'', d:false});
+        renderListItems();
+    } else {
+        document.getElementById('nt-bdy').style.display = 'block';
+        document.getElementById('nt-list-wrap').style.display = 'none';
+        document.getElementById('nt-bdy').value=origNBody;
+    }
+    
+    document.getElementById('nlv').style.display='none';
+    document.getElementById('nev').classList.add('open');
+    history.pushState({note:true},'');
 }
-function saveNote(){const title=document.getElementById('nt-ttl').value.trim()||'Sem título',body=document.getElementById('nt-bdy').value.trim();if(enid==='new')notes.unshift({id:Date.now(),title,body,date:NOW.toLocaleDateString('pt-BR')});else notes=notes.map(n=>n.id===enid?{...n,title,body}:n);save();renderNotes();document.getElementById('nlv').style.display='flex';document.getElementById('nev').classList.remove('open');enid=null;}
+
+function renderListItems() {
+    const wrap = document.getElementById('nt-list-items');
+    wrap.innerHTML = curList.map((item, i) => `
+        <div class="nli ${item.d?'done':''}">
+            <div class="nli-chk ${item.d?'done':''}" onclick="togListItem(${i})">
+                ${item.d ? `<svg width="10" height="8" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
+            </div>
+            <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..."/>
+            <button class="bd" style="font-size:22px; color:var(--txt4)" onclick="delListItem(${i})">×</button>
+        </div>
+    `).join('');
+}
+function togListItem(i) { curList[i].d = !curList[i].d; renderListItems(); }
+function addListItem() { curList.push({t:'', d:false}); renderListItems(); }
+function delListItem(i) { curList.splice(i,1); renderListItems(); }
+
+function closeNote(auto=false){
+    let changed = false;
+    if(origNTitle !== document.getElementById('nt-ttl').value.trim()) changed = true;
+    if(origNType === 'text' && origNBody !== document.getElementById('nt-bdy').value.trim()) changed = true;
+    if(origNType === 'list') {
+        const cl = curList.filter(x => x.t.trim() !== '');
+        if(JSON.stringify(cl) !== JSON.stringify(origNList)) changed = true;
+    }
+    
+    if(changed && confirm("Existem alterações não salvas. Deseja salvá-las?")){ saveNote(); return; }
+    document.getElementById('nlv').style.display='flex';
+    document.getElementById('nev').classList.remove('open');
+    enid=null;
+}
+function saveNote(){
+    const title = document.getElementById('nt-ttl').value.trim()||'Sem título';
+    let body = '';
+    let listToSave = [];
+    
+    if(origNType === 'text') {
+        body = document.getElementById('nt-bdy').value.trim();
+    } else {
+        listToSave = curList.filter(x => x.t.trim() !== '');
+    }
+    
+    if(enid==='new') {
+        notes.unshift({id:Date.now(), title, type:origNType, body, list:listToSave, date:NOW.toLocaleDateString('pt-BR')});
+    } else {
+        notes = notes.map(n => n.id===enid ? {...n, title, type:origNType, body, list:listToSave} : n);
+    }
+    save(); renderNotes();
+    document.getElementById('nlv').style.display='flex';
+    document.getElementById('nev').classList.remove('open');
+    enid=null;
+}
 function delNote(id){if(!confirm('Excluir esta nota permanentemente?'))return;notes=notes.filter(n=>n.id!==id);save();renderNotes();}
 function renderNotes(){
   try {
       const g=document.getElementById('ngrid');
       if(!notes||!notes.length){g.innerHTML='<p class="empty">Nenhuma anotação ainda.</p>';return;}
-      g.innerHTML=notes.map(n=>`<div class="nc" data-id="${n.id}">
-        <div onclick="openNote(${n.id})">
-          <h3>${esc(n.title)}</h3><p>${esc(n.body||'Sem conteúdo')}</p>
-          <div class="nf"><span class="nd">${n.date}</span><button class="bd no-swipe" onclick="event.stopPropagation();delNote(${n.id})">×</button></div>
-        </div>
-      </div>`).join('');
+      g.innerHTML=notes.map(n=>{
+        let prev = '';
+        if(n.type === 'list') {
+            const dn = (n.list||[]).filter(x=>x.d).length;
+            const tt = (n.list||[]).length;
+            prev = `📋 Lista: ${dn}/${tt} itens concluídos`;
+        } else {
+            prev = esc(n.body||'Sem conteúdo');
+        }
+        return `<div class="nc" data-id="${n.id}">
+          <div onclick="openNote(${n.id})">
+            <h3>${esc(n.title)}</h3><p>${prev}</p>
+            <div class="nf"><span class="nd">${n.date}</span><button class="bd" onclick="event.stopPropagation();delNote(${n.id})">×</button></div>
+          </div>
+        </div>`;
+      }).join('');
   } catch(e){}
 }
 window.addEventListener('popstate',()=>{if(document.getElementById('nev').classList.contains('open'))closeNote(true);});
@@ -1094,7 +1191,7 @@ function habCardHTML(h){
     bubs+=`<div class="hbwrap"><div class="bub ${bsz} ${i<cnt?'filled':''}" style="color:${h.color}" onclick="event.stopPropagation();setBubble(${h.id},${i})"></div>${tl}</div>`;
   }
   const bubtip=cnt===0&&sched?`<span class="bubtip">← toque</span>`:'';
-  return`<div class="hcard ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
+  return`<div class="hcard" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
 }
 function renderHabits(){
   try {
@@ -1166,25 +1263,47 @@ function chgBillType(){
 }
 function expandMonth(k, name) {
   const b = (bills||[]).filter(Boolean).filter(x => isBillInMonth(x, k));
-  const el = document.getElementById('fin-proj-details');
+  
+  let html = `<div class="ach-stat" style="margin-bottom:15px; font-size:13px">Lançamentos de <strong>${name}</strong></div>`;
   if(!b.length) {
-      el.style.display = 'block';
-      el.innerHTML = `<div style="font-size:13px;font-weight:600;color:var(--txt);margin-bottom:6px">Resumo de ${name}</div><p style="font-size:12px;color:var(--txt3)">Nenhum lançamento previsto.</p>`;
-      return;
+      html += `<p class="empty" style="margin-top:0">Nenhum lançamento previsto.</p>`;
+  } else {
+      const cats = {};
+      b.forEach(x => {
+          const key = x.cat || 'Outro';
+          if(!cats[key]) cats[key] = {in:0, out:0, items:[]};
+          if(x.type === '+') cats[key].in += Number(x.val); else cats[key].out += Number(x.val);
+          cats[key].items.push(x);
+      });
+      
+      const sortedKeys = Object.keys(cats).sort();
+      for(let i=0; i<sortedKeys.length; i++) {
+          const c = sortedKeys[i];
+          const cc = cats[c];
+          html += `<div style="background:var(--bg3); border-radius:10px; padding:10px; margin-bottom:10px;">
+                     <div style="display:flex; justify-content:space-between; font-weight:600; font-size:13px; margin-bottom:5px; color:var(--txt)">
+                         <span>${c}</span>
+                         <span>
+                             ${cc.in>0 ? `<span style="color:#2e7d32">+${fmtC(cc.in)}</span> ` : ''}
+                             ${cc.out>0 ? `<span style="color:#e44">-${fmtC(cc.out)}</span>` : ''}
+                         </span>
+                     </div>`;
+          cc.items.forEach(it => {
+              const dText = it.desc || c;
+              const isPaid = it.paidMap && it.paidMap[k];
+              html += `<div style="display:flex; justify-content:space-between; font-size:12px; color:var(--txt2); padding:3px 0;">
+                         <span style="${isPaid ? 'text-decoration:line-through;color:var(--txt4)' : ''}">${esc(dText)} ${it.rep?' 🔁':''}</span>
+                         <span style="${isPaid ? 'color:var(--txt4)' : ''}">${fmtC(it.val)}</span>
+                       </div>`;
+          });
+          html += `</div>`;
+      }
   }
-  let html = `<div style="font-size:13px;font-weight:600;color:var(--txt);margin-bottom:8px">Resumo de ${name}</div>`;
-  const cats = {};
-  b.forEach(x => {
-      const key = x.cat || 'Outro';
-      if(!cats[key]) cats[key] = {in:0, out:0};
-      if(x.type === '+') cats[key].in += Number(x.val); else cats[key].out += Number(x.val);
-  });
-  for(let c in Object.keys(cats).sort()) {
-      if(cats[c].in > 0) html += `<div class="cat-it"><span>${c}</span><span style="color:#2e7d32">+${fmtC(cats[c].in)}</span></div>`;
-      if(cats[c].out > 0) html += `<div class="cat-it"><span>${c}</span><span style="color:#e44">-${fmtC(cats[c].out)}</span></div>`;
-  }
-  el.style.display = 'block'; el.innerHTML = html;
+  document.getElementById('proj-m-ttl').textContent = 'Resumo do Mês';
+  document.getElementById('proj-m-body').innerHTML = html;
+  document.getElementById('mo-proj').classList.add('open');
 }
+
 function renderFin(){
   try {
       const totalBal = (accounts||[]).filter(Boolean).reduce((acc, curr) => acc + Number(curr.val), 0);
