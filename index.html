@@ -425,7 +425,7 @@ textarea{resize:none;line-height:1.65;width:100%}
           </div>
 
           <div class="tf">
-            <div style="display:flex; gap:8px; width:100%; margin-bottom:8px;">
+            <div class="tftop" style="gap:8px; margin-bottom:8px; align-items:center;">
                <select id="bill-type" onchange="chgBillType()" style="width:35%; flex-shrink:0; padding:9px; font-size:14px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp);">
                    <option value="-">🔴 Saída</option>
                    <option value="+">🟢 Entrada</option>
@@ -439,7 +439,7 @@ textarea{resize:none;line-height:1.65;width:100%}
             <div class="tf2">
               <div class="tff"><label id="lbl-bill-date">Vencimento</label><input type="date" id="bill-date"/></div>
               <div class="tff"><label>Valor (R$)</label><input type="number" id="bill-val" step="0.01" placeholder="0.00" min="0"/></div>
-              <div style="flex-basis: 100%; display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+              <div class="tff" style="flex-basis: 100%; flex-direction:row; align-items:center; gap:8px; margin-top:4px">
                  <input type="checkbox" id="bill-rep" style="width:16px;height:16px; margin:0;"/>
                  <label for="bill-rep" style="margin:0; text-transform:none; font-size:13px; font-weight:500; cursor:pointer; color:var(--txt);">🔁 Repetir todo mês</label>
               </div>
@@ -469,6 +469,36 @@ textarea{resize:none;line-height:1.65;width:100%}
     <div class="tut-row"><button class="tut-skip" onclick="endTutorial()">Pular</button><button class="tut-next" id="tut-next" onclick="nextTut()">Próximo →</button></div>
   </div>
 </div>
+
+<div class="mo" id="mo-acc" onclick="bgC(event,'mo-acc')"><div class="md">
+  <div class="mh"><h2 id="acc-m-ttl">Nova Carteira</h2><button class="mc" onclick="closeM('mo-acc')">×</button></div>
+  <div class="mb">
+    <input type="hidden" id="acc-m-id">
+    <div class="hff"><label>Nome da Carteira</label><input type="text" id="acc-m-nm" placeholder="Ex: NuBank"></div>
+    <div class="hff"><label>Saldo (R$)</label><input type="number" id="acc-m-val" step="0.01" placeholder="0.00"></div>
+  </div>
+  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveAccModal()">Salvar Carteira</button></div>
+</div></div>
+
+<div class="mo" id="mo-ebill" onclick="bgC(event,'mo-ebill')"><div class="md">
+  <div class="mh"><h2>Editar Lançamento</h2><button class="mc" onclick="closeM('mo-ebill')">×</button></div>
+  <div class="mb">
+    <input type="hidden" id="ebill-m-id">
+    <div class="hff"><label>Descrição (deixe em branco para usar a categoria)</label><input type="text" id="ebill-m-desc" placeholder="Nova descrição..."></div>
+    <div class="hff"><label>Valor (R$)</label><input type="number" id="ebill-m-val" step="0.01" placeholder="0.00"></div>
+  </div>
+  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditBill()">Salvar Alterações</button></div>
+</div></div>
+
+<div class="mo" id="mo-etask" onclick="bgC(event,'mo-etask')"><div class="md">
+  <div class="mh"><h2>Reprogramar Tarefa</h2><button class="mc" onclick="closeM('mo-etask')">×</button></div>
+  <div class="mb">
+    <input type="hidden" id="etask-m-id">
+    <div class="hff"><label>Nova Data</label><input type="date" id="etask-m-date"></div>
+    <div class="hff"><label>Nova Hora</label><input type="time" id="etask-m-time"></div>
+  </div>
+  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditTask()">Salvar Alterações</button></div>
+</div></div>
 
 <div class="mo" id="mo-cfg" onclick="bgC(event,'mo-cfg')"><div class="md">
   <div class="mh"><h2>Configurações</h2><button class="mc" onclick="closeCfg()">×</button></div>
@@ -588,6 +618,9 @@ function ensureHols(y){
 }
 function getHol(y,m,d){return ensureHols(y)[ck(y,m,d)]||null;}
 
+// CLOSE MODAL HELPER
+function closeM(id) { document.getElementById(id).classList.remove('open'); }
+
 // STORAGE
 let tasks=[],notes=[],events={},accounts=[],bills=[];
 function load(){
@@ -704,7 +737,9 @@ document.addEventListener('DOMContentLoaded', () => {
     cnt.addEventListener('touchstart', e => {
         tsX = e.touches[0].clientX; tsY = e.touches[0].clientY;
         isSwipe = false; isScroll = false;
-        tsNoSwipe = !!e.target.closest('.no-swipe'); 
+        
+        const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+        tsNoSwipe = !!e.target.closest('.no-swipe') || isInput || !!e.target.closest('.mo');
         tsOnCal = !!e.target.closest('#cal-main') && curTab === 0;
         
         if(!tsNoSwipe && !tsOnCal) slider.style.transition = 'none';
@@ -756,12 +791,20 @@ function togEvDone(k,id){events[k]=(events[k]||[]).map(e=>e.id===id?{...e,done:!
 function delEvGlobal(k,id){if(!confirm('Excluir este evento permanentemente?'))return;events[k]=(events[k]||[]).filter(e=>e.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function addTask(){const inp=document.getElementById('task-in'),text=inp.value.trim();if(!text)return;const dk=document.getElementById('task-date').value||null,dt=document.getElementById('task-time').value||null,nb=parseInt(document.getElementById('task-ntf').value)||0;tasks.unshift({id:Date.now(),text,done:false,dk,dt,nb});inp.value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';save();schedAll();renderTasks();renderCal();}
 
+// MODAL REPROGRAMAR TAREFAS
 function editTask(id) {
     const t = tasks.find(x => x.id === id); if(!t) return;
-    const nd = prompt("Reprogramar para data (YYYY-MM-DD):", t.dk || getToday()); if(nd === null) return;
-    const nt = prompt("Reprogramar para hora (HH:MM):", t.dt || ''); if(nt === null) return;
-    t.dk = nd; t.dt = nt;
-    save(); renderTasks(); renderCal(); if(selD !== null) renderEvList(); schedAll();
+    document.getElementById('etask-m-id').value = id;
+    document.getElementById('etask-m-date').value = t.dk || getToday();
+    document.getElementById('etask-m-time').value = t.dt || '';
+    document.getElementById('mo-etask').classList.add('open');
+}
+function saveEditTask(){
+    const id = Number(document.getElementById('etask-m-id').value);
+    const t = tasks.find(x => x.id === id); if(!t) return;
+    t.dk = document.getElementById('etask-m-date').value;
+    t.dt = document.getElementById('etask-m-time').value;
+    save(); renderTasks(); renderCal(); if(selD !== null) renderEvList(); schedAll(); closeM('mo-etask');
 }
 
 function tiHTML(item,isDone=false){
@@ -772,7 +815,6 @@ function tiHTML(item,isDone=false){
   const acts=isDone?`<div class="dtb">${!item.isEv?`<button class="brev" onclick="reactivate(${item.id})">↩</button>`:''}<button class="bperm" onclick="${df}">🗑</button></div>`:`<div class="dtb">${editBtn}<button class="bd" onclick="${df}">×</button></div>`;
   return`<div class="ti ${item.done?'done-item':''}"><div class="tck ${item.done?'done':''}" onclick="${tf}">${item.done?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="tb2"><div class="tt">${esc(item.text)}${badge}</div>${meta?`<div class="tm ${ov?'ov':''}">${ov?'⚠ ':'📅 '}${esc(meta)}</div>`:''}</div>${acts}</div>`;
 }
-
 function renderTasks(){
   try {
       const evI=getEvItems();
@@ -1012,9 +1054,9 @@ function renderDay(){
       const items=[...dT.map(t=>({type:'task',time:t.dt||'',obj:t})),...evs.map(e=>({type:'ev',time:e.time||'',obj:e,k})),...dBills.map(b=>({type:'bill',time:'',obj:b}))].sort((a,b)=>a.time.localeCompare(b.time));
       
       const ihtml=items.length?items.map(it=>{
-        if(it.type==='task'){const t=it.obj;return`<div class="dti"><span class="dtt">${t.dt||'—'}</span><div class="dtb2"><div class="dttl ${t.done?'done':''}">${esc(t.text)}<span class="ebdg etask">tarefa</span></div></div><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id});renderDay()">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id});renderDay()">✏️</button><button class="bd" onclick="delTask(${t.id})">×</button></div>`;}
+        if(it.type==='task'){const t=it.obj;return`<div class="dti"><span class="dtt">${t.dt||'—'}</span><div class="dtb2"><div class="dttl ${t.done?'done':''}">${esc(t.text)}<span class="ebdg etask">tarefa</span></div></div><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id});renderDay()">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd" onclick="delTask(${t.id})">×</button></div>`;}
         else if(it.type==='ev'){const e=it.obj;return`<div class="dti"><span class="dtt">${e.time||'—'}</span><div class="dtb2"><div class="dttl ${e.done?'done':''}">${esc(e.text)}<span class="ebdg eev">evento</span></div></div><div class="tck ${e.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${it.k}',${e.id});renderDay()">${e.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd" onclick="delEvGlobal('${it.k}',${e.id})">×</button></div>`;}
-        else if(it.type==='bill'){const b=it.obj; const isP=b.paidMap&&b.paidMap[mK]; const cEmoji=b.cat?b.cat.split(' ')[0]:''; const cName=b.cat?b.cat.substring(cEmoji.length).trim():''; const dText=b.desc?esc(b.desc):cName; return `<div class="dti"><span class="dtt">—</span><div class="dtb2"><div class="dttl ${isP?'done':''}">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">${fmtC(b.val)}</div></div><div class="tck ${isP?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}');renderDay()">...</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}');renderDay()">✏️</button><button class="bd" onclick="delBill(${b.id});renderDay()">×</button></div>`;}
+        else if(it.type==='bill'){const b=it.obj; const isP=b.paidMap&&b.paidMap[mK]; const cEmoji=b.cat?b.cat.split(' ')[0]:''; const cName=b.cat?b.cat.substring(cEmoji.length).trim():''; const dText=b.desc?esc(b.desc):cName; return `<div class="dti"><span class="dtt">—</span><div class="dtb2"><div class="dttl ${isP?'done':''}">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">${fmtC(b.val)}</div></div><div class="tck ${isP?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}');renderDay()">...</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd" onclick="delBill(${b.id});renderDay()">×</button></div>`;}
       }).join(''):'<p class="empty" style="margin-top:1rem">Nenhum item neste dia.</p>';
       
       document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="cnv" onclick="chMonth(1)">›</button></div>${hol?`<div class="holbanner">🎉 ${esc(hol)}</div>`:''}<div class="dtl">${ihtml}</div>`;
@@ -1050,7 +1092,7 @@ function habCardHTML(h){
     bubs+=`<div class="hbwrap"><div class="bub ${bsz} ${i<cnt?'filled':''}" style="color:${h.color}" onclick="event.stopPropagation();setBubble(${h.id},${i})"></div>${tl}</div>`;
   }
   const bubtip=cnt===0&&sched?`<span class="bubtip">← toque</span>`:'';
-  return`<div class="hcard ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
+  return`<div class="hcard no-swipe ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
 }
 function renderHabits(){
   try {
@@ -1210,16 +1252,35 @@ function renderFin(){
   } catch(e){}
 }
 
+// MODAL DA CARTEIRA
 function addAccount(){
-  const nm = prompt("Nome da Carteira/Banco:");
-  if(!nm || !nm.trim()) return;
-  const vl = prompt(`Saldo inicial para '${nm}' (use ponto para centavos):`, "0.00");
-  if(vl !== null && !isNaN(parseFloat(vl.replace(',','.')))) { accounts.push({id:Date.now(), name:nm.trim(), val:parseFloat(vl.replace(',','.'))}); save(); renderFin(); }
+  document.getElementById('acc-m-id').value = '';
+  document.getElementById('acc-m-nm').value = '';
+  document.getElementById('acc-m-val').value = '';
+  document.getElementById('acc-m-ttl').textContent = 'Nova Carteira';
+  document.getElementById('mo-acc').classList.add('open');
 }
 function editAccount(id){
   const acc = accounts.find(a => a.id === id); if(!acc) return;
-  const nv = prompt(`Novo saldo para '${acc.name}':`, acc.val);
-  if(nv !== null && !isNaN(parseFloat(nv.replace(',','.')))) { acc.val = parseFloat(nv.replace(',','.')); save(); renderFin(); }
+  document.getElementById('acc-m-id').value = id;
+  document.getElementById('acc-m-nm').value = acc.name;
+  document.getElementById('acc-m-val').value = acc.val;
+  document.getElementById('acc-m-ttl').textContent = 'Editar Carteira';
+  document.getElementById('mo-acc').classList.add('open');
+}
+function saveAccModal(){
+  const id = document.getElementById('acc-m-id').value;
+  const nm = document.getElementById('acc-m-nm').value.trim();
+  const valStr = document.getElementById('acc-m-val').value;
+  if(!nm) { toast('Nome é obrigatório'); return; }
+  const val = parseFloat(valStr.replace(',','.')) || 0;
+  if(id) {
+      const acc = accounts.find(a => a.id == id);
+      if(acc) { acc.name = nm; acc.val = val; }
+  } else {
+      accounts.push({id:Date.now(), name:nm, val:val});
+  }
+  save(); renderFin(); closeM('mo-acc');
 }
 function delAccount(id){ if(confirm("Remover esta carteira permanentemente?")) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
 
@@ -1237,13 +1298,24 @@ function addBill(){
   document.getElementById('bill-desc').value=''; document.getElementById('bill-date').value=''; document.getElementById('bill-val').value=''; document.getElementById('bill-rep').checked=false;
   save(); renderFin(); renderCal();
 }
+
+// MODAL EDITAR CONTA
 function editBill(id, mk){
   const b = bills.find(x => x.id === id); if(!b) return;
-  const ndesc = prompt("Nova descrição (deixe em branco para usar a categoria):", b.desc); if(ndesc === null) return;
-  const nval = prompt("Novo valor (use ponto para centavos):", b.val); if(nval === null) return;
-  b.desc = ndesc.trim(); b.val = parseFloat(nval.replace(',','.')) || b.val;
-  save(); renderFin(); renderEvList(); renderCal();
+  document.getElementById('ebill-m-id').value = id;
+  document.getElementById('ebill-m-desc').value = b.desc || '';
+  document.getElementById('ebill-m-val').value = b.val || '';
+  document.getElementById('mo-ebill').classList.add('open');
 }
+function saveEditBill(){
+  const id = Number(document.getElementById('ebill-m-id').value);
+  const b = bills.find(x => x.id === id); if(!b) return;
+  b.desc = document.getElementById('ebill-m-desc').value.trim();
+  const valStr = document.getElementById('ebill-m-val').value;
+  if(valStr) b.val = parseFloat(valStr.replace(',','.')) || 0;
+  save(); renderFin(); renderEvList(); renderCal(); closeM('mo-ebill');
+}
+
 function togBill(id, mk){ 
   let msg = '';
   bills = bills.map(b => {
