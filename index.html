@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover"/>
 <meta name="theme-color" content="#fff"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -12,8 +12,34 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#fafafa;--bg2:#fff;--bg3:#f5f5f5;--bg4:#e8e8e8;--brd:#eee;--brd2:#ddd;--txt:#222;--txt2:#666;--txt3:#aaa;--txt4:#ccc;--ac:#222;--acfg:#fff;--card:#fff;--inp:#fff;--hol:#e05;}
 [data-theme=dark]{--bg:#111;--bg2:#1a1a1a;--bg3:#252525;--bg4:#0d0d0d;--brd:#2a2a2a;--brd2:#383838;--txt:#eee;--txt2:#aaa;--txt3:#666;--txt4:#444;--ac:#e0e0e0;--acfg:#111;--card:#1e1e1e;--inp:#2a2a2a;--hol:#ff6b8a;}
-body{font-family:system-ui,sans-serif;background:var(--bg4);display:flex;justify-content:center;min-height:100vh;padding:.6rem;transition:background .2s}
-#app{width:100%;max-width:490px;background:var(--bg);border-radius:18px;border:.5px solid var(--brd);overflow:hidden;display:flex;flex-direction:column;min-height:96vh; position:relative;}
+
+/* LAYORT NATIVO BLINDADO: Impede que a tela inteira role */
+body {
+  font-family: system-ui, sans-serif;
+  background: var(--bg4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  height: 100dvh; /* Adapta-se perfeitamente à barra do Android/iOS */
+  overflow: hidden;
+  padding: 0.5rem;
+  transition: background .2s;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  max-width: 490px;
+  background: var(--bg);
+  border-radius: 18px;
+  border: .5px solid var(--brd);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
 
 /* SPLASH SCREEN PREMIUM */
 #splash {
@@ -40,11 +66,11 @@ body{font-family:system-ui,sans-serif;background:var(--bg4);display:flex;justify
 .gear-btn{background:none;border:.5px solid var(--brd2);border-radius:9px;padding:7px;cursor:pointer;display:flex;align-items:center;color:var(--txt2)}
 
 /* NATIVE SLIDER CSS */
-.cnt{flex:1; overflow:hidden; position:relative;}
+.cnt{flex:1; overflow:hidden; position:relative; min-height: 0;} /* min-height:0 é essencial para não estourar o flexbox */
 #slider { display:flex; width:500%; height:100%; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; }
-.sec{width:20%; flex-shrink:0; padding:1.2rem 1.1rem; display:flex; flex-direction:column; overflow-y:auto; overflow-x:hidden; height:100%;}
+.sec{width:20%; flex-shrink:0; padding:1.2rem 1.1rem; display:flex; flex-direction:column; overflow-y:auto; overflow-x:hidden; height:100%; box-sizing:border-box;}
 
-.tabbar{display:flex;border-top:.5px solid var(--brd);background:var(--bg2);flex-shrink:0}
+.tabbar{display:flex;border-top:.5px solid var(--brd);background:var(--bg2);flex-shrink:0; padding-bottom: env(safe-area-inset-bottom);}
 .tb{flex:1;padding:11px 2px 9px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--txt4);font-size:11px;font-family:inherit;transition:color .15s}
 .tb.active{color:var(--txt);font-weight:500}
 .tb svg{width:18px;height:18px}
@@ -401,8 +427,8 @@ textarea{resize:none;line-height:1.65;width:100%}
           <div id="nev">
             <div class="neh"><button class="bbk" onclick="closeNote(true)">← Voltar</button><button class="bsv" onclick="saveNote()">Salvar</button></div>
             <input type="text" id="nt-ttl" placeholder="Título"/>
-            <textarea id="nt-bdy" class="no-swipe" placeholder="Escreva sua nota..."></textarea>
-            <div id="nt-list-wrap" class="no-swipe" style="display:none; flex:1; flex-direction:column; overflow-y:auto;">
+            <textarea id="nt-bdy" placeholder="Escreva sua nota..."></textarea>
+            <div id="nt-list-wrap" style="display:none; flex:1; flex-direction:column; overflow-y:auto;">
                <div id="nt-list-items"></div>
                <button class="bnn" style="border-style:dashed; margin-top:8px;" onclick="addListItem()">+ Adicionar item</button>
             </div>
@@ -434,9 +460,9 @@ textarea{resize:none;line-height:1.65;width:100%}
           </div>
           
           <div class="cnr" style="margin:1.2rem 0 .5rem">
-            <button class="cnv" onclick="chgFinM(-1)">‹</button>
+            <button class="cnv no-swipe" onclick="chgFinM(-1)">‹</button>
             <span id="fin-mlbl" style="font-size:13px;font-weight:600"></span>
-            <button class="cnv" onclick="chgFinM(1)">›</button>
+            <button class="cnv no-swipe" onclick="chgFinM(1)">›</button>
           </div>
 
           <div class="tf">
@@ -455,8 +481,19 @@ textarea{resize:none;line-height:1.65;width:100%}
               <div class="tff"><label id="lbl-bill-date">Vencimento</label><input type="date" id="bill-date"/></div>
               <div class="tff"><label>Valor (R$)</label><input type="number" id="bill-val" step="0.01" placeholder="0.00" min="0"/></div>
               <div class="tff" style="flex-basis: 100%; flex-direction:row; align-items:center; gap:8px; margin-top:4px">
-                 <input type="checkbox" id="bill-rep" style="width:16px;height:16px; margin:0;"/>
-                 <label for="bill-rep" style="margin:0; text-transform:none; font-size:13px; font-weight:500; cursor:pointer; color:var(--txt);">🔁 Repetir todo mês</label>
+                 <label style="margin:0; text-transform:none; font-size:12px; font-weight:500; color:var(--txt);">🔁 Repetir:</label>
+                 <select id="bill-rep" style="flex:1; font-size:13px; padding:6px 8px; height:32px;">
+                     <option value="0">Não repetir</option>
+                     <option value="-1">Fixo (Todo mês)</option>
+                     <option value="1">Por mais 1 mês</option>
+                     <option value="2">Por mais 2 meses</option>
+                     <option value="3">Por mais 3 meses</option>
+                     <option value="4">Por mais 4 meses</option>
+                     <option value="5">Por mais 5 meses</option>
+                     <option value="11">Por mais 11 meses (1 ano)</option>
+                     <option value="23">Por mais 23 meses (2 anos)</option>
+                     <option value="35">Por mais 35 meses (3 anos)</option>
+                 </select>
               </div>
             </div>
           </div>
@@ -657,8 +694,10 @@ function load(){
           if(typeof b.paid === 'boolean') {
               const mk = b.date ? b.date.substring(0,7) : getToday().substring(0,7);
               const pm = {}; if(b.paid) pm[mk] = true;
-              return {...b, rep: false, paidMap: pm, paid: undefined};
+              return {...b, rep: 0, paidMap: pm, paid: undefined};
           }
+          if(b.rep === true) b.rep = -1;
+          if(b.rep === false) b.rep = 0;
           if(!b.paidMap) b.paidMap = {};
           return b;
       });
@@ -759,7 +798,8 @@ document.addEventListener('DOMContentLoaded', () => {
         tsX = e.touches[0].clientX; tsY = e.touches[0].clientY;
         isSwipe = false; isScroll = false;
         
-        tsNoSwipe = !!e.target.closest('.no-swipe') || !!e.target.closest('.mo') || !!e.target.closest('#fin-proj');
+        // Removemos o bloqueio de formulários para deslize fluido!
+        tsNoSwipe = !!e.target.closest('.mo') || !!e.target.closest('#fin-proj');
         tsOnCal = !!e.target.closest('#cal-main') && curTab === 0;
         
         if(!tsNoSwipe && !tsOnCal) slider.style.transition = 'none';
@@ -999,20 +1039,37 @@ let cY=TY,cM=TM,selD=null,calView='month',wkOff=0;
 
 function isBillInDay(b, dk) {
     if(!b.date) return false;
-    if(!b.rep) return b.date === dk; 
     const bY = parseInt(b.date.substring(0,4)), bM = parseInt(b.date.substring(5,7))-1, bD = b.date.substring(8,10);
     const kY = parseInt(dk.substring(0,4)), kM = parseInt(dk.substring(5,7))-1, kD = dk.substring(8,10);
+    
     if(bD !== kD) return false;
-    if(kY > bY) return true;
-    if(kY === bY && kM >= bM) return true;
+    if(kY === bY && kM === bM) return true;
+    
+    if(!b.rep || b.rep === 0) return false;
+    
+    const diff = (kY - bY) * 12 + (kM - bM);
+    if(diff > 0) {
+        if(b.rep === -1) return true;
+        if(diff <= b.rep) return true;
+    }
     return false;
 }
 
 function isBillInMonth(b, mk) {
     if(!b.date) return false;
     const bMk = b.date.substring(0,7);
-    if(!b.rep) return bMk === mk; 
-    return mk >= bMk;
+    if(bMk === mk) return true;
+    
+    if(!b.rep || b.rep === 0) return false;
+    
+    if(mk > bMk) {
+        if(b.rep === -1) return true;
+        const y1 = parseInt(bMk.substring(0,4)), m1 = parseInt(bMk.substring(5,7));
+        const y2 = parseInt(mk.substring(0,4)), m2 = parseInt(mk.substring(5,7));
+        const diff = (y2 - y1) * 12 + (m2 - m1);
+        if(diff <= b.rep) return true;
+    }
+    return false;
 }
 
 function checkDot(k) {
@@ -1085,7 +1142,7 @@ function renderEvList(){
           const cName=b.cat?b.cat.substring(cEmoji.length).trim():''; 
           const dText=b.desc?esc(b.desc):cName;
           const isPaid=b.paidMap&&b.paidMap[mK];
-          return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="em2">${fmtC(b.val)}</div></div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd" onclick="delBill(${b.id})">×</button></div>`
+          return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="em2">${fmtC(b.val)}</div></div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd" onclick="delBill(${b.id})">×</button></div>`
       }).join('');
       const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}<span class="ebdg etask">tarefa</span></div>${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd" onclick="delTask(${t.id})">×</button></div>`).join('');
       const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}</div></div><button class="bd" onclick="delEvGlobal('${k}',${ev.id})">×</button></div>`).join('');
@@ -1363,7 +1420,7 @@ function renderFin(){
               }
           });
           runBal = runBal + inM - outM;
-          projHtml += `<div onclick="expandMonth('${mk}', '${MO[m]}/${y}')" style="min-width:125px; padding:10px; cursor:pointer; background:var(--bg3); border:.5px solid var(--brd2); border-radius:10px; flex-shrink:0;">
+          projHtml += `<div class="no-swipe" onclick="expandMonth('${mk}', '${MO[m]}/${y}')" style="min-width:125px; padding:10px; cursor:pointer; background:var(--bg3); border:.5px solid var(--brd2); border-radius:10px; flex-shrink:0;">
              <div style="font-size:11px; color:var(--txt3); font-weight:600; text-transform:uppercase">${MO[m].substring(0,3)}/${y}</div>
              <div style="font-size:14px; font-weight:600; color:${runBal<0?'#e44':'var(--txt)'}; margin-top:4px">${fmtC(runBal)}</div>
              <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:10px;">
@@ -1410,7 +1467,6 @@ function renderFin(){
   } catch(e){}
 }
 
-// MODAL DA CARTEIRA
 function addAccount(){
   document.getElementById('acc-m-id').value = '';
   document.getElementById('acc-m-nm').value = '';
@@ -1450,10 +1506,10 @@ function addBill(){
   const type = document.getElementById('bill-type').value;
   const cat = document.getElementById('bill-cat').value;
   const val = document.getElementById('bill-val').value;
-  const rep = document.getElementById('bill-rep').checked;
+  const rep = parseInt(document.getElementById('bill-rep').value) || 0;
   
   bills.push({id: Date.now(), type, cat, desc, date, val, rep, paidMap: {}});
-  document.getElementById('bill-desc').value=''; document.getElementById('bill-date').value=''; document.getElementById('bill-val').value=''; document.getElementById('bill-rep').checked=false;
+  document.getElementById('bill-desc').value=''; document.getElementById('bill-date').value=''; document.getElementById('bill-val').value=''; document.getElementById('bill-rep').value='0';
   save(); renderFin(); renderCal();
 }
 
