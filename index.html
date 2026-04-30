@@ -69,17 +69,16 @@ textarea{resize:none;line-height:1.65;width:100%}
 .dia-btn.cancel { border-right: .5px solid var(--brd); color: var(--txt3); }
 .dia-btn.ok { color: var(--ac); font-weight: 600; }
 
-/* CUSTOM PICKERS (Date/Time) */
+/* ROLLING WHEEL PICKER (iOS/Android Native Style) */
 #mo-picker { z-index: 140; }
-.pk-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.pk-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 14px; }
-.pk-grid div { padding: 8px 0; border-radius: 6px; cursor: pointer; color: var(--txt); }
-.pk-grid div:hover { background: var(--bg3); }
-.pk-grid div.sel { background: var(--ac); color: var(--acfg); font-weight: 600; }
-.pk-dow { font-size: 10px; color: var(--txt4); font-weight: 600; margin-bottom: 5px; }
-.pk-time-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-bottom: 15px; }
-.pk-time-btn { padding: 8px 0; border-radius: 8px; background: var(--bg3); color: var(--txt2); font-size: 14px; border: none; cursor: pointer; font-family:inherit; }
-.pk-time-btn.sel { background: var(--ac); color: var(--acfg); font-weight: 600; }
+.pk-wheels { display: flex; justify-content: center; gap: 15px; height: 210px; position: relative; width: 100%; overflow: hidden; margin-top: 10px; }
+.pk-sel-bg { position: absolute; top: 80px; left: 0; right: 0; height: 50px; background: rgba(0,0,0,0.05); border-radius: 12px; z-index: 0; pointer-events: none; }
+[data-theme=dark] .pk-sel-bg { background: rgba(255,255,255,0.08); }
+.wheel { flex: 1; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none; position: relative; z-index: 1; height: 100%; scroll-behavior: auto; overscroll-behavior-y: contain; }
+.wheel::-webkit-scrollbar { display: none; }
+.w-pad { height: 80px; } 
+.w-item { height: 50px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 500; color: var(--txt3); scroll-snap-align: center; transition: all 0.15s ease-out; cursor: pointer; user-select: none; }
+.w-item.act { font-size: 28px; font-weight: 700; color: var(--ac); }
 
 /* SETTINGS */
 .cst{font-size:11px;color:var(--txt3);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin:15px 0 9px}
@@ -122,7 +121,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 
 /* NOTES, LISTS & CARDS SELECTION LOCK */
 .nc, .hcard { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
-.ng{display:flex;flex-direction:column;gap:9px;flex:1; padding-bottom:10px;}
+.ng{display:flex;flex-direction:column;gap:9px;flex:1;overflow-y:auto;overflow-x:hidden; padding-bottom:10px;}
 .nc{border-radius:11px;border:.5px solid var(--brd);padding:14px;cursor:pointer;background:var(--card);transition:transform 0.2s, opacity 0.2s, box-shadow 0.2s; flex-shrink:0;}
 .nc.dragging, .hcard.dragging { z-index: 10; position: relative; }
 .nc h3{font-size:14px;font-weight:500;color:var(--txt);margin-bottom:4px}
@@ -415,8 +414,8 @@ textarea{resize:none;line-height:1.65;width:100%}
           <div id="nev">
             <div class="neh"><button class="bbk" onclick="closeNote(true)">← Voltar</button><button class="bsv" onclick="saveNote()">Salvar</button></div>
             <input type="text" id="nt-ttl" placeholder="Título"/>
-            <textarea id="nt-bdy" placeholder="Escreva sua nota..."></textarea>
-            <div id="nt-list-wrap" style="display:none; flex:1; flex-direction:column; overflow-y:auto;">
+            <textarea id="nt-bdy" class="no-swipe" placeholder="Escreva sua nota..."></textarea>
+            <div id="nt-list-wrap" class="no-swipe" style="display:none; flex:1; flex-direction:column; overflow-y:auto;">
                <div id="nt-list-items"></div>
                <button class="bnn" style="border-style:dashed; margin-top:8px;" onclick="addListItem()">+ Adicionar item</button>
             </div>
@@ -448,9 +447,9 @@ textarea{resize:none;line-height:1.65;width:100%}
           </div>
           
           <div class="cnr" style="margin:1.2rem 0 .5rem">
-            <button class="cnv" onclick="chgFinM(-1)">‹</button>
+            <button class="cnv no-swipe" onclick="chgFinM(-1)">‹</button>
             <span id="fin-mlbl" style="font-size:13px;font-weight:600"></span>
-            <button class="cnv" onclick="chgFinM(1)">›</button>
+            <button class="cnv no-swipe" onclick="chgFinM(1)">›</button>
           </div>
 
           <div class="tf">
@@ -525,7 +524,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 
 <div class="mo" id="mo-picker" onclick="bgC(event,'mo-picker')"><div class="md">
   <div class="mh"><h2 id="pk-ttl">Selecionar</h2><button class="mc" onclick="closeM('mo-picker')">×</button></div>
-  <div class="mb" id="pk-body" style="padding:15px"></div>
+  <div class="mb" id="pk-body" style="padding:10px 15px; overflow:hidden;"></div>
   <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="confirmPicker()">Confirmar</button></div>
 </div></div>
 
@@ -720,76 +719,119 @@ function closeDialog(isOk) {
 // CUSTOM DATE/TIME PICKER SYSTEM
 let pkTarget = null;
 let pkType = ''; 
-let pkDateView = new Date();
-let pkSelDate = null;
-let pkSelTime = '12:00';
+
+function createWheel(min, max, selVal, formatFn) {
+    const w = document.createElement('div');
+    w.className = 'wheel';
+    let html = '<div class="w-pad"></div>';
+    let selIdx = 0;
+    let idx = 0;
+    for(let i=min; i<=max; i++) {
+        if(i == selVal) selIdx = idx;
+        html += `<div class="w-item" data-val="${i}" data-idx="${idx}" onclick="this.parentElement.scrollTo({top: (${idx} * 50), behavior: 'smooth'})">${formatFn(i)}</div>`;
+        idx++;
+    }
+    html += '<div class="w-pad"></div>';
+    w.innerHTML = html;
+    
+    w.addEventListener('scroll', () => {
+        clearTimeout(w.scrollTO);
+        w.scrollTO = setTimeout(() => {
+            const items = w.querySelectorAll('.w-item');
+            let closestIdx = Math.round(w.scrollTop / 50);
+            if(closestIdx < 0) closestIdx = 0;
+            if(closestIdx >= items.length) closestIdx = items.length - 1;
+            
+            items.forEach((it, i) => {
+                if(i === closestIdx) {
+                    it.classList.add('act');
+                    w.dataset.val = it.dataset.val;
+                } else {
+                    it.classList.remove('act');
+                }
+            });
+            
+            if (pkType === 'date') {
+                const wheels = document.getElementById('pk-wheels').querySelectorAll('.wheel');
+                if(wheels.length === 3 && (w === wheels[1] || w === wheels[2])) {
+                    const curM = parseInt(wheels[1].dataset.val);
+                    const curY = parseInt(wheels[2].dataset.val);
+                    const maxD = new Date(curY, curM, 0).getDate();
+                    const curD = parseInt(wheels[0].dataset.val);
+                    
+                    const dayItems = wheels[0].querySelectorAll('.w-item');
+                    dayItems.forEach(di => {
+                        if(parseInt(di.dataset.val) > maxD) di.style.display = 'none';
+                        else di.style.display = 'flex';
+                    });
+                    if(curD > maxD) {
+                        wheels[0].scrollTo({top: (maxD - 1) * 50, behavior: 'smooth'});
+                    }
+                }
+            }
+        }, 50);
+    });
+
+    setTimeout(() => {
+        w.scrollTop = selIdx * 50;
+        const items = w.querySelectorAll('.w-item');
+        items.forEach((it, i) => {
+            if(i === selIdx) { it.classList.add('act'); w.dataset.val = it.dataset.val; }
+            else it.classList.remove('act');
+        });
+    }, 10);
+    
+    return w;
+}
 
 function openPicker(id, type) {
     pkTarget = id; pkType = type;
     const el = document.getElementById(id);
     const val = el.value || '';
-    document.getElementById('pk-ttl').textContent = type === 'date' ? 'Selecionar Data' : 'Selecionar Hora';
+    document.getElementById('pk-ttl').textContent = type === 'date' ? 'Selecionar Data' : 'Selecionar Horário';
     
+    const pb = document.getElementById('pk-body');
+    pb.innerHTML = '<div class="pk-wheels" id="pk-wheels"><div class="pk-sel-bg"></div></div>';
+    const wc = document.getElementById('pk-wheels');
+
     if(type === 'date') {
-        pkSelDate = val || getToday();
-        const parts = pkSelDate.split('-');
-        if(parts.length===3) pkDateView = new Date(parts[0], parts[1]-1, parts[2]);
-        renderPickerDate();
+        let [y, m, d] = (val || getToday()).split('-').map(Number);
+        let wD = createWheel(1, 31, d, v=>String(v).padStart(2,'0'));
+        let wM = createWheel(1, 12, m, v=>MO[v-1].substring(0,3));
+        let wY = createWheel(TY-5, TY+10, y, v=>v);
+        wc.append(wD, wM, wY);
     } else {
-        pkSelTime = val || '12:00';
-        renderPickerTime();
+        let [h, min] = (val || '12:00').split(':').map(Number);
+        let wH = createWheel(0, 23, h, v=>String(v).padStart(2,'0'));
+        let wMin = createWheel(0, 59, min, v=>String(v).padStart(2,'0'));
+        const colon = document.createElement('div');
+        colon.style.cssText = 'display:flex; align-items:center; font-size:28px; font-weight:bold; color:var(--txt); z-index:2; padding-bottom:5px;';
+        colon.textContent = ':';
+        wc.append(wH, colon, wMin);
     }
     document.getElementById('mo-picker').classList.add('open');
 }
-function renderPickerDate() {
-    const y = pkDateView.getFullYear(); const m = pkDateView.getMonth();
-    const fd = new Date(y, m, 1).getDay(); const dim = new Date(y, m + 1, 0).getDate();
-    let h = `<div class="pk-hdr"><button class="cnv" onclick="chgPkMonth(-1)">‹</button><span style="font-weight:600; font-size:15px; color:var(--txt)">${MO[m]} ${y}</span><button class="cnv" onclick="chgPkMonth(1)">›</button></div>`;
-    h += `<div class="pk-grid pk-dow">${DL.map(d=>`<div>${d[0]}</div>`).join('')}</div><div class="pk-grid">`;
-    for(let i=0; i<fd; i++) h += `<div></div>`;
-    for(let d=1; d<=dim; d++){
-        const k = ck(y, m, d);
-        h += `<div class="${k===pkSelDate?'sel':''}" onclick="setPkDate('${k}')">${d}</div>`;
-    }
-    h += `</div>`;
-    document.getElementById('pk-body').innerHTML = h;
-}
-function chgPkMonth(dir) { pkDateView.setMonth(pkDateView.getMonth() + dir); renderPickerDate(); }
-function setPkDate(k) { pkSelDate = k; renderPickerDate(); }
-
-function renderPickerTime() {
-    const [hh, mm] = pkSelTime.split(':').map(Number);
-    let hHtml = '<div style="font-size:12px; font-weight:600; color:var(--txt3); margin-bottom:8px; margin-top:5px;">Hora</div><div class="pk-time-grid">';
-    for(let i=0; i<24; i++) {
-        const hStr = String(i).padStart(2, '0');
-        hHtml += `<button class="pk-time-btn ${i===hh?'sel':''}" onclick="setPkTime(${i}, null)">${hStr}</button>`;
-    }
-    hHtml += '</div>';
-    let mHtml = '<div style="font-size:12px; font-weight:600; color:var(--txt3); margin-bottom:8px">Minuto</div><div class="pk-time-grid" style="grid-template-columns: repeat(4, 1fr);">';
-    for(let i=0; i<60; i+=5) {
-        const mStr = String(i).padStart(2, '0');
-        mHtml += `<button class="pk-time-btn ${i===mm?'sel':''}" onclick="setPkTime(null, ${i})">${mStr}</button>`;
-    }
-    mHtml += '</div>';
-    document.getElementById('pk-body').innerHTML = hHtml + mHtml;
-}
-function setPkTime(h, m) {
-    let [hh, mm] = pkSelTime.split(':').map(Number);
-    if(h !== null) hh = h;
-    if(m !== null) mm = m;
-    pkSelTime = `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
-    renderPickerTime();
-}
 
 function confirmPicker() {
+    const wheels = document.getElementById('pk-wheels').querySelectorAll('.wheel');
+    let finalVal = '';
+    if(pkType === 'date') {
+        const d = String(wheels[0].dataset.val).padStart(2,'0');
+        const m = String(wheels[1].dataset.val).padStart(2,'0');
+        const y = wheels[2].dataset.val;
+        finalVal = `${y}-${m}-${d}`;
+    } else {
+        const h = String(wheels[0].dataset.val).padStart(2,'0');
+        const min = String(wheels[1].dataset.val).padStart(2,'0');
+        finalVal = `${h}:${min}`;
+    }
+
     if(pkTarget.startsWith('hf-time-')) {
         const idx = parseInt(pkTarget.replace('hf-time-',''));
-        setHabTime(idx, pkSelTime); renderHF();
+        setHabTime(idx, finalVal); renderHF();
     } else {
         const el = document.getElementById(pkTarget);
-        if(el) {
-            el.value = pkType === 'date' ? pkSelDate : pkSelTime;
-        }
+        if(el) el.value = finalVal;
     }
     closeM('mo-picker');
 }
@@ -1031,7 +1073,7 @@ function renderListItems() {
             <div class="nli-chk no-swipe ${item.d?'done':''}" onclick="togListItem(${i})">
                 ${item.d ? `<svg width="10" height="8" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
             </div>
-            <input type="text" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..."/>
+            <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..."/>
             <button class="bd no-swipe" style="font-size:22px; color:var(--txt4)" onclick="delListItem(${i})">×</button>
         </div>
     `).join('');
@@ -1347,7 +1389,7 @@ function habCardHTML(h){
     bubs+=`<div class="hbwrap"><div class="bub ${bsz} ${i<cnt?'filled':''}" style="color:${h.color}" onclick="event.stopPropagation();setBubble(${h.id},${i})"></div>${tl}</div>`;
   }
   const bubtip=cnt===0&&sched?`<span class="bubtip">← toque</span>`:'';
-  return`<div class="hcard" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
+  return`<div class="hcard no-swipe ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
 }
 function renderHabits(){
   try {
@@ -1370,7 +1412,7 @@ function togCDay(i){
     else hfd.customDays.push(i);
     renderHF();
 }
-function saveHabit(){
+async function saveHabit(){
     if(!hfd.name.trim()){toast('Digite um nome');return;}
     if(!hfd.times)hfd.times=[];
     if(document.getElementById('hf-rem-time')) hfd.reminderTime = document.getElementById('hf-rem-time').value;
@@ -1580,9 +1622,7 @@ async function editAccount(id){
   const nv = await showDialog('prompt', 'Editar Saldo', `Novo saldo para '${acc.name}' (use ponto para centavos):`, acc.val);
   if(nv !== false && nv !== null && !isNaN(parseFloat(nv.replace(',','.')))) { acc.val = parseFloat(nv.replace(',','.')); save(); renderFin(); }
 }
-function saveAccModal(){
-  // Used only if modal via HTML is still there, but we migrated to custom async prompts above.
-}
+function saveAccModal(){ /* obsolete */ }
 async function delAccount(id){ if(await showDialog('confirm','Remover Carteira','Remover esta carteira permanentemente?')) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
 
 async function chgRep(el) {
@@ -1622,6 +1662,7 @@ function addBill(){
   save(); renderFin(); renderCal();
 }
 
+// MODAL EDITAR CONTA
 function editBill(id, mk){
   const b = bills.find(x => x.id === id); if(!b) return;
   document.getElementById('ebill-m-id').value = id;
