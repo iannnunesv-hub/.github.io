@@ -13,7 +13,7 @@
 :root{--bg:#fafafa;--bg2:#fff;--bg3:#f5f5f5;--bg4:#e8e8e8;--brd:#eee;--brd2:#ddd;--txt:#222;--txt2:#666;--txt3:#aaa;--txt4:#ccc;--ac:#222;--acfg:#fff;--card:#fff;--inp:#fff;--hol:#e05;}
 [data-theme=dark]{--bg:#111;--bg2:#1a1a1a;--bg3:#252525;--bg4:#0d0d0d;--brd:#2a2a2a;--brd2:#383838;--txt:#eee;--txt2:#aaa;--txt3:#666;--txt4:#444;--ac:#e0e0e0;--acfg:#111;--card:#1e1e1e;--inp:#2a2a2a;--hol:#ff6b8a;}
 
-/* LAYORT NATIVO BLINDADO: Impede que a tela inteira role */
+/* LAYOUT NATIVO BLINDADO: Impede que a tela inteira role (Scroll do Body) */
 body {
   font-family: system-ui, sans-serif;
   background: var(--bg4);
@@ -21,7 +21,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  height: 100dvh; /* Adapta-se perfeitamente à barra do Android/iOS */
+  height: 100dvh; 
   overflow: hidden;
   padding: 0.5rem;
   transition: background .2s;
@@ -66,7 +66,7 @@ body {
 .gear-btn{background:none;border:.5px solid var(--brd2);border-radius:9px;padding:7px;cursor:pointer;display:flex;align-items:center;color:var(--txt2)}
 
 /* NATIVE SLIDER CSS */
-.cnt{flex:1; overflow:hidden; position:relative; min-height: 0;} /* min-height:0 é essencial para não estourar o flexbox */
+.cnt{flex:1; overflow:hidden; position:relative; min-height:0;} /* min-height 0 garante que ele obedeça o pai */
 #slider { display:flex; width:500%; height:100%; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; }
 .sec{width:20%; flex-shrink:0; padding:1.2rem 1.1rem; display:flex; flex-direction:column; overflow-y:auto; overflow-x:hidden; height:100%; box-sizing:border-box;}
 
@@ -134,7 +134,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 
 /* NOTES, LISTS & CARDS SELECTION LOCK */
 .nc, .hcard { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
-.ng{display:flex;flex-direction:column;gap:9px;flex:1;overflow-y:auto;overflow-x:hidden; padding-bottom:10px;}
+.ng{display:flex;flex-direction:column;gap:9px;flex:1; padding-bottom:10px;}
 .nc{border-radius:11px;border:.5px solid var(--brd);padding:14px;cursor:pointer;background:var(--card);transition:transform 0.2s, opacity 0.2s, box-shadow 0.2s; flex-shrink:0;}
 .nc.dragging, .hcard.dragging { z-index: 10; position: relative; }
 .nc h3{font-size:14px;font-weight:500;color:var(--txt);margin-bottom:4px}
@@ -393,7 +393,7 @@ textarea{resize:none;line-height:1.65;width:100%}
                 <button onclick="addEvent()" style="margin-bottom:1px">+ Evento</button>
               </div>
             </div>
-            <div id="ev-list" style="overflow-y:auto;max-height:35vh;padding-bottom:20px;"></div>
+            <div id="ev-list" style="padding-bottom:20px;"></div>
           </div>
         </div>
         
@@ -412,7 +412,7 @@ textarea{resize:none;line-height:1.65;width:100%}
               </div>
             </div>
           </div>
-          <div id="t-pend" style="overflow-y:auto;flex:1"></div>
+          <div id="t-pend" style="padding-bottom:10px;"></div>
           <div id="t-done-wrap"></div>
         </div>
 
@@ -440,7 +440,7 @@ textarea{resize:none;line-height:1.65;width:100%}
             <button class="bnn" style="margin-bottom:0;flex:1" onclick="openHF(null)">+ Novo Hábito</button>
             <button class="bnn" style="margin-bottom:0;flex:1;border-style:solid;background:var(--bg2)" onclick="openSug()">💡 Sugestões</button>
           </div>
-          <div id="hab-list" style="flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:15px"></div>
+          <div id="hab-list" style="padding-bottom:15px"></div>
         </div>
 
         <div id="sec-fin" class="sec">
@@ -460,9 +460,9 @@ textarea{resize:none;line-height:1.65;width:100%}
           </div>
           
           <div class="cnr" style="margin:1.2rem 0 .5rem">
-            <button class="cnv no-swipe" onclick="chgFinM(-1)">‹</button>
+            <button class="cnv" onclick="chgFinM(-1)">‹</button>
             <span id="fin-mlbl" style="font-size:13px;font-weight:600"></span>
-            <button class="cnv no-swipe" onclick="chgFinM(1)">›</button>
+            <button class="cnv" onclick="chgFinM(1)">›</button>
           </div>
 
           <div class="tf">
@@ -482,22 +482,21 @@ textarea{resize:none;line-height:1.65;width:100%}
               <div class="tff"><label>Valor (R$)</label><input type="number" id="bill-val" step="0.01" placeholder="0.00" min="0"/></div>
               <div class="tff" style="flex-basis: 100%; flex-direction:row; align-items:center; gap:8px; margin-top:4px">
                  <label style="margin:0; text-transform:none; font-size:12px; font-weight:500; color:var(--txt);">🔁 Repetir:</label>
-                 <select id="bill-rep" style="flex:1; font-size:13px; padding:6px 8px; height:32px;">
+                 <select id="bill-rep" onchange="chgRep(this)" style="flex:1; font-size:13px; padding:6px 8px; height:32px; min-width:0;">
                      <option value="0">Não repetir</option>
                      <option value="-1">Fixo (Todo mês)</option>
                      <option value="1">Por mais 1 mês</option>
                      <option value="2">Por mais 2 meses</option>
                      <option value="3">Por mais 3 meses</option>
-                     <option value="4">Por mais 4 meses</option>
-                     <option value="5">Por mais 5 meses</option>
-                     <option value="11">Por mais 11 meses (1 ano)</option>
-                     <option value="23">Por mais 23 meses (2 anos)</option>
-                     <option value="35">Por mais 35 meses (3 anos)</option>
+                     <option value="6">Por mais 6 meses</option>
+                     <option value="10">Por mais 10 meses</option>
+                     <option value="12">Por mais 12 meses (1 ano)</option>
+                     <option value="custom">Personalizado...</option>
                  </select>
               </div>
             </div>
           </div>
-          <div id="bill-list" style="overflow-y:auto; flex:1; padding-bottom:20px;"></div>
+          <div id="bill-list" style="padding-bottom:20px;"></div>
         </div>
     </div>
   </div>
@@ -887,7 +886,7 @@ function renderTasks(){
   } catch(e){}
 }
 
-// NOTES
+// NOTES COM CHECKLIST
 let enid=null, origNTitle='', origNBody='', origNType='text', curList=[], origNList=[];
 function openNote(id, type='text'){
     enid=id;
@@ -1039,19 +1038,12 @@ let cY=TY,cM=TM,selD=null,calView='month',wkOff=0;
 
 function isBillInDay(b, dk) {
     if(!b.date) return false;
+    if(!b.rep) return b.date === dk; 
     const bY = parseInt(b.date.substring(0,4)), bM = parseInt(b.date.substring(5,7))-1, bD = b.date.substring(8,10);
     const kY = parseInt(dk.substring(0,4)), kM = parseInt(dk.substring(5,7))-1, kD = dk.substring(8,10);
-    
     if(bD !== kD) return false;
-    if(kY === bY && kM === bM) return true;
-    
-    if(!b.rep || b.rep === 0) return false;
-    
-    const diff = (kY - bY) * 12 + (kM - bM);
-    if(diff > 0) {
-        if(b.rep === -1) return true;
-        if(diff <= b.rep) return true;
-    }
+    if(kY > bY) return true;
+    if(kY === bY && kM >= bM) return true;
     return false;
 }
 
@@ -1142,7 +1134,7 @@ function renderEvList(){
           const cName=b.cat?b.cat.substring(cEmoji.length).trim():''; 
           const dText=b.desc?esc(b.desc):cName;
           const isPaid=b.paidMap&&b.paidMap[mK];
-          return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="em2">${fmtC(b.val)}</div></div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd" onclick="delBill(${b.id})">×</button></div>`
+          return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="em2">${fmtC(b.val)}</div></div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd" onclick="delBill(${b.id})">×</button></div>`
       }).join('');
       const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}<span class="ebdg etask">tarefa</span></div>${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd" onclick="delTask(${t.id})">×</button></div>`).join('');
       const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}</div></div><button class="bd" onclick="delEvGlobal('${k}',${ev.id})">×</button></div>`).join('');
@@ -1251,7 +1243,7 @@ function habCardHTML(h){
     bubs+=`<div class="hbwrap"><div class="bub ${bsz} ${i<cnt?'filled':''}" style="color:${h.color}" onclick="event.stopPropagation();setBubble(${h.id},${i})"></div>${tl}</div>`;
   }
   const bubtip=cnt===0&&sched?`<span class="bubtip">← toque</span>`:'';
-  return`<div class="hcard" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
+  return`<div class="hcard no-swipe ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
 }
 function renderHabits(){
   try {
@@ -1468,35 +1460,39 @@ function renderFin(){
 }
 
 function addAccount(){
-  document.getElementById('acc-m-id').value = '';
-  document.getElementById('acc-m-nm').value = '';
-  document.getElementById('acc-m-val').value = '';
-  document.getElementById('acc-m-ttl').textContent = 'Nova Carteira';
-  document.getElementById('mo-acc').classList.add('open');
+  const nm = prompt("Nome da Carteira/Banco:");
+  if(!nm || !nm.trim()) return;
+  const vl = prompt(`Saldo inicial para '${nm}' (use ponto para centavos):`, "0.00");
+  if(vl !== null && !isNaN(parseFloat(vl.replace(',','.')))) { accounts.push({id:Date.now(), name:nm.trim(), val:parseFloat(vl.replace(',','.'))}); save(); renderFin(); }
 }
 function editAccount(id){
   const acc = accounts.find(a => a.id === id); if(!acc) return;
-  document.getElementById('acc-m-id').value = id;
-  document.getElementById('acc-m-nm').value = acc.name;
-  document.getElementById('acc-m-val').value = acc.val;
-  document.getElementById('acc-m-ttl').textContent = 'Editar Carteira';
-  document.getElementById('mo-acc').classList.add('open');
-}
-function saveAccModal(){
-  const id = document.getElementById('acc-m-id').value;
-  const nm = document.getElementById('acc-m-nm').value.trim();
-  const valStr = document.getElementById('acc-m-val').value;
-  if(!nm) { toast('Nome é obrigatório'); return; }
-  const val = parseFloat(valStr.replace(',','.')) || 0;
-  if(id) {
-      const acc = accounts.find(a => a.id == id);
-      if(acc) { acc.name = nm; acc.val = val; }
-  } else {
-      accounts.push({id:Date.now(), name:nm, val:val});
-  }
-  save(); renderFin(); closeM('mo-acc');
+  const nv = prompt(`Novo saldo para '${acc.name}':`, acc.val);
+  if(nv !== null && !isNaN(parseFloat(nv.replace(',','.')))) { acc.val = parseFloat(nv.replace(',','.')); save(); renderFin(); }
 }
 function delAccount(id){ if(confirm("Remover esta carteira permanentemente?")) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
+
+function chgRep(el) {
+    if(el.value === 'custom') {
+        const v = prompt('Repetir por quantos meses a mais? (Ex: 24)');
+        const num = parseInt(v);
+        if(!isNaN(num) && num > 0) {
+            let exists = false;
+            for(let i=0; i<el.options.length; i++) {
+                if(el.options[i].value == num) { exists = true; break; }
+            }
+            if(!exists) {
+                const opt = document.createElement('option');
+                opt.value = num;
+                opt.text = `Por mais ${num} meses`;
+                el.add(opt, el.options[el.options.length-1]); 
+            }
+            el.value = num;
+        } else {
+            el.value = "0"; 
+        }
+    }
+}
 
 function addBill(){
   const date = document.getElementById('bill-date').value;
