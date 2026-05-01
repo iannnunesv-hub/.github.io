@@ -349,7 +349,7 @@ textarea{resize:none;line-height:1.65;width:100%}
   <div class="hdr">
     <div><h1 id="aname">Meu Organizador</h1><p id="dlbl"></p></div>
     <div class="hdr-r">
-      <button class="ibt" onclick="openAch()" title="Conquistas">🏆</button>
+      <button class="ibt" onclick="openM('mo-ach')" title="Conquistas">🏆</button>
       <button class="gear-btn" onclick="openCfg()" title="Configurações">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -436,7 +436,7 @@ textarea{resize:none;line-height:1.65;width:100%}
         <div id="sec-habitos" class="sec">
           <div style="display:flex;gap:8px;margin-bottom:1rem">
             <button class="bnn" style="margin-bottom:0;flex:1" onclick="openHF(null)">+ Novo Hábito</button>
-            <button class="bnn" style="margin-bottom:0;flex:1;border-style:solid;background:var(--bg2)" onclick="openSug()">💡 Sugestões</button>
+            <button class="bnn" style="margin-bottom:0;flex:1;border-style:solid;background:var(--bg2)" onclick="openM('mo-sug')">💡 Sugestões</button>
           </div>
           <div id="hab-list" style="padding-bottom:15px"></div>
         </div>
@@ -527,7 +527,7 @@ textarea{resize:none;line-height:1.65;width:100%}
   </div>
 </div>
 
-<div class="mo" id="mo-dialog" onclick="if(event.target===this)closeDialog(false)">
+<div class="mo" id="mo-dialog" onclick="bgC(event,'mo-dialog')">
   <div class="md-center">
      <div style="padding:20px 20px 10px; text-align:center;">
         <h3 id="dia-ttl" style="font-size:17px; margin-bottom:8px; color:var(--txt);"></h3>
@@ -590,7 +590,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 </div></div>
 
 <div class="mo" id="mo-cfg" onclick="bgC(event,'mo-cfg')"><div class="md">
-  <div class="mh"><h2>Configurações</h2><button class="mc" onclick="closeCfg()">×</button></div>
+  <div class="mh"><h2>Configurações</h2><button class="mc" onclick="closeM('mo-cfg')">×</button></div>
   <div class="mb">
     <div class="cst">Aparência</div>
     <div class="cr"><div class="cl">Tema escuro</div><label class="tog"><input type="checkbox" id="tog-dark" onchange="toggleTheme(this.checked)"/><span class="tog-s"></span></label></div>
@@ -623,12 +623,12 @@ textarea{resize:none;line-height:1.65;width:100%}
 </div></div>
 
 <div class="mo" id="mo-ach" onclick="bgC(event,'mo-ach')"><div class="md">
-  <div class="mh"><h2>🏆 Conquistas</h2><button class="mc" onclick="document.getElementById('mo-ach').classList.remove('open')">×</button></div>
+  <div class="mh"><h2>🏆 Conquistas</h2><button class="mc" onclick="closeM('mo-ach')">×</button></div>
   <div class="mb" id="ach-body"></div>
 </div></div>
 
 <div class="mo" id="mo-sug" onclick="bgC(event,'mo-sug')"><div class="md">
-  <div class="mh"><h2>💡 Sugestões de hábitos</h2><button class="mc" onclick="document.getElementById('mo-sug').classList.remove('open')">×</button></div>
+  <div class="mh"><h2>💡 Sugestões de hábitos</h2><button class="mc" onclick="closeM('mo-sug')">×</button></div>
   <div class="mb" id="sug-body"></div>
 </div></div>
 
@@ -707,8 +707,23 @@ function ensureHols(y){
 }
 function getHol(y,m,d){return ensureHols(y)[ck(y,m,d)]||null;}
 
-// CLOSE MODAL HELPER
-function closeM(id) { document.getElementById(id).classList.remove('open'); }
+// MODALS SYSTEM (Open, Close, Background Click & History Back)
+function openM(id) {
+    document.getElementById(id).classList.add('open');
+    history.pushState({modal: id}, '');
+}
+function closeM(id) {
+    const el = document.getElementById(id);
+    if(el && el.classList.contains('open')) {
+        el.classList.remove('open');
+        if(history.state && history.state.modal === id) {
+            history.back(); // Isso aciona o popstate e resolve o histórico
+        }
+    }
+}
+function bgC(e, id) {
+    if(e.target.id === id) closeM(id);
+}
 
 // CUSTOM DIALOG SYSTEM (Alert / Confirm / Prompt)
 let dialogResolve = null;
@@ -726,11 +741,11 @@ function showDialog(type, title, text, defaultVal = '') {
             inp.style.display = 'none';
         }
         document.getElementById('dia-btn-cancel').style.display = (type === 'alert') ? 'none' : 'block';
-        document.getElementById('mo-dialog').classList.add('open');
+        openM('mo-dialog');
     });
 }
 function closeDialog(isOk) {
-    document.getElementById('mo-dialog').classList.remove('open');
+    closeM('mo-dialog');
     if (!dialogResolve) return;
     if (isOk) {
         const inp = document.getElementById('dia-inp');
@@ -834,7 +849,7 @@ function openPicker(id, type) {
         colon.textContent = ':';
         wc.append(wH, colon, wMin);
     }
-    document.getElementById('mo-picker').classList.add('open');
+    openM('mo-picker');
 }
 
 function confirmPicker() {
@@ -911,7 +926,13 @@ async function saveName(){
     const v=document.getElementById('cfg-name').value.trim();
     if(v){cfg.name=v;saveCfg();applyName();toast('Nome atualizado ✓');}
 }
-function openCfg(){document.getElementById('cfg-name').value=cfg.name||'';document.getElementById('tog-dark').checked=cfg.dark;document.getElementById('tog-nhab').checked=cfg.nHab!==false;updN();document.getElementById('mo-cfg').classList.add('open');}
+function openCfg(){
+    document.getElementById('cfg-name').value=cfg.name||'';
+    document.getElementById('tog-dark').checked=cfg.dark;
+    document.getElementById('tog-nhab').checked=cfg.nHab!==false;
+    updN();
+    openM('mo-cfg');
+}
 
 function toggleHideVals() {
     cfg.hideVals = !cfg.hideVals;
@@ -1076,7 +1097,7 @@ function editTask(id) {
     document.getElementById('etask-m-date').value = t.dk || getToday();
     document.getElementById('etask-m-time').value = t.dt || '';
     document.getElementById('etask-m-rep').value = t.rep || '0';
-    document.getElementById('mo-etask').classList.add('open');
+    openM('mo-etask');
 }
 function saveEditTask(){
     const id = Number(document.getElementById('etask-m-id').value);
@@ -1170,6 +1191,7 @@ async function closeNote(auto=false){
     document.getElementById('nlv').style.display='flex';
     document.getElementById('nev').classList.remove('open');
     enid=null;
+    if(history.state && history.state.note) history.back();
 }
 function saveNote(){
     const title = document.getElementById('nt-ttl').value.trim()||'Sem título';
@@ -1182,7 +1204,10 @@ function saveNote(){
     else { notes = notes.map(n => n.id===enid ? {...n, title, type:origNType, body, list:listToSave} : n); }
     
     save(); renderNotes();
-    document.getElementById('nlv').style.display='flex'; document.getElementById('nev').classList.remove('open'); enid=null;
+    document.getElementById('nlv').style.display='flex'; 
+    document.getElementById('nev').classList.remove('open'); 
+    enid=null;
+    if(history.state && history.state.note) history.back();
 }
 async function delNote(id){if(!(await showDialog('confirm','Excluir Anotação','Excluir esta nota permanentemente?')))return;notes=notes.filter(n=>n.id!==id);save();renderNotes();}
 function renderNotes(){
@@ -1205,7 +1230,31 @@ function renderNotes(){
       }).join('');
   } catch(e){}
 }
-window.addEventListener('popstate',()=>{if(document.getElementById('nev').classList.contains('open'))closeNote(true);});
+
+// Global POPSTATE Listener (Manages back button for everything)
+window.addEventListener('popstate', (e) => {
+    // Tenta fechar as notas abertas se a pessoa apertou voltar
+    if(document.getElementById('nev').classList.contains('open')) {
+        document.getElementById('nlv').style.display='flex';
+        document.getElementById('nev').classList.remove('open');
+        enid=null;
+    }
+    
+    // Tenta fechar qualquer modal que esteja aberto
+    document.querySelectorAll('.mo.open').forEach(m => {
+        m.classList.remove('open');
+        
+        // Comportamentos extras ao fechar
+        if(m.id === 'mo-dialog' && dialogResolve) {
+            dialogResolve(false);
+            dialogResolve = null;
+        }
+        if(m.id === 'mo-focus') {
+            if(focTmr){clearInterval(focTmr.intv);focTmr=null;}
+            focusH=null;
+        }
+    });
+});
 
 // TOUCH DRAG FOR ALL
 function bindDrag(containerId, itemClass, onReorder) {
@@ -1476,8 +1525,8 @@ function renderHabits(){
       document.getElementById('hab-list').innerHTML=`<div class="hprog"><div class="hph"><span>${dn.length}/${tod.length} hoje</span><span style="font-size:12px;color:var(--txt3)">${pct}%</span></div><div class="pbw"><div class="pbf" style="width:${pct}%;background:linear-gradient(90deg,${g})"></div></div>${pct===100&&tod.length?'<div class="pbm">🎉 Todos concluídos hoje!</div>':''}</div>${(habits||[]).filter(Boolean).length?(habits||[]).filter(Boolean).map(habCardHTML).join(''):'<p class="empty">Nenhum hábito ainda.</p>'}`;
   } catch(e){}
 }
-function openHF(id){if(id){const h=habits.find(h=>h.id===id);if(h)hfd={...h,customDays:[...(h.customDays||[])],times:[...(h.times||[])]};document.getElementById('hf-ttl').textContent='Editar hábito';}else{hfd={id:null,icon:'⭐',name:'',color:COLORS[5],target:1,times:[],frequency:'daily',customDays:[],reminderTime:''};document.getElementById('hf-ttl').textContent='Novo hábito';}renderHF();document.getElementById('mo-hf').classList.add('open');}
-function closeHF(){document.getElementById('mo-hf').classList.remove('open');}
+function openHF(id){if(id){const h=habits.find(h=>h.id===id);if(h)hfd={...h,customDays:[...(h.customDays||[])],times:[...(h.times||[])]};document.getElementById('hf-ttl').textContent='Editar hábito';}else{hfd={id:null,icon:'⭐',name:'',color:COLORS[5],target:1,times:[],frequency:'daily',customDays:[],reminderTime:''};document.getElementById('hf-ttl').textContent='Novo hábito';}renderHF();openM('mo-hf');}
+function closeHF(){closeM('mo-hf');}
 function setHabTime(i,v){if(!hfd.times)hfd.times=[];hfd.times[i]=v;}
 function renderHF(){
   const tms=hfd.target>1?`<div class="hff"><label>Horários por ocorrência <span style="font-weight:400;font-size:9px;text-transform:none">(opcional)</span></label><div class="htgrid">${Array.from({length:hfd.target},(_,i)=>`<div class="htrow"><span>Ocorrência ${i+1}</span><input type="text" id="hf-time-${i}" class="pk-input" readonly value="${(hfd.times||[])[i]||''}" onclick="openPicker('hf-time-${i}', 'time')"/></div>`).join('')}</div></div>`:`<div class="hff"><label>Lembrete</label><input type="text" id="hf-rem-time" class="pk-input" readonly value="${hfd.reminderTime||''}" onclick="openPicker('hf-rem-time', 'time')"/></div>`;
@@ -1500,8 +1549,8 @@ async function saveHabit(){
 async function delHabit(id){if(!(await showDialog('confirm','Excluir Hábito','Excluir este hábito e todo o histórico permanentemente?')))return;habits=habits.filter(h=>h.id!==id);saveHabits();renderHabits();if(focusH&&focusH.id===id)closeFocus();}
 
 // FOCUS & BACKGROUND TIMER
-function openFocus(id){const h=habits.find(h=>h.id===id);if(!h)return;focusH=h;if(focTmr){clearInterval(focTmr.intv);focTmr=null;}document.getElementById('fc-ttl').textContent=`${h.icon} ${h.name}`;renderFocusBody();document.getElementById('mo-focus').classList.add('open');}
-function closeFocus(){document.getElementById('mo-focus').classList.remove('open');if(focTmr){clearInterval(focTmr.intv);focTmr=null;}focusH=null;}
+function openFocus(id){const h=habits.find(h=>h.id===id);if(!h)return;focusH=h;if(focTmr){clearInterval(focTmr.intv);focTmr=null;}document.getElementById('fc-ttl').textContent=`${h.icon} ${h.name}`;renderFocusBody();openM('mo-focus');}
+function closeFocus(){closeM('mo-focus');if(focTmr){clearInterval(focTmr.intv);focTmr=null;}focusH=null;}
 function editFromFocus(){if(focusH){const id=focusH.id;closeFocus();openHF(id);}}
 function renderFocusBody(){
     if(!focusH)return;
@@ -1644,7 +1693,7 @@ function expandMonth(k, name) {
   
   document.getElementById('proj-m-ttl').textContent = `Resumo: ${name}`;
   document.getElementById('proj-m-body').innerHTML = html;
-  document.getElementById('mo-proj').classList.add('open');
+  openM('mo-proj');
 }
 
 function renderFin(){
@@ -1722,7 +1771,7 @@ function openTransfer(){
     document.getElementById('tr-from').innerHTML = opts;
     document.getElementById('tr-to').innerHTML = opts;
     document.getElementById('tr-val').value = '';
-    document.getElementById('mo-transfer').classList.add('open');
+    openM('mo-transfer');
 }
 function saveTransfer(){
     const f = parseInt(document.getElementById('tr-from').value);
@@ -1799,7 +1848,7 @@ function editBill(id, mk){
   document.getElementById('ebill-m-date').value = b.date || '';
   document.getElementById('ebill-m-desc').value = b.desc || '';
   document.getElementById('ebill-m-val').value = b.val || '';
-  document.getElementById('mo-ebill').classList.add('open');
+  openM('mo-ebill');
 }
 function saveEditBill(){
   const id = Number(document.getElementById('ebill-m-id').value);
@@ -1857,18 +1906,18 @@ function openAch(){
     html+=`<div class="ach-card ${unlocked?'':'locked'}"><div class="ach-ico">${b.icon}</div><div class="ach-ttl">${b.title}</div><div class="ach-dsc">${b.desc}</div></div>`;
   });
   body.innerHTML=html+'</div>';
-  document.getElementById('mo-ach').classList.add('open');
+  openM('mo-ach');
 }
 
 function openSug(){
   const body=document.getElementById('sug-body');
   body.innerHTML=`<div class="sug-grid">` + HABIT_SUGS.map((s,i)=>`<div class="sug-item"><div class="sug-ico">${s.icon}</div><div class="sug-info"><div class="sug-nm">${s.name}</div><div class="sug-dt">${s.desc}</div></div><button class="sug-add" onclick="addSug(${i})">Adicionar</button></div>`).join('') + `</div>`;
-  document.getElementById('mo-sug').classList.add('open');
+  openM('mo-sug');
 }
 function addSug(i){
   const s=HABIT_SUGS[i];
   habits.push({id:Date.now(), icon:s.icon, name:s.name, target:s.target, frequency:s.frequency, color:s.color, customDays:s.customDays||[], times:[], history:{}});
-  saveHabits(); renderHabits(); document.getElementById('mo-sug').classList.remove('open'); toast('Hábito adicionado!');
+  saveHabits(); renderHabits(); closeM('mo-sug'); toast('Hábito adicionado!');
 }
 
 // TUTORIAL
@@ -1895,6 +1944,23 @@ function endTutorial(){
     document.getElementById('tut').style.display='none';
     localStorage.setItem('o_tut_done','true');
     setTimeout(() => { if(typeof Notification !== 'undefined' && Notification.permission === 'default') { if(confirm("Deseja ativar as notificações para ser lembrado das suas tarefas e hábitos?")) { reqN(); } } }, 400);
+}
+
+// UI HELPERS (Toast)
+function toast(msg) {
+    let t = document.getElementById('toast');
+    if(!t) {
+        t = document.createElement('div');
+        t.id = 'toast';
+        t.style.cssText = 'position:fixed;bottom:env(safe-area-inset-bottom, 20px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--txt);color:var(--bg);padding:10px 20px;border-radius:20px;font-size:13px;z-index:9999;opacity:0;transition:opacity 0.3s, transform 0.3s;pointer-events:none;font-weight:500;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.15);white-space:nowrap;';
+        document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    void t.offsetWidth; // force reflow
+    t.style.opacity = 1;
+    t.style.transform = 'translateX(-50%) translateY(-20px)';
+    clearTimeout(t.to);
+    t.to = setTimeout(() => { t.style.opacity = 0; t.style.transform = 'translateX(-50%) translateY(20px)'; }, 3000);
 }
 
 // ── INIT BLINDADO ABSOLUTO ──
