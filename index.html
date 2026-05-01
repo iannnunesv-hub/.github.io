@@ -63,7 +63,28 @@ body {
     box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
-/* SPLASH SCREEN PREMIUM */
+/* ==========================================================================
+   TELA DE LOGIN E SPLASH
+   ========================================================================== */
+#login-screen {
+    position: absolute; inset: 0; background: var(--bg); z-index: 100000;
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+    border-radius: 18px; padding: 20px; text-align: center;
+}
+.login-btn {
+    display: flex; align-items: center; gap: 12px; background: var(--card);
+    border: 1px solid var(--brd2); padding: 14px 28px; border-radius: 99px;
+    font-size: 15px; font-weight: 500; color: var(--txt); cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.2s; margin-top: 30px;
+}
+.login-btn:active { transform: scale(0.96); }
+.login-btn svg { width: 22px; height: 22px; }
+
+.login-skip {
+    background: none; border: none; font-size: 13px; color: var(--txt3);
+    margin-top: 25px; cursor: pointer; text-decoration: underline; padding: 10px;
+}
+
 #splash {
     position: absolute; inset: 0; background: var(--bg); z-index: 99999;
     display: flex; align-items: center; justify-content: center; flex-direction: column;
@@ -75,7 +96,7 @@ body {
 @keyframes fadeOutSplash { 0% { opacity: 1; visibility: visible; } 100% { opacity: 0; visibility: hidden; z-index: -1; display: none; } }
 
 /* ==========================================================================
-   CABEÇALHO E RODAPÉ (TABS)
+   CABEÇALHO
    ========================================================================== */
 .hdr { background: var(--bg2); border-bottom: 0.5px solid var(--brd); padding: 14px 17px 11px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
 .hdr h1 { font-size: 18px; font-weight: 500; color: var(--txt); }
@@ -83,18 +104,18 @@ body {
 .hdr-r { display: flex; gap: 7px; align-items: center; }
 .ibt, .gear-btn { background: none; border: 0.5px solid var(--brd2); border-radius: 9px; padding: 6px 8px; cursor: pointer; font-size: 16px; display: flex; align-items: center; color: var(--txt2); }
 
-.tabbar { display: flex; border-top: 0.5px solid var(--brd); background: var(--bg2); flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom); }
-.tb { flex: 1; padding: 11px 2px 9px; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--txt4); font-size: 11px; font-family: inherit; transition: color 0.15s; }
-.tb.active { color: var(--txt); font-weight: 500; }
-.tb svg { width: 22px !important; height: 22px !important; }
-
 /* ==========================================================================
-   SLIDER DAS ABAS
+   TABS E SLIDER PRINCIPAL
    ========================================================================== */
 .cnt { flex: 1; overflow: hidden; position: relative; min-height: 0; }
 #slider { display: flex; width: 500%; height: 100%; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; }
 .sec { width: 20%; flex-shrink: 0; padding: 1.2rem 1.1rem; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; height: 100%; box-sizing: border-box; }
-.sec > * { flex-shrink: 0; } /* Proteção anti-esmagamento */
+.sec > * { flex-shrink: 0; } 
+
+.tabbar { display: flex; border-top: 0.5px solid var(--brd); background: var(--bg2); flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom); }
+.tb { flex: 1; padding: 11px 2px 9px; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--txt4); font-size: 11px; font-family: inherit; transition: color 0.15s; }
+.tb.active { color: var(--txt); font-weight: 500; }
+.tb svg { width: 22px !important; height: 22px !important; }
 
 /* ==========================================================================
    INPUTS GERAIS E BOTÕES
@@ -130,7 +151,6 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .dia-btn.cancel { border-right: 0.5px solid var(--brd); color: var(--txt3); }
 .dia-btn.ok { color: var(--ac); font-weight: 600; }
 
-/* ROLLING WHEEL PICKER */
 #mo-picker { z-index: 140; }
 .pk-wheels { display: flex; justify-content: center; gap: 15px; height: 210px; position: relative; width: 100%; overflow: hidden; margin-top: 10px; }
 .pk-sel-bg { position: absolute; top: 80px; left: 0; right: 0; height: 50px; background: rgba(0,0,0,0.05); border-radius: 12px; z-index: 0; pointer-events: none; }
@@ -142,7 +162,7 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .w-item.act { font-size: 28px; font-weight: 700; color: var(--ac); }
 
 /* ==========================================================================
-   CONFIGURAÇÕES (COM LOGIN DO GOOGLE INCLUSO)
+   CONFIGURAÇÕES GERAIS
    ========================================================================== */
 .cst { font-size: 11px; color: var(--txt3); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin: 15px 0 9px; }
 .cst:first-child { margin-top: 0; }
@@ -161,7 +181,7 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .bncfg { background: var(--ac); color: var(--acfg); border: none; border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: inherit; }
 
 /* ==========================================================================
-   TAREFAS & FINANÇAS
+   TAREFAS & LANÇAMENTOS (BILLS)
    ========================================================================== */
 .tf { background: var(--card); border-radius: 13px; border: 0.5px solid var(--brd); padding: 13px; margin-bottom: 1rem; flex-shrink: 0; }
 .tftop { display: flex; gap: 7px; margin-bottom: 10px; }
@@ -197,7 +217,7 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .bnn { width: 100%; padding: 11px; border-radius: 10px; border: 0.5px dashed var(--brd2); background: transparent; font-size: 14px; color: var(--txt3); cursor: pointer; margin-bottom: 1rem; font-family: inherit; flex-shrink: 0; }
 #nlv { flex: 1; display: flex; flex-direction: column; min-height: 0; }
 .neh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.7rem; flex-shrink: 0; }
-#nt-ttl { border: none; outline: none; font-size: 18px; font-weight: 500; color: var(--txt); padding: 0; margin-bottom: 0.6rem; border-radius: 0; background: transparent; flex-shrink: 0; }
+#nt-ttl { border: none; outline: none; font-size: 18px; font-weight: 500; color: var(--txt); padding: 0; margin-bottom: 0.6rem; border-radius: 0; width: 100%; background: transparent; flex-shrink: 0; }
 #nt-bdy { border: none; outline: none; font-size: 14px; color: var(--txt2); padding: 0; border-radius: 0; background: transparent; flex: 1; min-height: 0; height: calc(100svh - 230px); }
 #nev { flex: 1; display: none; flex-direction: column; overflow: hidden; }
 #nev.open { display: flex; }
@@ -214,7 +234,6 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .vbtn { flex: 1; padding: 7px; border-radius: 8px; border: 0.5px solid var(--brd2); background: var(--bg3); color: var(--txt2); font-size: 12px; cursor: pointer; font-family: inherit; }
 .vbtn.sel { background: var(--ac); color: var(--acfg); border-color: var(--ac); }
 .srow { display: flex; gap: 7px; margin-bottom: 0.8rem; flex-shrink: 0; }
-.srow input { flex: 1; font-size: 13px; }
 .sri { padding: 9px 11px; border-radius: 9px; border: 0.5px solid var(--brd); margin-bottom: 5px; background: var(--card); cursor: pointer; }
 .sri-t { font-size: 13px; color: var(--txt); }
 .sri-m { font-size: 11px; color: var(--txt3); margin-top: 2px; }
@@ -318,7 +337,7 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .hnt { font-size: 11px; color: var(--txt4); font-style: italic; margin-top: 5px; }
 .bubtip { font-size: 10px; color: var(--txt4); margin-left: 4px; font-style: italic; align-self: center; }
 
-/* Habit Form */
+/* Formulário de Hábitos */
 .hff { margin-bottom: 13px; }
 .hff label { display: block; font-size: 11px; color: var(--txt3); font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 5px; }
 .ecat-lbl { font-size: 10px; color: var(--txt4); margin-bottom: 4px; margin-top: 8px; font-weight: 600; letter-spacing: 0.04em; }
@@ -374,7 +393,7 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .tbtn { padding: 10px 28px; border-radius: 99px; border: none; background: var(--ac); color: var(--acfg); font-size: 14px; cursor: pointer; font-family: inherit; }
 
 /* ==========================================================================
-   ACHIEVEMENTS & SUGESTÕES
+   ACHIEVEMENTS E SUGESTÕES
    ========================================================================== */
 .ach-stat { font-size: 12px; color: var(--txt3); margin-bottom: 12px; line-height: 1.8; }
 .ach-stat strong { color: var(--txt); }
@@ -412,7 +431,7 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .tut-next { flex: 2; padding: 11px; border-radius: 10px; border: none; background: var(--ac); color: var(--acfg); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; }
 
 /* ==========================================================================
-   FINANÇAS E CARTEIRAS
+   FINANÇAS
    ========================================================================== */
 .f-card { background: var(--card); border-radius: 13px; border: 0.5px solid var(--brd); padding: 13px; margin-bottom: 1rem; flex-shrink: 0; }
 .f-bal { display: flex; justify-content: space-between; align-items: flex-start; }
@@ -421,9 +440,24 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .acc-it { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: var(--bg3); border-radius: 8px; font-size: 13px; color: var(--txt); }
 .acc-nm { font-weight: 500; display: flex; align-items: center; gap: 5px; }
 .acc-val { color: var(--txt2); }
+.cat-it { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 0.5px solid var(--brd2); font-size: 13px; color: var(--txt); }
+.cat-it:last-child { border-bottom: none; }
 </style>
 </head>
 <body>
+
+<div id="login-screen" style="display:none;">
+    <div class="sp-ico">👑</div>
+    <div class="sp-title" style="margin-bottom:30px;">Organizador <span class="sp-prem">Premium</span></div>
+    
+    <button class="login-btn" id="login-btn" onclick="loginGoogle()">
+        <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Entrar com Google
+    </button>
+    <button class="login-skip" onclick="skipLogin()">Usar sem conta (Modo Offline)</button>
+    
+    <p style="font-size:12px; color:var(--txt3); margin-top:15px;">Sincronização na nuvem e acesso rápido.</p>
+</div>
 
 <div id="splash">
     <div class="sp-ico">👑</div>
@@ -926,116 +960,157 @@ function renderAll() {
 }
 
 // ==========================================================================
-// FIREBASE INIT E SYNC BLINDADO (OFFLINE-FIRST)
+// INIT OFFLINE-FIRST (Roda instantaneamente)
+// ==========================================================================
+let isAppInitialized = false;
+
+function initApp() {
+    if (isAppInitialized) return;
+    isAppInitialized = true;
+    
+    try {
+        loadLocal(); 
+        
+        if(typeof chgBillType === 'function') chgBillType(); 
+        
+        document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+        document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+        document.getElementById('sec-agenda').classList.add('active');
+        document.getElementById('tb-agenda').classList.add('active');
+        
+        calView = 'month'; cY = TY; cM = TM; selD = null;
+        renderAll();
+        selDay(TD); 
+
+        try {
+            bindDrag('ngrid', '.nc', () => { const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id)))); notes=arr.filter(Boolean); save(); });
+            bindDrag('hab-list', '.hcard', () => { const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id)))); habits=arr.filter(Boolean); saveHabits(); });
+        } catch(e) {}
+        
+        document.getElementById('task-in').addEventListener('keydown', e => { if(e.key==='Enter') addTask(); });
+        document.getElementById('ev-in').addEventListener('keydown', e => { if(e.key==='Enter') addEvent(); });
+        
+        try {
+            const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();
+            if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}
+        } catch(e) {}
+        if(window._shared){swTab('notes',document.getElementById('tb-notes'));toast('✓ Texto salvo nas notas!');}
+        
+        setTimeout(() => {
+            const sp = document.getElementById('splash'); if(sp) sp.remove(); 
+            if(!localStorage.getItem('o_tut_done')) { document.getElementById('tut').style.display='flex'; showStep(); }
+        }, 1200);
+
+    } catch (err) { console.error("Erro na inicialização:", err); }
+}
+
+// MÁGICA 1: Inicia tudo usando os dados do celular na hora que o DOM carrega!
+document.addEventListener('DOMContentLoaded', () => {
+    initApp();
+    setTimeout(initFirebase, 500); // Depois de meio segundo, tenta acordar a nuvem.
+});
+
+
+// ==========================================================================
+// FIREBASE SYNC (Roda escondido no fundo)
 // ==========================================================================
 let currentUser = null;
 let syncTimeout = null;
 let isOnline = false;
 
-// Inicializa Firebase com Try/Catch para não quebrar offline
-try {
-    if (typeof firebase !== 'undefined') {
-        firebase.initializeApp({
-            apiKey: "AIzaSyAjlCeP7goWIGPZAuwIEVBgHSMhRIt-dZs",
-            authDomain: "meu-organizador-d5476.firebaseapp.com",
-            projectId: "meu-organizador-d5476",
-            storageBucket: "meu-organizador-d5476.firebasestorage.app",
-            messagingSenderId: "106220883734",
-            appId: "1:106220883734:web:6658a9d5c2fe94005a4a37"
-        });
-        window.auth = firebase.auth();
-        window.db = firebase.firestore();
-        window.googleProvider = new firebase.auth.GoogleAuthProvider();
-        isOnline = true;
+function initFirebase() {
+    try {
+        if (typeof firebase !== 'undefined') {
+            firebase.initializeApp({
+                apiKey: "AIzaSyAjlCeP7goWIGPZAuwIEVBgHSMhRIt-dZs",
+                authDomain: "meu-organizador-d5476.firebaseapp.com",
+                projectId: "meu-organizador-d5476",
+                storageBucket: "meu-organizador-d5476.firebasestorage.app",
+                messagingSenderId: "106220883734",
+                appId: "1:106220883734:web:6658a9d5c2fe94005a4a37"
+            });
+            window.auth = firebase.auth();
+            window.db = firebase.firestore();
+            window.googleProvider = new firebase.auth.GoogleAuthProvider();
+            isOnline = true;
+            
+            // Tratamento de Resposta do Redirecionamento
+            auth.getRedirectResult().catch(error => { showDialog('alert', 'Erro ao conectar', error.message); });
+
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('auth-logged-out').style.display = 'none';
+                    document.getElementById('auth-logged-in').style.display = 'block';
+                    document.getElementById('lbl-user-email').textContent = user.email;
+                    
+                    try {
+                        const docRef = db.collection('usuarios').doc(user.uid);
+                        const docSnap = await docRef.get();
+                        if(docSnap.exists) {
+                            const data = docSnap.data();
+                            tasks = data.tasks || []; notes = data.notes || []; events = data.events || {};
+                            accounts = data.accounts || []; habits = data.habits || []; cfg = data.cfg || {dark:false,name:'',nHab:true};
+                            bills = (data.bills || []).map(b => { if(!b.paidMap) b.paidMap = {}; return b; });
+                            saveLocal(); renderAll(); toast('Nuvem Sincronizada! ✓');
+                        } else {
+                            window.syncToCloud(); toast('Dados enviados para a nuvem! ✓');
+                        }
+                    } catch(e) {}
+                } else {
+                    currentUser = null;
+                    document.getElementById('auth-logged-out').style.display = 'block';
+                    document.getElementById('auth-logged-in').style.display = 'none';
+                    if(!localStorage.getItem('o_skip_login')) {
+                        document.getElementById('login-screen').style.display = 'flex';
+                    }
+                }
+            });
+
+            window.syncToCloud = () => {
+                if(!currentUser) return;
+                clearTimeout(syncTimeout);
+                syncTimeout = setTimeout(() => {
+                    db.collection('usuarios').doc(currentUser.uid).set({ tasks, notes, events, accounts, bills, habits, cfg }).catch(e=>{});
+                }, 1500); 
+            };
+        }
+    } catch(err) {
+        console.warn("Firebase offline");
+        window.syncToCloud = () => {};
     }
-} catch(e) {
-    console.warn("Firebase bloqueado pelo navegador ou offline.");
 }
 
 function loginGoogle() {
-    if (!isOnline) { 
-        showDialog('alert', 'Sem Internet', 'É preciso internet para conectar o Google.'); 
-        return; 
-    }
-    const btn = document.querySelector('#auth-logged-out .login-btn');
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = '⏳ Conectando...'; 
-    btn.style.pointerEvents = 'none';
+    if (!isOnline) { showDialog('alert', 'Sem Internet', 'Você precisa de internet para fazer login com o Google.'); return; }
+    
+    // Procura o botão na tela de Login Inicial ou dentro das Configurações
+    const btn = document.getElementById('login-btn') || document.querySelector('#auth-logged-out .login-btn');
+    if(btn) { btn.innerHTML = '⏳ Conectando...'; btn.style.pointerEvents = 'none'; }
 
     auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     .then(() => auth.signInWithRedirect(googleProvider))
     .catch(error => {
-        btn.innerHTML = originalHTML; 
-        btn.style.pointerEvents = 'auto';
+        if(btn) { btn.innerHTML = 'Entrar com Google'; btn.style.pointerEvents = 'auto'; }
         showDialog('alert', 'Erro de Login', error.message);
     });
 }
 
+function skipLogin() {
+    localStorage.setItem('o_skip_login', 'true');
+    document.getElementById('login-screen').style.display = 'none';
+    toast('Modo Offline Ativado');
+}
+
 function logout() {
-    if(isOnline && auth.currentUser) { 
-        auth.signOut().then(() => { 
-            location.reload(); 
-        }); 
-    }
+    if(isOnline && auth.currentUser) { auth.signOut().then(() => { location.reload(); }); }
 }
 
-if (isOnline) {
-    auth.getRedirectResult().catch(error => {
-        showDialog('alert', 'Erro ao conectar', error.message);
-    });
+function save() { saveLocal(); if(window.syncToCloud) window.syncToCloud(); }
+function saveHabits() { saveLocal(); if(window.syncToCloud) window.syncToCloud(); }
 
-    auth.onAuthStateChanged(async (user) => {
-        if (user) {
-            currentUser = user;
-            
-            // Troca blocos de login nas Configurações
-            document.getElementById('auth-logged-out').style.display = 'none';
-            document.getElementById('auth-logged-in').style.display = 'block';
-            document.getElementById('lbl-user-email').textContent = user.email;
-            
-            toast('Sincronizando nuvem...');
-            
-            try {
-                const docRef = db.collection('usuarios').doc(user.uid);
-                const docSnap = await docRef.get();
-                if(docSnap.exists) {
-                    const data = docSnap.data();
-                    tasks = data.tasks || []; notes = data.notes || []; events = data.events || {};
-                    accounts = data.accounts || []; habits = data.habits || []; cfg = data.cfg || {dark:false,name:'',nHab:true};
-                    bills = (data.bills || []).map(b => { 
-                        if(!b.paidMap) b.paidMap = {}; return b; 
-                    });
-                    saveLocal(); 
-                    renderAll(); // Atualiza a tela com os dados novos
-                    toast('Nuvem Sincronizada! ✓');
-                } else {
-                    syncToCloud(); 
-                    toast('Dados enviados para a nuvem! ✓');
-                }
-            } catch(e) { }
-            
-        } else {
-            currentUser = null;
-            document.getElementById('auth-logged-out').style.display = 'block';
-            document.getElementById('auth-logged-in').style.display = 'none';
-        }
-    });
-}
-
-function syncToCloud() {
-    if(!isOnline || !currentUser) return;
-    clearTimeout(syncTimeout);
-    syncTimeout = setTimeout(() => {
-        db.collection('usuarios').doc(currentUser.uid).set({ 
-            tasks, notes, events, accounts, bills, habits, cfg 
-        }).catch(e=>{});
-    }, 1500); 
-}
-
-function save() { saveLocal(); syncToCloud(); }
-function saveHabits() { saveLocal(); syncToCloud(); }
-
-function toggleTheme(on){cfg.dark=on;saveLocal();syncToCloud();applyTheme();}
+function toggleTheme(on){cfg.dark=on;saveLocal();if(window.syncToCloud) window.syncToCloud();applyTheme();}
 function applyName(){
   document.getElementById('aname').textContent=cfg.name?`Organizador de ${cfg.name}`:'Organizador Premium';
   document.getElementById('dlbl').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
@@ -1260,7 +1335,7 @@ function bindDrag(containerId, itemClass, onReorder) {
 }
 
 // ==========================================================================
-// CALENDÁRIO
+// CALENDÁRIO E AGENDA
 // ==========================================================================
 function isBillInDay(b, dk) {
     if(!b.date) return false; if(!b.rep) return b.date === dk; 
@@ -1357,7 +1432,7 @@ function renderEvList(){
       if(!evs.length && !dT.length && !dBills.length && !html){ el.innerHTML='<p style="font-size:13px;color:var(--txt4)">Sem tarefas ou eventos.</p>'; return; }
       const bh=dBills.map(b=>{
           const cEmoji=b.cat?b.cat.split(' ')[0]:''; const cName=b.cat?b.cat.substring(cEmoji.length).trim():''; const dText=b.desc?esc(b.desc):cName; const isPaid=b.paidMap&&b.paidMap[mK];
-          return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck no-swipe ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="em2">${fmtC(b.val)}</div></div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd no-swipe" onclick="delBill(${b.id})">×</button></div>`
+          return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck no-swipe ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="em2">${fmtC(b.val)}</div></div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd no-swipe" onclick="delBill(${b.id})">×</button></div>`
       }).join('');
       const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck no-swipe ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}${t.rep?' 🔁':''}<span class="ebdg etask">tarefa</span></div>${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd no-swipe" onclick="delTask(${t.id})">×</button></div>`).join('');
       const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck no-swipe ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}</div></div><button class="bd no-swipe" onclick="delEvGlobal('${k}',${ev.id})">×</button></div>`).join('');
@@ -1406,7 +1481,7 @@ function renderHF(){
   document.getElementById('hf-body').innerHTML=`<div class="hff"><label>Ícone</label><div style="display:flex;gap:10px;align-items:center;margin-bottom:8px"><input type="text" value="${esc(hfd.icon)}" maxlength="2" style="width:60px;font-size:20px;text-align:center" oninput="hfd.icon=this.value"/> <span style="font-size:11px;color:var(--txt3)">Ou escolha abaixo:</span></div>${catHtml}</div><div class="hff"><label>Nome</label><input type="text" value="${esc(hfd.name)}" placeholder="Ex: Beber água" oninput="hfd.name=this.value"/></div><div class="hff"><label>Cor</label><div class="csw-row">${COLORS.map(c=>`<div class="csw ${hfd.color===c?'sel':''}" style="background:${c}" onclick="hfd.color='${c}';renderHF()"></div>`).join('')}</div></div><div class="hff"><label>Meta diária</label><div class="tst"><button class="tsb" onclick="if(hfd.target>1){hfd.target--;if(hfd.times)hfd.times=hfd.times.slice(0,hfd.target);}renderHF()">−</button><span class="tsv">${hfd.target}</span><button class="tsb" onclick="if(hfd.target<10)hfd.target++;renderHF()">+</button><span class="tsl">${hfd.target===1?'vez/dia':'vezes/dia'}</span></div></div>${tms}<div class="hff"><label>Frequência</label><div class="frow">${[['daily','Diário'],['weekdays','Dias úteis'],['custom','Personalizado']].map(([v,l])=>`<button class="fbtn ${hfd.frequency===v?'sel':''}" onclick="hfd.frequency='${v}';renderHF()">${l}</button>`).join('')}</div>${hfd.frequency==='custom'?`<div class="drow">${['D','S','T','Q','Q','S','S'].map((d,i)=>`<button class="dck ${(hfd.customDays||[]).includes(i)?'sel':''}" onclick="togCDay(${i})">${d}</button>`).join('')}</div>`:''}</div>`;
 }
 function togCDay(i){ const idx=(hfd.customDays||[]).indexOf(i); if(idx>=0)hfd.customDays.splice(idx,1); else hfd.customDays.push(i); renderHF(); }
-function saveHabit(){
+async function saveHabit(){
     if(!hfd.name.trim()){toast('Digite um nome');return;}
     if(!hfd.times)hfd.times=[]; if(document.getElementById('hf-rem-time')) hfd.reminderTime = document.getElementById('hf-rem-time').value;
     if(hfd.id)habits=habits.map(h=>h.id===hfd.id?{...h,...hfd}:h);else habits.push({...hfd,id:Date.now(),history:{}});
@@ -1414,6 +1489,9 @@ function saveHabit(){
 }
 async function delHabit(id){if(!(await showDialog('confirm','Excluir Hábito','Excluir permanentemente?')))return;habits=habits.filter(h=>h.id!==id);saveHabits();renderHabits();if(focusH&&focusH.id===id)closeFocus();}
 
+// ==========================================================================
+// FOCUS E TIMER BACKGROUND
+// ==========================================================================
 function openFocus(id){const h=habits.find(h=>h.id===id);if(!h)return;focusH=h;if(focTmr){clearInterval(focTmr.intv);focTmr=null;}document.getElementById('fc-ttl').textContent=`${h.icon} ${h.name}`;renderFocusBody();document.getElementById('mo-focus').classList.add('open');}
 function closeFocus(){document.getElementById('mo-focus').classList.remove('open');if(focTmr){clearInterval(focTmr.intv);focTmr=null;}focusH=null;}
 function editFromFocus(){if(focusH){const id=focusH.id;closeFocus();openHF(id);}}
@@ -1526,7 +1604,7 @@ function openTransfer(){
     document.getElementById('tr-from').innerHTML = opts; document.getElementById('tr-to').innerHTML = opts; document.getElementById('tr-val').value = ''; document.getElementById('mo-transfer').classList.add('open');
 }
 function saveTransfer(){
-    const f = parseInt(document.getElementById('tr-from').value); const t = parseInt(document.getElementById('tr-to').value); const vStr = document.getElementById('tr-val').value; const v = parseFloat(vStr.replace(',','.'));
+    const f = parseInt(document.getElementById('tr-from').value); const t = parseInt(document.getElementById('tr-to').value); const v = parseFloat(document.getElementById('tr-val').value.replace(',','.'));
     if(f === t) { toast('Selecione carteiras diferentes!'); return; }
     if(!v || v<=0) { toast('Valor inválido!'); return; }
     const accF = accounts.find(a=>a.id===f); const accT = accounts.find(a=>a.id===t);
@@ -1543,7 +1621,17 @@ async function editAccount(id){
   if(nv !== false && nv !== null && !isNaN(parseFloat(nv.replace(',','.')))) { acc.val = parseFloat(nv.replace(',','.')); save(); renderFin(); }
 }
 async function delAccount(id){ if(await showDialog('confirm','Remover Carteira','Remover esta carteira permanentemente?')) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
-
+async function chgRep(el) {
+    if(el.value === 'custom') {
+        const v = await showDialog('prompt', 'Repetição', 'Repetir por quantos meses a mais? (Ex: 24)');
+        const num = parseInt(v);
+        if(!isNaN(num) && num > 0) {
+            let exists = false; for(let i=0; i<el.options.length; i++) { if(el.options[i].value == num) { exists = true; break; } }
+            if(!exists) { const opt = document.createElement('option'); opt.value = num; opt.text = `Por mais ${num} meses`; el.add(opt, el.options[el.options.length-1]); }
+            el.value = num;
+        } else { el.value = "0"; }
+    }
+}
 function addBill(){
   const date = document.getElementById('bill-date').value; if(!date) { toast("A data é obrigatória!"); return; }
   let desc = document.getElementById('bill-desc').value.trim(); const type = document.getElementById('bill-type').value; const cat = document.getElementById('bill-cat').value; const val = document.getElementById('bill-val').value; const rep = parseInt(document.getElementById('bill-rep').value) || 0;
@@ -1580,9 +1668,6 @@ function togBill(id, mk){
 }
 async function delBill(id){ if(await showDialog('confirm','Excluir Conta','Excluir este lançamento permanentemente?')){ bills = bills.filter(b => b.id !== id); save(); renderFin(); renderEvList(); renderCal(); } }
 
-// ==========================================================================
-// ACHIEVEMENTS E SUGESTÕES
-// ==========================================================================
 function openAch(){
   const body=document.getElementById('ach-body');
   const tDn=(tasks||[]).filter(Boolean).filter(t=>t.done).length, eDn=Object.values(events||{}).flat().filter(e=>e.done).length, hDn=Object.values((habits||[]).filter(Boolean).map(h=>Object.values(h.history||{}))).flat().filter(v=>v>0).length;
