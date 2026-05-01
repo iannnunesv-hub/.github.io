@@ -17,20 +17,46 @@
 /* ==========================================================================
    RESET & VARIÁVEIS DE CORES
    ========================================================================== */
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 :root {
-    --bg: #fafafa; --bg2: #fff; --bg3: #f5f5f5; --bg4: #e8e8e8;
-    --brd: #eee; --brd2: #ddd; --txt: #222; --txt2: #666;
-    --txt3: #aaa; --txt4: #ccc; --ac: #222; --acfg: #fff;
-    --card: #fff; --inp: #fff; --hol: #e05;
+    --bg: #fafafa;
+    --bg2: #fff;
+    --bg3: #f5f5f5;
+    --bg4: #e8e8e8;
+    --brd: #eee;
+    --brd2: #ddd;
+    --txt: #222;
+    --txt2: #666;
+    --txt3: #aaa;
+    --txt4: #ccc;
+    --ac: #222;
+    --acfg: #fff;
+    --card: #fff;
+    --inp: #fff;
+    --hol: #e05;
 }
 
 [data-theme="dark"] {
-    --bg: #111; --bg2: #1a1a1a; --bg3: #252525; --bg4: #0d0d0d;
-    --brd: #2a2a2a; --brd2: #383838; --txt: #eee; --txt2: #aaa;
-    --txt3: #666; --txt4: #444; --ac: #e0e0e0; --acfg: #111;
-    --card: #1e1e1e; --inp: #2a2a2a; --hol: #ff6b8a;
+    --bg: #111;
+    --bg2: #1a1a1a;
+    --bg3: #252525;
+    --bg4: #0d0d0d;
+    --brd: #2a2a2a;
+    --brd2: #383838;
+    --txt: #eee;
+    --txt2: #aaa;
+    --txt3: #666;
+    --txt4: #444;
+    --ac: #e0e0e0;
+    --acfg: #111;
+    --card: #1e1e1e;
+    --inp: #2a2a2a;
+    --hol: #ff6b8a;
 }
 
 /* ==========================================================================
@@ -64,194 +90,967 @@ body {
 }
 
 /* ==========================================================================
-   TELAS DE LOGIN E SPLASH
+   TELA DE LOGIN E SPLASH
    ========================================================================== */
 #login-screen {
-    position: absolute; inset: 0; background: var(--bg); z-index: 100000;
-    display: flex; align-items: center; justify-content: center; flex-direction: column;
-    border-radius: 18px; padding: 20px; text-align: center;
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
 }
+
 .login-btn {
-    display: flex; align-items: center; gap: 12px; background: var(--card);
-    border: 1px solid var(--brd2); padding: 14px 28px; border-radius: 99px;
-    font-size: 15px; font-weight: 500; color: var(--txt); cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.2s; margin-top: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--brd2);
+    padding: 14px 28px;
+    border-radius: 99px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--txt);
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+    margin-top: 30px;
 }
-.login-btn:active { transform: scale(0.96); }
-.login-btn svg { width: 22px; height: 22px; }
+
+.login-btn:active {
+    transform: scale(0.96);
+}
+
+.login-btn svg {
+    width: 22px;
+    height: 22px;
+}
 
 .login-skip {
-    background: none; border: none; font-size: 13px; color: var(--txt3);
-    margin-top: 25px; cursor: pointer; text-decoration: underline; padding: 10px;
+    background: none;
+    border: none;
+    font-size: 13px;
+    color: var(--txt3);
+    margin-top: 25px;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 10px;
 }
 
 #splash {
-    position: absolute; inset: 0; background: var(--bg); z-index: 99999;
-    display: flex; align-items: center; justify-content: center; flex-direction: column;
-    border-radius: 18px; animation: fadeOutSplash 0.6s ease-in-out forwards; animation-delay: 1.2s; pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 18px;
+    animation: fadeOutSplash 0.6s ease-in-out forwards;
+    animation-delay: 1.2s;
+    pointer-events: none;
 }
-.sp-ico { font-size: 54px; margin-bottom: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
-.sp-title { font-size: 24px; font-weight: 300; color: var(--txt); letter-spacing: 1px; }
-.sp-prem { font-weight: 700; color: #d4af37; font-style: italic; letter-spacing: 0; }
-@keyframes fadeOutSplash { 0% { opacity: 1; visibility: visible; } 100% { opacity: 0; visibility: hidden; z-index: -1; display: none; } }
+
+.sp-ico {
+    font-size: 54px;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+}
+
+.sp-title {
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--txt);
+    letter-spacing: 1px;
+}
+
+.sp-prem {
+    font-weight: 700;
+    color: #d4af37;
+    font-style: italic;
+    letter-spacing: 0;
+}
+
+@keyframes fadeOutSplash {
+    0% { opacity: 1; visibility: visible; }
+    100% { opacity: 0; visibility: hidden; z-index: -1; display: none; }
+}
 
 /* ==========================================================================
    CABEÇALHO
    ========================================================================== */
-.hdr { background: var(--bg2); border-bottom: 0.5px solid var(--brd); padding: 14px 17px 11px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-.hdr h1 { font-size: 18px; font-weight: 500; color: var(--txt); }
-.hdr p { font-size: 11px; color: var(--txt2); margin-top: 4px; font-style: italic; line-height: 1.4; }
-.hdr-r { display: flex; gap: 7px; align-items: center; }
-.ibt, .gear-btn { background: none; border: 0.5px solid var(--brd2); border-radius: 9px; padding: 6px 8px; cursor: pointer; font-size: 16px; display: flex; align-items: center; color: var(--txt2); }
+.hdr {
+    background: var(--bg2);
+    border-bottom: 0.5px solid var(--brd);
+    padding: 14px 17px 11px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.hdr h1 {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--txt);
+}
+
+.hdr p {
+    font-size: 11px;
+    color: var(--txt2);
+    margin-top: 4px;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+.hdr-r {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+}
+
+.ibt, .gear-btn {
+    background: none;
+    border: 0.5px solid var(--brd2);
+    border-radius: 9px;
+    padding: 6px 8px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    color: var(--txt2);
+}
 
 /* ==========================================================================
    TABS E SLIDER PRINCIPAL
    ========================================================================== */
-.cnt { flex: 1; overflow: hidden; position: relative; min-height: 0; }
-#slider { display: flex; width: 500%; height: 100%; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; }
-.sec { width: 20%; flex-shrink: 0; padding: 1.2rem 1.1rem; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; height: 100%; box-sizing: border-box; }
-.sec > * { flex-shrink: 0; } 
+.cnt {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    min-height: 0;
+}
 
-.tabbar { display: flex; border-top: 0.5px solid var(--brd); background: var(--bg2); flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom); }
-.tb { flex: 1; padding: 11px 2px 9px; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--txt4); font-size: 11px; font-family: inherit; transition: color 0.15s; }
-.tb.active { color: var(--txt); font-weight: 500; }
-.tb svg { width: 22px !important; height: 22px !important; }
+#slider {
+    display: flex;
+    width: 500%;
+    height: 100%;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform;
+}
+
+.sec {
+    width: 20%;
+    flex-shrink: 0;
+    padding: 1.2rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.sec > * {
+    flex-shrink: 0;
+}
+
+.tabbar {
+    display: flex;
+    border-top: 0.5px solid var(--brd);
+    background: var(--bg2);
+    flex-shrink: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tb {
+    flex: 1;
+    padding: 11px 2px 9px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: var(--txt4);
+    font-size: 11px;
+    font-family: inherit;
+    transition: color 0.15s;
+}
+
+.tb.active {
+    color: var(--txt);
+    font-weight: 500;
+}
+
+.tb svg {
+    width: 22px !important;
+    height: 22px !important;
+}
 
 /* ==========================================================================
    INPUTS GERAIS E BOTÕES
    ========================================================================== */
-input, textarea, select { padding: 9px 12px; border-radius: 9px; border: 0.5px solid var(--brd2); font-size: 14px; outline: none; font-family: inherit; background: var(--inp); color: var(--txt); width: 100%; box-sizing: border-box; }
-.pk-input { cursor: pointer; caret-color: transparent; }
-textarea { resize: none; line-height: 1.65; width: 100%; }
-.ib { padding: 9px 15px; border-radius: 9px; border: none; background: var(--ac); color: var(--acfg); font-size: 18px; cursor: pointer; flex-shrink: 0; }
-.bd { background: none; border: none; cursor: pointer; color: var(--txt4); font-size: 16px; padding: 0 4px; flex-shrink: 0; }
-.lbl { font-size: 11px; color: var(--txt3); margin-bottom: 5px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; }
-.empty { text-align: center; color: var(--txt4); font-size: 14px; margin-top: 2rem; }
-.bbk { background: none; border: 0.5px solid var(--brd2); border-radius: 9px; padding: 7px 12px; cursor: pointer; font-size: 13px; color: var(--txt2); font-family: inherit; }
-.bsv { background: var(--ac); color: var(--acfg); border: none; border-radius: 9px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-family: inherit; }
+input, textarea, select {
+    padding: 9px 12px;
+    border-radius: 9px;
+    border: 0.5px solid var(--brd2);
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+    background: var(--inp);
+    color: var(--txt);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.pk-input {
+    cursor: pointer;
+    caret-color: transparent;
+}
+
+textarea {
+    resize: none;
+    line-height: 1.65;
+    width: 100%;
+}
+
+.ib {
+    padding: 9px 15px;
+    border-radius: 9px;
+    border: none;
+    background: var(--ac);
+    color: var(--acfg);
+    font-size: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.bd {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--txt4);
+    font-size: 16px;
+    padding: 0 4px;
+    flex-shrink: 0;
+}
+
+.lbl {
+    font-size: 11px;
+    color: var(--txt3);
+    margin-bottom: 5px;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.empty {
+    text-align: center;
+    color: var(--txt4);
+    font-size: 14px;
+    margin-top: 2rem;
+}
+
+.bbk {
+    background: none;
+    border: 0.5px solid var(--brd2);
+    border-radius: 9px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--txt2);
+    font-family: inherit;
+}
+
+.bsv {
+    background: var(--ac);
+    color: var(--acfg);
+    border: none;
+    border-radius: 9px;
+    padding: 7px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+}
 
 /* ==========================================================================
    MODAIS PADRÕES
    ========================================================================== */
-.mo { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-.mo.open { opacity: 1; pointer-events: all; }
-.md { background: var(--bg2); border-radius: 20px 20px 0 0; width: 100%; max-width: 490px; max-height: 90vh; display: flex; flex-direction: column; transform: translateY(30px); transition: transform 0.25s; }
-.mo.open .md { transform: translateY(0); }
-.mh { display: flex; justify-content: space-between; align-items: center; padding: 16px 19px 13px; border-bottom: 0.5px solid var(--brd); flex-shrink: 0; }
-.mh h2 { font-size: 15px; font-weight: 500; color: var(--txt); }
-.mc { background: none; border: none; font-size: 23px; cursor: pointer; color: var(--txt3); line-height: 1; }
-.mb { overflow-y: auto; flex: 1; padding: 14px 19px; }
-.mf { padding: 12px 19px 20px; flex-shrink: 0; border-top: 0.5px solid var(--brd); }
+.mo {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 100;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.mo.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.md {
+    background: var(--bg2);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 490px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(30px);
+    transition: transform 0.25s;
+}
+
+.mo.open .md {
+    transform: translateY(0);
+}
+
+.mh {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 19px 13px;
+    border-bottom: 0.5px solid var(--brd);
+    flex-shrink: 0;
+}
+
+.mh h2 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--txt);
+}
+
+.mc {
+    background: none;
+    border: none;
+    font-size: 23px;
+    cursor: pointer;
+    color: var(--txt3);
+    line-height: 1;
+}
+
+.mb {
+    overflow-y: auto;
+    flex: 1;
+    padding: 14px 19px;
+}
+
+.mf {
+    padding: 12px 19px 20px;
+    flex-shrink: 0;
+    border-top: 0.5px solid var(--brd);
+}
 
 /* ==========================================================================
    CUSTOM DIALOG E WHEEL PICKER
    ========================================================================== */
-#mo-dialog { z-index: 150; align-items: center; padding: 1rem; }
-.md-center { margin: auto; transform: translateY(20px) scale(0.95); max-width: 320px; border-radius: 18px; padding-top: 15px; background: var(--bg2); width: 100%; display: flex; flex-direction: column; transition: all 0.2s; }
-#mo-dialog.open .md-center { transform: translateY(0) scale(1); }
-.dia-btns { display: flex; border-top: 0.5px solid var(--brd); margin-top: 20px; }
-.dia-btn { flex: 1; padding: 14px; background: none; border: none; font-size: 15px; cursor: pointer; font-family: inherit; }
-.dia-btn.cancel { border-right: 0.5px solid var(--brd); color: var(--txt3); }
-.dia-btn.ok { color: var(--ac); font-weight: 600; }
+#mo-dialog {
+    z-index: 150;
+    align-items: center;
+    padding: 1rem;
+}
 
-#mo-picker { z-index: 140; }
-.pk-wheels { display: flex; justify-content: center; gap: 15px; height: 210px; position: relative; width: 100%; overflow: hidden; margin-top: 10px; }
-.pk-sel-bg { position: absolute; top: 80px; left: 0; right: 0; height: 50px; background: rgba(0,0,0,0.05); border-radius: 12px; z-index: 0; pointer-events: none; }
-[data-theme="dark"] .pk-sel-bg { background: rgba(255,255,255,0.08); }
-.wheel { flex: 1; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none; position: relative; z-index: 1; height: 100%; scroll-behavior: auto; overscroll-behavior-y: contain; }
-.wheel::-webkit-scrollbar { display: none; }
-.w-pad { height: 80px; } 
-.w-item { height: 50px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 500; color: var(--txt3); scroll-snap-align: center; transition: all 0.15s ease-out; cursor: pointer; user-select: none; }
-.w-item.act { font-size: 28px; font-weight: 700; color: var(--ac); }
+.md-center {
+    margin: auto;
+    transform: translateY(20px) scale(0.95);
+    max-width: 320px;
+    border-radius: 18px;
+    padding-top: 15px;
+    background: var(--bg2);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s;
+}
+
+#mo-dialog.open .md-center {
+    transform: translateY(0) scale(1);
+}
+
+.dia-btns {
+    display: flex;
+    border-top: 0.5px solid var(--brd);
+    margin-top: 20px;
+}
+
+.dia-btn {
+    flex: 1;
+    padding: 14px;
+    background: none;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.dia-btn.cancel {
+    border-right: 0.5px solid var(--brd);
+    color: var(--txt3);
+}
+
+.dia-btn.ok {
+    color: var(--ac);
+    font-weight: 600;
+}
+
+#mo-picker {
+    z-index: 140;
+}
+
+.pk-wheels {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    height: 210px;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.pk-sel-bg {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: rgba(0,0,0,0.05);
+    border-radius: 12px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+[data-theme="dark"] .pk-sel-bg {
+    background: rgba(255,255,255,0.08);
+}
+
+.wheel {
+    flex: 1;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    scroll-behavior: auto;
+    overscroll-behavior-y: contain;
+}
+
+.wheel::-webkit-scrollbar {
+    display: none;
+}
+
+.w-pad {
+    height: 80px;
+}
+
+.w-item {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--txt3);
+    scroll-snap-align: center;
+    transition: all 0.15s ease-out;
+    cursor: pointer;
+    user-select: none;
+}
+
+.w-item.act {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ac);
+}
 
 /* ==========================================================================
-   CONFIGURAÇÕES E ESTILOS RECUPERADOS
+   CONFIGURAÇÕES
    ========================================================================== */
-.cst { font-size: 11px; color: var(--txt3); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin: 15px 0 9px; }
-.cr { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 0.5px solid var(--brd); }
-.cr:last-child { border-bottom: none; }
-.cl { font-size: 14px; color: var(--txt); }
-.tog { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
-.tog input { opacity: 0; width: 0; height: 0; position: absolute; }
-.tog-s { position: absolute; inset: 0; background: var(--brd2); border-radius: 24px; cursor: pointer; transition: background 0.2s; }
-.tog-s::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform 0.2s; }
-.tog input:checked + .tog-s { background: #555; }
-.tog input:checked + .tog-s::before { transform: translateX(20px); }
-.ns { font-size: 12px; font-weight: 500; }
+.cst {
+    font-size: 11px;
+    color: var(--txt3);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 15px 0 9px;
+}
+
+.cst:first-child {
+    margin-top: 0;
+}
+
+.cr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 0.5px solid var(--brd);
+}
+
+.cr:last-child {
+    border-bottom: none;
+}
+
+.cl {
+    font-size: 14px;
+    color: var(--txt);
+}
+
+.tog {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.tog input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.tog-s {
+    position: absolute;
+    inset: 0;
+    background: var(--brd2);
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.tog-s::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+.tog input:checked + .tog-s {
+    background: #555;
+}
+
+.tog input:checked + .tog-s::before {
+    transform: translateX(20px);
+}
+
+.ns {
+    font-size: 12px;
+    font-weight: 500;
+}
+
 .ns.on { color: #3a3; }
 .ns.off { color: var(--txt3); }
-.bncfg { background: var(--ac); color: var(--acfg); border: none; border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: inherit; }
 
-/* TAREFAS E CONTAS */
-.tf { background: var(--card); border-radius: 13px; border: 0.5px solid var(--brd); padding: 13px; margin-bottom: 1rem; }
-.tftop { display: flex; gap: 7px; margin-bottom: 10px; }
-.tf2 { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
-.tff { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 85px; }
-.tff label { font-size: 10px; color: var(--txt3); font-weight: 600; text-transform: uppercase; }
-.ti { display: flex; align-items: flex-start; gap: 9px; padding: 11px 13px; border-radius: 10px; border: 0.5px solid var(--brd); margin-bottom: 6px; background: var(--card); }
-.ti.done-item .tt { text-decoration: line-through; color: var(--txt4); }
-.tck { width: 19px; height: 19px; border-radius: 50%; border: 1.5px solid var(--txt4); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
-.tck.done { background: var(--ac); border-color: var(--ac); }
-.tb2 { flex: 1; min-width: 0; }
-.tt { font-size: 14px; color: var(--txt); line-height: 1.4; }
-.tm { font-size: 11px; color: var(--txt3); margin-top: 2px; }
-.dtb { display: flex; gap: 1px; flex-shrink: 0; }
-.dtoggle { width: 100%; padding: 10px 13px; border-radius: 10px; border: 0.5px solid var(--brd); background: var(--card); text-align: left; color: var(--txt3); font-size: 13px; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 7px; margin-top: 0.8rem; }
-.dtoggle .arr { margin-left: auto; transition: transform 0.2s; font-size: 14px; }
-.dtoggle.open .arr { transform: rotate(90deg); }
+.bncfg {
+    background: var(--ac);
+    color: var(--acfg);
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+}
 
-/* NOTAS */
-.nc, .hcard { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
-.ng { display: flex; flex-direction: column; gap: 9px; padding-bottom: 10px; }
-.nc { border-radius: 11px; border: 0.5px solid var(--brd); padding: 14px; cursor: pointer; background: var(--card); }
-.nc.dragging, .hcard.dragging { z-index: 10; position: relative; }
-.nc h3 { font-size: 14px; font-weight: 500; color: var(--txt); margin-bottom: 4px; }
-.nc p { font-size: 12px; color: var(--txt3); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.nf { display: flex; justify-content: space-between; align-items: center; }
-.nd { font-size: 10px; color: var(--txt4); }
-.bnn { width: 100%; padding: 11px; border-radius: 10px; border: 0.5px dashed var(--brd2); background: transparent; font-size: 14px; color: var(--txt3); cursor: pointer; margin-bottom: 1rem; font-family: inherit; }
-#nlv { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-.neh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.7rem; }
-#nt-ttl { border: none; outline: none; font-size: 18px; font-weight: 500; color: var(--txt); padding: 0; margin-bottom: 0.6rem; border-radius: 0; background: transparent; }
-#nt-bdy { border: none; outline: none; font-size: 14px; color: var(--txt2); padding: 0; border-radius: 0; background: transparent; flex: 1; min-height: 0; height: calc(100svh - 230px); }
-#nev { flex: 1; display: none; flex-direction: column; overflow: hidden; }
-#nev.open { display: flex; }
-.nli { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.nli input[type=text] { flex: 1; padding: 8px 10px; font-size: 13px; }
-.nli-chk { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--txt4); display: flex; align-items: center; justify-content: center; cursor: pointer; color: transparent; flex-shrink: 0; }
-.nli-chk.done { background: var(--ac); border-color: var(--ac); color: var(--acfg); }
-.nli.done input { text-decoration: line-through; color: var(--txt4); }
+/* ==========================================================================
+   TAREFAS & FINANÇAS
+   ========================================================================== */
+.tf {
+    background: var(--card);
+    border-radius: 13px;
+    border: 0.5px solid var(--brd);
+    padding: 13px;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+}
 
-/* CALENDÁRIO E EVENTOS */
-.vrow { display: flex; gap: 6px; margin-bottom: 0.8rem; }
+.tftop {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 10px;
+}
+
+.tftop input {
+    flex: 1;
+}
+
+.tf2 {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.tff {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 85px;
+}
+
+.tff label {
+    font-size: 10px;
+    color: var(--txt3);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tff input, .tff select {
+    font-size: 13px;
+    padding: 7px;
+    height: 34px;
+}
+
+.ti {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 11px 13px;
+    border-radius: 10px;
+    border: 0.5px solid var(--brd);
+    margin-bottom: 6px;
+    background: var(--card);
+}
+
+.ti.done-item .tt {
+    text-decoration: line-through;
+    color: var(--txt4);
+}
+
+.tck {
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    border: 1.5px solid var(--txt4);
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    transition: all 0.15s;
+}
+
+.tck.done {
+    background: var(--ac);
+    border-color: var(--ac);
+}
+
+.tb2 {
+    flex: 1;
+    min-width: 0;
+}
+
+.tt {
+    font-size: 14px;
+    color: var(--txt);
+    line-height: 1.4;
+}
+
+.tm {
+    font-size: 11px;
+    color: var(--txt3);
+    margin-top: 2px;
+}
+
+.tm.ov {
+    color: #e44;
+}
+
+.dtb {
+    display: flex;
+    gap: 1px;
+    flex-shrink: 0;
+}
+
+.brev {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 3px 5px;
+    color: var(--txt3);
+}
+
+.bperm {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 3px 5px;
+    color: #e44;
+}
+
+.dtoggle {
+    width: 100%;
+    padding: 10px 13px;
+    border-radius: 10px;
+    border: 0.5px solid var(--brd);
+    background: var(--card);
+    text-align: left;
+    color: var(--txt3);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 0.8rem;
+    flex-shrink: 0;
+}
+
+.dtoggle .arr {
+    margin-left: auto;
+    transition: transform 0.2s;
+    font-size: 14px;
+}
+
+.dtoggle.open .arr {
+    transform: rotate(90deg);
+}
+
+/* ==========================================================================
+   NOTAS & LISTAS
+   ========================================================================== */
+.nc, .hcard {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+.ng {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding-bottom: 10px;
+}
+
+.nc {
+    border-radius: 11px;
+    border: 0.5px solid var(--brd);
+    padding: 14px;
+    cursor: pointer;
+    background: var(--card);
+    transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
+}
+
+.nc.dragging, .hcard.dragging {
+    z-index: 10;
+    position: relative;
+}
+
+.nc h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--txt);
+    margin-bottom: 4px;
+}
+
+.nc p {
+    font-size: 12px;
+    color: var(--txt3);
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.nf {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nd {
+    font-size: 10px;
+    color: var(--txt4);
+}
+
+.bnn {
+    width: 100%;
+    padding: 11px;
+    border-radius: 10px;
+    border: 0.5px dashed var(--brd2);
+    background: transparent;
+    font-size: 14px;
+    color: var(--txt3);
+    cursor: pointer;
+    margin-bottom: 1rem;
+    font-family: inherit;
+    flex-shrink: 0;
+}
+
+#nlv {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.neh {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.7rem;
+    flex-shrink: 0;
+}
+
+#nt-ttl {
+    border: none;
+    outline: none;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--txt);
+    padding: 0;
+    margin-bottom: 0.6rem;
+    border-radius: 0;
+    width: 100%;
+    background: transparent;
+    flex-shrink: 0;
+}
+
+#nt-bdy {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: var(--txt2);
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    flex: 1;
+    min-height: 0;
+    height: calc(100svh - 230px);
+}
+
+#nev {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#nev.open {
+    display: flex;
+}
+
+.nli {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.nli input[type="text"] {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 13px;
+}
+
+.nli-chk {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 1.5px solid var(--txt4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: transparent;
+    flex-shrink: 0;
+    transition: all 0.15s;
+}
+
+.nli-chk.done {
+    background: var(--ac);
+    border-color: var(--ac);
+    color: var(--acfg);
+}
+
+.nli.done input {
+    text-decoration: line-through;
+    color: var(--txt4);
+}
+
+/* ==========================================================================
+   CALENDÁRIO E AGENDA
+   ========================================================================== */
+.vrow { display: flex; gap: 6px; margin-bottom: 0.8rem; flex-shrink: 0; }
 .vbtn { flex: 1; padding: 7px; border-radius: 8px; border: 0.5px solid var(--brd2); background: var(--bg3); color: var(--txt2); font-size: 12px; cursor: pointer; font-family: inherit; }
 .vbtn.sel { background: var(--ac); color: var(--acfg); border-color: var(--ac); }
-.srow { display: flex; gap: 7px; margin-bottom: 0.8rem; }
+
+.srow { display: flex; gap: 7px; margin-bottom: 0.8rem; flex-shrink: 0; }
+.srow input { flex: 1; font-size: 13px; }
+
 .sri { padding: 9px 11px; border-radius: 9px; border: 0.5px solid var(--brd); margin-bottom: 5px; background: var(--card); cursor: pointer; }
 .sri-t { font-size: 13px; color: var(--txt); }
 .sri-m { font-size: 11px; color: var(--txt3); margin-top: 2px; }
+
 .cnr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
 .cnr span { font-size: 14px; font-weight: 500; color: var(--txt); }
 .cnv { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--txt3); padding: 4px 8px; }
+
 .cdow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; margin-bottom: 3px; }
 .cdow span { text-align: center; font-size: 10px; color: var(--txt4); font-weight: 500; }
+
 .cgrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
 .cc { height: 36px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 7px; cursor: pointer; position: relative; font-size: 13px; color: var(--txt); }
 .cc:hover { background: var(--bg3); }
 .cc.past { color: var(--txt4); }
 .cc.today { background: var(--bg3); font-weight: 600; }
 .cc.sel { background: var(--ac) !important; color: var(--acfg) !important; }
+
 .cc.dot::after { content: ''; width: 3px; height: 3px; border-radius: 50%; background: currentColor; position: absolute; bottom: 3px; opacity: 0.5; }
 .cc.sel.dot::after { background: var(--acfg); opacity: 0.8; }
 .cc.emp { cursor: default; }
-.evs { margin-top: 0.8rem; border-top: 0.5px solid var(--brd); padding-top: 0.8rem; }
+.cc.emp:hover { background: transparent; }
+
+.cc.hol { color: var(--hol); }
+.cc.sel.hol { color: var(--acfg); }
+
+.evs { margin-top: 0.8rem; border-top: 0.5px solid var(--brd); padding-top: 0.8rem; flex-shrink: 0; }
 .edl { font-size: 12px; color: var(--txt3); margin-bottom: 8px; }
-.holbanner { background: rgba(200,0,50,0.07); border: 0.5px solid rgba(200,0,50,0.18); border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; font-size: 12px; color: var(--hol); display: flex; align-items: center; gap: 5px; }
+
+.holbanner { background: rgba(200, 0, 50, 0.07); border: 0.5px solid rgba(200, 0, 50, 0.18); border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; font-size: 12px; color: var(--hol); display: flex; align-items: center; gap: 5px; }
+
+@keyframes slideCalNext { 0% { transform: translateX(30px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+@keyframes slideCalPrev { 0% { transform: translateX(-30px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+.cal-next { animation: slideCalNext 0.25s ease-out; }
+.cal-prev { animation: slideCalPrev 0.25s ease-out; }
 
 .ef { display: flex; flex-direction: column; gap: 6px; margin-bottom: 0.8rem; }
 .efr { display: flex; gap: 6px; align-items: flex-end; }
 .efl { display: flex; flex-direction: column; gap: 3px; flex: 1; }
-.efl label { font-size: 10px; color: var(--txt3); font-weight: 600; text-transform: uppercase; }
+.efl label { font-size: 10px; color: var(--txt3); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.efr input, .efr select { font-size: 12px; padding: 7px 8px; }
+.efr button { padding: 8px 11px; border-radius: 8px; border: none; background: var(--ac); color: var(--acfg); font-size: 12px; cursor: pointer; font-family: inherit; white-space: nowrap; flex-shrink: 0; }
+
 .evi { display: flex; align-items: center; gap: 8px; padding: 9px 11px; border-radius: 9px; border: 0.5px solid var(--brd); margin-bottom: 5px; background: var(--card); }
 .evi.done-ev .et2 { text-decoration: line-through; color: var(--txt4); }
 .ei2 { flex: 1; min-width: 0; }
@@ -272,6 +1071,7 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .wd.past .wdd { color: var(--txt4); }
 .wd.dot::after { content: ''; width: 3px; height: 3px; border-radius: 50%; background: var(--ac); position: absolute; bottom: 3px; opacity: 0.6; }
 .wd.sel.dot::after { background: var(--acfg); }
+.wd.hol .wdd { color: var(--hol); }
 
 .dtl { display: flex; flex-direction: column; gap: 5px; }
 .dti { display: flex; gap: 9px; align-items: center; padding: 9px 11px; border-radius: 9px; border: 0.5px solid var(--brd); background: var(--card); }
@@ -280,13 +1080,16 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .dttl { font-size: 13px; color: var(--txt); }
 .dttl.done { text-decoration: line-through; color: var(--txt4); }
 
-/* HABITOS CSS RESTAURADO */
+/* ==========================================================================
+   HÁBITOS
+   ========================================================================== */
 .hprog { background: var(--card); border-radius: 13px; border: 0.5px solid var(--brd); padding: 13px 14px; margin-bottom: 0.9rem; flex-shrink: 0; }
 .hph { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
 .hph span { font-size: 13px; color: var(--txt2); font-weight: 500; }
 .pbw { background: var(--bg3); border-radius: 99px; height: 7px; overflow: hidden; }
 .pbf { height: 100%; border-radius: 99px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
 .pbm { font-size: 12px; color: var(--txt3); margin-top: 6px; text-align: center; }
+
 .hcard { background: var(--card); border-radius: 13px; border: 0.5px solid var(--brd); margin-bottom: 10px; overflow: hidden; flex-shrink: 0; transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s; }
 .hcard:active { transform: scale(0.985); }
 .hcbar { height: 4px; }
@@ -298,22 +1101,30 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .hstr { font-size: 13px; color: var(--txt2); font-weight: 600; }
 .hedit { background: none; border: none; cursor: pointer; font-size: 12px; color: var(--txt4); padding: 3px 4px; }
 .hdelbtn { background: none; border: 0.5px solid #e4444433; border-radius: 6px; cursor: pointer; font-size: 13px; padding: 3px 7px; color: #e44; line-height: 1; }
+
 .hbub { display: flex; gap: 6px; flex-wrap: wrap; align-items: flex-end; }
 .bub { border-radius: 50%; border: 2.5px solid currentColor; cursor: pointer; transition: background 0.15s, transform 0.1s; flex-shrink: 0; }
 .bub:active { transform: scale(0.85); }
+.bub:not(.filled) { animation: pulse 2.8s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(84, 160, 255, 0); } 50% { box-shadow: 0 0 0 5px rgba(84, 160, 255, 0.12); } }
 .bub.filled { background: currentColor; animation: none; }
 .bsm { width: 28px; height: 28px; }
 .blg { width: 38px; height: 38px; }
+
 .htl { font-size: 9px; color: var(--txt4); text-align: center; margin-top: 2px; }
 .hbwrap { display: flex; flex-direction: column; align-items: center; gap: 1px; }
 .hpc { font-size: 12px; color: var(--txt3); margin-left: 4px; }
 .hct { font-size: 12px; font-weight: 500; margin-left: 4px; }
 .huns { opacity: 0.5; }
 .hnt { font-size: 11px; color: var(--txt4); font-style: italic; margin-top: 5px; }
+.bubtip { font-size: 10px; color: var(--txt4); margin-left: 4px; font-style: italic; align-self: center; }
 
-/* HABIT FORM CSS RESTAURADO */
+/* ==========================================================================
+   FORMULÁRIO DE HÁBITOS
+   ========================================================================== */
 .hff { margin-bottom: 13px; }
 .hff label { display: block; font-size: 11px; color: var(--txt3); font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 5px; }
+.hff input[type="text"], .hff input[type="time"], .hff select { width: 100%; }
 .ecat-lbl { font-size: 10px; color: var(--txt4); margin-bottom: 4px; margin-top: 8px; font-weight: 600; letter-spacing: 0.04em; }
 .ecat-lbl:first-child { margin-top: 0; }
 .emoji-row { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 2px; }
@@ -336,8 +1147,11 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .htgrid { display: flex; flex-direction: column; gap: 6px; margin-top: 5px; }
 .htrow { display: flex; align-items: center; gap: 9px; padding: 6px 10px; background: var(--bg3); border-radius: 8px; }
 .htrow span { font-size: 12px; color: var(--txt2); flex-shrink: 0; min-width: 80px; }
+.htrow input { flex: 1; }
 
-/* FOCUS / TIMER RESTAURADO */
+/* ==========================================================================
+   FOCUS / TIMER
+   ========================================================================== */
 .fbubs { display: flex; gap: 9px; justify-content: center; flex-wrap: wrap; margin: 12px 0 5px; }
 .fbub { width: 40px; height: 40px; border-radius: 50%; border: 2.5px solid currentColor; cursor: pointer; transition: background 0.15s; }
 .fbub:active { transform: scale(0.88); }
@@ -364,10 +1178,13 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .tdisp { font-size: 44px; font-weight: 200; color: var(--txt); letter-spacing: 0.04em; margin: 4px 0 9px; font-variant-numeric: tabular-nums; }
 .tbtn { padding: 10px 28px; border-radius: 99px; border: none; background: var(--ac); color: var(--acfg); font-size: 14px; cursor: pointer; font-family: inherit; }
 
-/* ACHIEVEMENTS E SUGESTOES RESTAURADOS */
+/* ==========================================================================
+   CONQUISTAS E SUGESTÕES
+   ========================================================================== */
 .ach-stat { font-size: 12px; color: var(--txt3); margin-bottom: 12px; line-height: 1.8; }
 .ach-stat strong { color: var(--txt); }
 .ach-sec { margin-bottom: 16px; }
+.ach-sec-ttl { font-size: 12px; color: var(--txt3); font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; }
 .ach-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
 .ach-card { display: flex; flex-direction: column; align-items: center; padding: 13px 8px; border-radius: 12px; border: 0.5px solid var(--brd); background: var(--card); text-align: center; }
 .ach-card.locked { opacity: 0.32; filter: grayscale(1); }
@@ -383,7 +1200,25 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .sug-dt { font-size: 11px; color: var(--txt3); margin-top: 1px; }
 .sug-add { background: var(--ac); color: var(--acfg); border: none; border-radius: 7px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: inherit; flex-shrink: 0; }
 
-/* FINANÇAS */
+/* ==========================================================================
+   TUTORIAL
+   ========================================================================== */
+#tut { position: fixed; inset: 0; z-index: 200; display: flex; align-items: flex-end; justify-content: center; padding: 0 1rem 1rem; }
+#tut-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
+.tut-card { position: relative; background: var(--bg2); border-radius: 18px; padding: 22px; width: 100%; max-width: 460px; z-index: 1; }
+.tut-ico { font-size: 38px; text-align: center; margin-bottom: 9px; }
+.tut-ttl { font-size: 17px; font-weight: 600; color: var(--txt); text-align: center; margin-bottom: 7px; }
+.tut-txt { font-size: 13px; color: var(--txt2); text-align: center; line-height: 1.65; margin-bottom: 16px; }
+.tut-dots { display: flex; justify-content: center; gap: 5px; margin-bottom: 14px; }
+.tut-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brd2); transition: all 0.2s; }
+.tut-dot.active { background: var(--ac); width: 20px; border-radius: 3px; }
+.tut-row { display: flex; gap: 9px; }
+.tut-skip { flex: 1; padding: 11px; border-radius: 10px; border: 0.5px solid var(--brd2); background: transparent; color: var(--txt3); cursor: pointer; font-family: inherit; font-size: 13px; }
+.tut-next { flex: 2; padding: 11px; border-radius: 10px; border: none; background: var(--ac); color: var(--acfg); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; }
+
+/* ==========================================================================
+   FINANÇAS
+   ========================================================================== */
 .f-card { background: var(--card); border-radius: 13px; border: 0.5px solid var(--brd); padding: 13px; margin-bottom: 1rem; flex-shrink: 0; }
 .f-bal { display: flex; justify-content: space-between; align-items: flex-start; }
 .f-v { font-size: 26px; font-weight: 600; color: var(--txt); margin-top: 2px; }
@@ -391,6 +1226,8 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .acc-it { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: var(--bg3); border-radius: 8px; font-size: 13px; color: var(--txt); }
 .acc-nm { font-weight: 500; display: flex; align-items: center; gap: 5px; }
 .acc-val { color: var(--txt2); }
+.cat-it { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 0.5px solid var(--brd2); font-size: 13px; color: var(--txt); }
+.cat-it:last-child { border-bottom: none; }
 </style>
 </head>
 <body>
@@ -403,9 +1240,9 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
         <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
         Entrar com Google
     </button>
-    <button class="login-skip" onclick="skipLogin()">Usar sem conta (Offline)</button>
+    <button class="login-skip" onclick="skipLogin()">Usar sem conta (Modo Offline)</button>
     
-    <p style="font-size:12px; color:var(--txt3); margin-top:15px;">Sincronização na nuvem ativada</p>
+    <p style="font-size:12px; color:var(--txt3); margin-top:15px;">Sincronização na nuvem e acesso rápido.</p>
 </div>
 
 <div id="splash">
@@ -415,7 +1252,10 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 
 <div id="app">
   <div class="hdr">
-    <div><h1 id="aname">Meu Organizador</h1><p id="dlbl"></p></div>
+    <div>
+        <h1 id="aname">Meu Organizador</h1>
+        <p id="dlbl"></p>
+    </div>
     <div class="hdr-r">
       <button class="ibt" onclick="openAch()" title="Conquistas">🏆</button>
       <button class="gear-btn" onclick="openCfg()" title="Configurações">
@@ -434,7 +1274,9 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
             <button class="vbtn" id="vbtn-week" onclick="setView('week')">Semana</button>
             <button class="vbtn" id="vbtn-day" onclick="setView('day')">Dia</button>
           </div>
-          <div class="srow"><input type="text" id="cal-srch" class="no-swipe" placeholder="🔍 Buscar tarefas e eventos..." oninput="renderSearch()"/></div>
+          <div class="srow">
+              <input type="text" id="cal-srch" class="no-swipe" placeholder="🔍 Buscar tarefas e eventos..." oninput="renderSearch()"/>
+          </div>
           <div id="srch-res" style="display:none"></div>
           <div id="cal-main" style="flex-shrink:0" class="no-swipe"></div>
           <div id="ev-sec" class="evs" style="display:none">
@@ -443,13 +1285,21 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
             <div class="ef">
               <input type="text" id="ev-in" class="no-swipe" placeholder="Nome do evento..."/>
               <div class="efr">
-                <div class="efl"><label>Hora</label><input type="text" id="ev-time" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'time')" placeholder="--:--"/></div>
-                <div class="efl"><label>Notificar</label>
-                  <select id="ev-ntf" class="no-swipe">
-                    <option value="0">Sem aviso</option><option value="5">5 min</option>
-                    <option value="10" selected>10 min</option><option value="15">15 min</option>
-                    <option value="30">30 min</option><option value="60">1h</option><option value="120">2h</option>
-                  </select>
+                <div class="efl">
+                    <label>Hora</label>
+                    <input type="text" id="ev-time" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'time')" placeholder="--:--"/>
+                </div>
+                <div class="efl">
+                    <label>Notificar</label>
+                    <select id="ev-ntf" class="no-swipe">
+                        <option value="0">Sem aviso</option>
+                        <option value="5">5 min</option>
+                        <option value="10" selected>10 min</option>
+                        <option value="15">15 min</option>
+                        <option value="30">30 min</option>
+                        <option value="60">1h</option>
+                        <option value="120">2h</option>
+                    </select>
                 </div>
                 <button onclick="addEvent()" style="margin-bottom:1px">+ Evento</button>
               </div>
@@ -460,22 +1310,38 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
         
         <div id="sec-tasks" class="sec">
           <div class="tf">
-            <div class="tftop"><input type="text" id="task-in" class="no-swipe" placeholder="Nova tarefa..."/><button class="ib" onclick="addTask()">+</button></div>
+            <div class="tftop">
+                <input type="text" id="task-in" class="no-swipe" placeholder="Nova tarefa..."/>
+                <button class="ib" onclick="addTask()">+</button>
+            </div>
             <div class="tf2">
-              <div class="tff"><label>Dia</label><input type="text" id="task-date" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'date')" placeholder="Sem data"/></div>
-              <div class="tff"><label>Hora</label><input type="text" id="task-time" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'time')" placeholder="--:--"/></div>
-              <div class="tff"><label>Repetir</label>
-                <select id="task-rep" class="no-swipe">
-                  <option value="0">Não</option><option value="1">Diário</option>
-                  <option value="7">Semanal</option><option value="30">Mensal</option>
-                </select>
+              <div class="tff">
+                  <label>Dia</label>
+                  <input type="text" id="task-date" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'date')" placeholder="Sem data"/>
               </div>
-              <div class="tff"><label>Notificar</label>
-                <select id="task-ntf" class="no-swipe">
-                  <option value="0">Sem aviso</option><option value="5">5 min</option>
-                  <option value="10" selected>10 min</option><option value="15">15 min</option>
-                  <option value="30">30 min</option><option value="60">1 hora</option>
-                </select>
+              <div class="tff">
+                  <label>Hora</label>
+                  <input type="text" id="task-time" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'time')" placeholder="--:--"/>
+              </div>
+              <div class="tff">
+                  <label>Repetir</label>
+                  <select id="task-rep" class="no-swipe">
+                      <option value="0">Não</option>
+                      <option value="1">Diário</option>
+                      <option value="7">Semanal</option>
+                      <option value="30">Mensal</option>
+                  </select>
+              </div>
+              <div class="tff">
+                  <label>Notificar</label>
+                  <select id="task-ntf" class="no-swipe">
+                      <option value="0">Sem aviso</option>
+                      <option value="5">5 min</option>
+                      <option value="10" selected>10 min</option>
+                      <option value="15">15 min</option>
+                      <option value="30">30 min</option>
+                      <option value="60">1 hora</option>
+                  </select>
               </div>
             </div>
           </div>
@@ -492,7 +1358,10 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
             <div id="ngrid" class="ng"></div>
           </div>
           <div id="nev">
-            <div class="neh"><button class="bbk" onclick="closeNote(true)">← Voltar</button><button class="bsv" onclick="saveNote()">Salvar</button></div>
+            <div class="neh">
+                <button class="bbk" onclick="closeNote(true)">← Voltar</button>
+                <button class="bsv" onclick="saveNote()">Salvar</button>
+            </div>
             <input type="text" id="nt-ttl" class="no-swipe" placeholder="Título"/>
             <textarea id="nt-bdy" class="no-swipe" placeholder="Escreva sua nota..."></textarea>
             <div id="nt-list-wrap" style="display:none; flex:1; flex-direction:column; overflow-y:auto; padding-bottom:20px;">
@@ -550,8 +1419,14 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
                <button class="ib" onclick="addBill()">+</button>
             </div>
             <div class="tf2">
-              <div class="tff"><label id="lbl-bill-date">Vencimento</label><input type="text" id="bill-date" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'date')" placeholder="Dia..."/></div>
-              <div class="tff"><label>Valor (R$)</label><input type="number" id="bill-val" class="no-swipe" step="0.01" placeholder="0.00" min="0"/></div>
+              <div class="tff">
+                  <label id="lbl-bill-date">Vencimento</label>
+                  <input type="text" id="bill-date" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'date')" placeholder="Dia..."/>
+              </div>
+              <div class="tff">
+                  <label>Valor (R$)</label>
+                  <input type="number" id="bill-val" class="no-swipe" step="0.01" placeholder="0.00" min="0"/>
+              </div>
               <div class="tff" style="flex-basis: 100%; flex-direction:row; align-items:center; gap:8px; margin-top:4px">
                  <label style="margin:0; text-transform:none; font-size:12px; font-weight:500; color:var(--txt);">🔁 Repetir:</label>
                  <select id="bill-rep" class="no-swipe" onchange="chgRep(this)" style="flex:1; font-size:13px; padding:6px 8px; height:32px; min-width:0;">
@@ -574,11 +1449,26 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
   </div>
 
   <div class="tabbar">
-    <button id="tb-agenda" class="tb active" onclick="swTab('agenda',this)"><svg width="22" height="22" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 2v3M12 2v3M2 8h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Agenda</button>
-    <button id="tb-tasks" class="tb" onclick="swTab('tasks',this)"><svg width="22" height="22" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.3"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Tarefas</button>
-    <button id="tb-notes" class="tb" onclick="swTab('notes',this)"><svg width="22" height="22" viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 6h6M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Notas</button>
-    <button id="tb-habitos" class="tb" onclick="swTab('habitos',this)"><svg width="22" height="22" viewBox="0 0 18 18" fill="none"><path d="M9 3a6 6 0 1 1 0 12A6 6 0 0 1 9 3zm0 2v4l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Hábitos</button>
-    <button id="tb-fin" class="tb" onclick="swTab('fin',this)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M16 12h.01M3 10h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Finanças</button>
+    <button id="tb-agenda" class="tb active" onclick="swTab('agenda',this)">
+        <svg width="22" height="22" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 2v3M12 2v3M2 8h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Agenda
+    </button>
+    <button id="tb-tasks" class="tb" onclick="swTab('tasks',this)">
+        <svg width="22" height="22" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.3"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Tarefas
+    </button>
+    <button id="tb-notes" class="tb" onclick="swTab('notes',this)">
+        <svg width="22" height="22" viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 6h6M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Notas
+    </button>
+    <button id="tb-habitos" class="tb" onclick="swTab('habitos',this)">
+        <svg width="22" height="22" viewBox="0 0 18 18" fill="none"><path d="M9 3a6 6 0 1 1 0 12A6 6 0 0 1 9 3zm0 2v4l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Hábitos
+    </button>
+    <button id="tb-fin" class="tb" onclick="swTab('fin',this)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M16 12h.01M3 10h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Finanças
+    </button>
   </div>
 </div>
 
@@ -607,125 +1497,166 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
   </div>
 </div>
 
-<div class="mo" id="mo-picker" onclick="bgC(event,'mo-picker')"><div class="md">
-  <div class="mh"><h2 id="pk-ttl">Selecionar</h2><button class="mc" onclick="closeM('mo-picker')">×</button></div>
-  <div class="mb no-swipe" id="pk-body" style="padding:10px 15px; overflow:hidden;"></div>
-  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="confirmPicker()">Confirmar</button></div>
-</div></div>
-
-<div class="mo" id="mo-transfer" onclick="bgC(event,'mo-transfer')"><div class="md">
-  <div class="mh"><h2>Transferir Valores</h2><button class="mc" onclick="closeM('mo-transfer')">×</button></div>
-  <div class="mb">
-    <div class="hff"><label>De (Origem)</label><select id="tr-from" class="no-swipe"></select></div>
-    <div class="hff"><label>Para (Destino)</label><select id="tr-to" class="no-swipe"></select></div>
-    <div class="hff"><label>Valor (R$)</label><input type="number" id="tr-val" class="no-swipe" step="0.01" placeholder="0.00"></div>
+<div class="mo" id="mo-picker" onclick="bgC(event,'mo-picker')">
+  <div class="md">
+    <div class="mh"><h2 id="pk-ttl">Selecionar</h2><button class="mc" onclick="closeM('mo-picker')">×</button></div>
+    <div class="mb no-swipe" id="pk-body" style="padding:10px 15px; overflow:hidden;"></div>
+    <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="confirmPicker()">Confirmar</button></div>
   </div>
-  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveTransfer()">Confirmar Transferência</button></div>
-</div></div>
+</div>
 
-<div class="mo" id="mo-ebill" onclick="bgC(event,'mo-ebill')"><div class="md">
-  <div class="mh"><h2>Editar Lançamento</h2><button class="mc" onclick="closeM('mo-ebill')">×</button></div>
-  <div class="mb">
-    <input type="hidden" id="ebill-m-id">
-    <div class="hff"><label>Data</label><input type="text" id="ebill-m-date" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'date')"></div>
-    <div class="hff"><label>Descrição (opcional)</label><input type="text" id="ebill-m-desc" class="no-swipe" placeholder="Nova descrição..."></div>
-    <div class="hff"><label>Valor (R$)</label><input type="number" id="ebill-m-val" class="no-swipe" step="0.01" placeholder="0.00"></div>
-  </div>
-  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditBill()">Salvar Alterações</button></div>
-</div></div>
-
-<div class="mo" id="mo-etask" onclick="bgC(event,'mo-etask')"><div class="md">
-  <div class="mh"><h2>Editar Tarefa</h2><button class="mc" onclick="closeM('mo-etask')">×</button></div>
-  <div class="mb">
-    <input type="hidden" id="etask-m-id">
-    <div class="hff"><label>Nova Data</label><input type="text" id="etask-m-date" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'date')"></div>
-    <div class="hff"><label>Nova Hora</label><input type="text" id="etask-m-time" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'time')"></div>
-    <div class="hff"><label>Repetir</label>
-        <select id="etask-m-rep" class="no-swipe">
-            <option value="0">Não</option><option value="1">Diário</option>
-            <option value="7">Semanal</option><option value="30">Mensal</option>
-        </select>
+<div class="mo" id="mo-transfer" onclick="bgC(event,'mo-transfer')">
+  <div class="md">
+    <div class="mh"><h2>Transferir Valores</h2><button class="mc" onclick="closeM('mo-transfer')">×</button></div>
+    <div class="mb">
+      <div class="hff"><label>De (Origem)</label><select id="tr-from" class="no-swipe"></select></div>
+      <div class="hff"><label>Para (Destino)</label><select id="tr-to" class="no-swipe"></select></div>
+      <div class="hff"><label>Valor (R$)</label><input type="number" id="tr-val" class="no-swipe" step="0.01" placeholder="0.00"></div>
     </div>
+    <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveTransfer()">Confirmar Transferência</button></div>
   </div>
-  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditTask()">Salvar Alterações</button></div>
-</div></div>
+</div>
 
-<div class="mo" id="mo-proj" onclick="bgC(event,'mo-proj')"><div class="md">
-  <div class="mh"><h2 id="proj-m-ttl">Resumo</h2><button class="mc" onclick="closeM('mo-proj')">×</button></div>
-  <div class="mb" id="proj-m-body"></div>
-</div></div>
+<div class="mo" id="mo-ebill" onclick="bgC(event,'mo-ebill')">
+  <div class="md">
+    <div class="mh"><h2>Editar Lançamento</h2><button class="mc" onclick="closeM('mo-ebill')">×</button></div>
+    <div class="mb">
+      <input type="hidden" id="ebill-m-id">
+      <div class="hff"><label>Data</label><input type="text" id="ebill-m-date" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'date')"></div>
+      <div class="hff"><label>Descrição (opcional)</label><input type="text" id="ebill-m-desc" class="no-swipe" placeholder="Nova descrição..."></div>
+      <div class="hff"><label>Valor (R$)</label><input type="number" id="ebill-m-val" class="no-swipe" step="0.01" placeholder="0.00"></div>
+    </div>
+    <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditBill()">Salvar Alterações</button></div>
+  </div>
+</div>
 
-<div class="mo" id="mo-cfg" onclick="bgC(event,'mo-cfg')"><div class="md">
-  <div class="mh"><h2>Configurações</h2><button class="mc" onclick="closeCfg()">×</button></div>
-  <div class="mb">
-    <div class="cst">Conta e Dados</div>
-    <div class="cr" style="flex-direction:column;align-items:flex-start;gap:8px;">
-      <div style="display:flex; justify-content:space-between; width:100%;">
-          <div class="cl">Sincronização em Nuvem</div>
-          <button class="bncfg no-swipe" id="btn-logout" style="background:#e44; display:none;" onclick="logout()">Sair</button>
+<div class="mo" id="mo-etask" onclick="bgC(event,'mo-etask')">
+  <div class="md">
+    <div class="mh"><h2>Editar Tarefa</h2><button class="mc" onclick="closeM('mo-etask')">×</button></div>
+    <div class="mb">
+      <input type="hidden" id="etask-m-id">
+      <div class="hff"><label>Nova Data</label><input type="text" id="etask-m-date" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'date')"></div>
+      <div class="hff"><label>Nova Hora</label><input type="text" id="etask-m-time" class="pk-input no-swipe" readonly onclick="openPicker(this.id, 'time')"></div>
+      <div class="hff"><label>Repetir</label>
+          <select id="etask-m-rep" class="no-swipe">
+              <option value="0">Não</option>
+              <option value="1">Diário</option>
+              <option value="7">Semanal</option>
+              <option value="30">Mensal</option>
+          </select>
       </div>
-      <div style="font-size:12px;color:var(--txt3);" id="lbl-user-email">Não conectado</div>
     </div>
-    <div class="cst" style="margin-top:15px">Aparência</div>
-    <div class="cr"><div class="cl">Tema escuro</div><label class="tog"><input type="checkbox" id="tog-dark" onchange="toggleTheme(this.checked)"/><span class="tog-s"></span></label></div>
-    <div class="cst">Identidade</div>
-    <div class="cr" style="flex-direction:column;align-items:flex-start;gap:8px;border-bottom:none">
-      <div class="cl">Nome do Usuário</div>
-      <div style="display:flex;gap:8px;width:100%"><input type="text" id="cfg-name" class="no-swipe" placeholder="Seu nome" maxlength="32" style="flex:1"/><button class="bsv" onclick="saveName()">Salvar</button></div>
+    <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditTask()">Salvar Alterações</button></div>
+  </div>
+</div>
+
+<div class="mo" id="mo-proj" onclick="bgC(event,'mo-proj')">
+  <div class="md">
+    <div class="mh"><h2 id="proj-m-ttl">Resumo</h2><button class="mc" onclick="closeM('mo-proj')">×</button></div>
+    <div class="mb" id="proj-m-body"></div>
+  </div>
+</div>
+
+<div class="mo" id="mo-cfg" onclick="bgC(event,'mo-cfg')">
+  <div class="md">
+    <div class="mh"><h2>Configurações</h2><button class="mc" onclick="closeCfg()">×</button></div>
+    <div class="mb">
+      <div class="cst">Conta e Dados</div>
+      <div class="cr" style="flex-direction:column;align-items:flex-start;gap:8px;">
+        <div style="display:flex; justify-content:space-between; width:100%;">
+            <div class="cl">Sincronização em Nuvem</div>
+            <button class="bncfg no-swipe" id="btn-logout" style="background:#e44; display:none;" onclick="logout()">Sair</button>
+        </div>
+        <div style="font-size:12px;color:var(--txt3);" id="lbl-user-email">Não conectado</div>
+      </div>
+      <div class="cst" style="margin-top:15px">Aparência</div>
+      <div class="cr">
+          <div class="cl">Tema escuro</div>
+          <label class="tog"><input type="checkbox" id="tog-dark" onchange="toggleTheme(this.checked)"/><span class="tog-s"></span></label>
+      </div>
+      <div class="cst">Identidade</div>
+      <div class="cr" style="flex-direction:column;align-items:flex-start;gap:8px;border-bottom:none">
+        <div class="cl">Nome do Usuário</div>
+        <div style="display:flex;gap:8px;width:100%">
+            <input type="text" id="cfg-name" class="no-swipe" placeholder="Seu nome" maxlength="32" style="flex:1"/>
+            <button class="bsv" onclick="saveName()">Salvar</button>
+        </div>
+      </div>
     </div>
   </div>
-</div></div>
+</div>
 
-<div class="mo" id="mo-hf" onclick="bgC(event,'mo-hf')"><div class="md">
-  <div class="mh"><h2 id="hf-ttl">Novo hábito</h2><button class="mc" onclick="closeHF()">×</button></div>
-  <div class="mb" id="hf-body"></div>
-  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveHabit()">Salvar hábito</button></div>
-</div></div>
+<div class="mo" id="mo-hf" onclick="bgC(event,'mo-hf')">
+  <div class="md">
+    <div class="mh"><h2 id="hf-ttl">Novo hábito</h2><button class="mc" onclick="closeHF()">×</button></div>
+    <div class="mb" id="hf-body"></div>
+    <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveHabit()">Salvar hábito</button></div>
+  </div>
+</div>
 
-<div class="mo" id="mo-focus" onclick="bgC(event,'mo-focus')"><div class="md">
-  <div class="mh"><h2 id="fc-ttl">Foco</h2><div style="display:flex;gap:8px"><button class="bbk" style="font-size:12px;padding:5px 10px" onclick="editFromFocus()">✏</button><button class="mc" onclick="closeFocus()">×</button></div></div>
-  <div class="mb" id="fc-body"></div>
-</div></div>
+<div class="mo" id="mo-focus" onclick="bgC(event,'mo-focus')">
+  <div class="md">
+    <div class="mh"><h2 id="fc-ttl">Foco</h2><div style="display:flex;gap:8px"><button class="bbk" style="font-size:12px;padding:5px 10px" onclick="editFromFocus()">✏</button><button class="mc" onclick="closeFocus()">×</button></div></div>
+    <div class="mb" id="fc-body"></div>
+  </div>
+</div>
 
-<div class="mo" id="mo-ach" onclick="bgC(event,'mo-ach')"><div class="md">
-  <div class="mh"><h2>🏆 Conquistas</h2><button class="mc" onclick="document.getElementById('mo-ach').classList.remove('open')">×</button></div>
-  <div class="mb" id="ach-body"></div>
-</div></div>
+<div class="mo" id="mo-ach" onclick="bgC(event,'mo-ach')">
+  <div class="md">
+    <div class="mh"><h2>🏆 Conquistas</h2><button class="mc" onclick="document.getElementById('mo-ach').classList.remove('open')">×</button></div>
+    <div class="mb" id="ach-body"></div>
+  </div>
+</div>
 
-<div class="mo" id="mo-sug" onclick="bgC(event,'mo-sug')"><div class="md">
-  <div class="mh"><h2>💡 Sugestões de hábitos</h2><button class="mc" onclick="document.getElementById('mo-sug').classList.remove('open')">×</button></div>
-  <div class="mb" id="sug-body"></div>
-</div></div>
+<div class="mo" id="mo-sug" onclick="bgC(event,'mo-sug')">
+  <div class="md">
+    <div class="mh"><h2>💡 Sugestões de hábitos</h2><button class="mc" onclick="document.getElementById('mo-sug').classList.remove('open')">×</button></div>
+    <div class="mb" id="sug-body"></div>
+  </div>
+</div>
 
 <script>
 // ==========================================================================
-// CÓDIGO DE LÓGICA E FIREBASE (OFFLINE FIRST)
+// CÓDIGO DE LÓGICA E FIREBASE (OFFLINE FIRST - PROTEGIDO)
 // ==========================================================================
 let isAppInitialized = false;
 let isOnline = false;
 
-// Inicializa Firebase com Try/Catch para nunca quebrar offline
+// Inicializa Firebase com Try/Catch para nunca quebrar o app offline
 try {
     if (typeof firebase !== 'undefined') {
-        firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp({
+            apiKey: "AIzaSyAjlCeP7goWIGPZAuwIEVBgHSMhRIt-dZs",
+            authDomain: "meu-organizador-d5476.firebaseapp.com",
+            projectId: "meu-organizador-d5476",
+            storageBucket: "meu-organizador-d5476.firebasestorage.app",
+            messagingSenderId: "106220883734",
+            appId: "1:106220883734:web:6658a9d5c2fe94005a4a37",
+            measurementId: "G-738VSPF578"
+        });
         window.auth = firebase.auth();
         window.db = firebase.firestore();
         window.googleProvider = new firebase.auth.GoogleAuthProvider();
         isOnline = true;
     }
 } catch(e) {
-    console.warn("Firebase bloqueado pelo navegador ou offline.");
+    console.warn("Firebase bloqueado pelo navegador ou acesso offline.");
 }
 
 function loginGoogle() {
-    if (!isOnline) { showDialog('alert', 'Sem Internet', 'Você precisa de internet para fazer login com o Google.'); return; }
+    if (!isOnline) { 
+        showDialog('alert', 'Sem Internet', 'Você precisa de internet para fazer login com o Google.'); 
+        return; 
+    }
     const btn = document.getElementById('login-btn');
-    btn.innerHTML = '⏳ Conectando...'; btn.style.pointerEvents = 'none';
+    btn.innerHTML = '⏳ Conectando...'; 
+    btn.style.pointerEvents = 'none';
 
     auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     .then(() => auth.signInWithRedirect(googleProvider))
     .catch(error => {
-        btn.innerHTML = 'Entrar com Google'; btn.style.pointerEvents = 'auto';
+        btn.innerHTML = 'Entrar com Google'; 
+        btn.style.pointerEvents = 'auto';
         showDialog('alert', 'Erro de Login', error.message);
     });
 }
@@ -738,7 +1669,12 @@ function skipLogin() {
 }
 
 function logout() {
-    if(isOnline && auth.currentUser) { auth.signOut().then(() => { localStorage.removeItem('o_skip_login'); location.reload(); }); }
+    if(isOnline && auth.currentUser) { 
+        auth.signOut().then(() => { 
+            localStorage.removeItem('o_skip_login'); 
+            location.reload(); 
+        }); 
+    }
 }
 
 if (isOnline) {
@@ -761,14 +1697,32 @@ if (isOnline) {
                 const docSnap = await docRef.get();
                 if(docSnap.exists) {
                     const data = docSnap.data();
-                    tasks = data.tasks || []; notes = data.notes || []; events = data.events || {};
-                    accounts = data.accounts || []; habits = data.habits || []; cfg = data.cfg || {dark:false,name:'',nHab:true};
-                    bills = (data.bills || []).map(b => { if(!b.paidMap) b.paidMap = {}; return b; });
-                    saveLocal(); toast('Nuvem Sincronizada! ✓');
+                    tasks = data.tasks || []; 
+                    notes = data.notes || []; 
+                    events = data.events || {};
+                    accounts = data.accounts || []; 
+                    habits = data.habits || []; 
+                    cfg = data.cfg || {dark:false,name:'',nHab:true};
+                    bills = (data.bills || []).map(b => { 
+                        if(typeof b.paid === 'boolean') {
+                            const mk = b.date ? b.date.substring(0,7) : getToday().substring(0,7);
+                            const pm = {}; if(b.paid) pm[mk] = true;
+                            return {...b, rep: 0, paidMap: pm, paid: undefined};
+                        }
+                        if(b.rep === true) b.rep = -1;
+                        if(b.rep === false) b.rep = 0;
+                        if(!b.paidMap) b.paidMap = {};
+                        return b;
+                    });
+                    saveLocal(); 
+                    toast('Nuvem Sincronizada! ✓');
                 } else {
-                    syncToCloud(); toast('Dados enviados para a nuvem! ✓');
+                    syncToCloud(); 
+                    toast('Dados enviados para a nuvem! ✓');
                 }
-            } catch(e) { toast('Trabalhando offline.'); }
+            } catch(e) { 
+                toast('Trabalhando offline.'); 
+            }
             
             if(!isAppInitialized) initApp(); else renderAll();
         } else {
@@ -790,7 +1744,9 @@ function syncToCloud() {
     if(!isOnline || !currentUser) return;
     clearTimeout(syncTimeout);
     syncTimeout = setTimeout(() => {
-        db.collection('usuarios').doc(currentUser.uid).set({ tasks, notes, events, accounts, bills, habits, cfg }).catch(e=>{});
+        db.collection('usuarios').doc(currentUser.uid).set({ 
+            tasks, notes, events, accounts, bills, habits, cfg 
+        }).catch(e=>{});
     }, 1500); 
 }
 
@@ -809,7 +1765,6 @@ function initApp() {
     
     try {
         loadLocal(); 
-        
         if(typeof chgBillType === 'function') chgBillType(); 
         
         document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
@@ -846,11 +1801,13 @@ function initApp() {
     } catch (err) { console.error("Erro na inicialização:", err); }
 }
 
-// O App inicia nativamente offline caso o Firebase demore. 
-// O Firebase roda no fundo e atualiza assim que possível.
+// O App inicia nativamente offline caso o Firebase demore ou não exista.
 document.addEventListener('DOMContentLoaded', () => {
-    if(!isOnline || localStorage.getItem('o_skip_login')) initApp();
+    if(!isOnline || localStorage.getItem('o_skip_login')) {
+        initApp();
+    }
 });
+
 </script>
 </body>
 </html>
