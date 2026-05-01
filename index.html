@@ -346,7 +346,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 </head>
 <body>
 
-<div id="login-screen" style="display:none;">
+<div id="login-screen" style="display:flex;">
     <div class="sp-ico">👑</div>
     <div class="sp-title" style="margin-bottom:30px;">Organizador <span class="sp-prem">Premium</span></div>
     <button class="login-btn" id="login-btn" onclick="loginGoogle()">
@@ -714,6 +714,8 @@ auth.onAuthStateChanged(async (user) => {
         document.getElementById('btn-logout').style.display = 'block';
         document.getElementById('lbl-user-email').textContent = user.email;
         
+        toast('Sincronizando dados...');
+        
         // Puxa dados da nuvem
         try {
             const docRef = db.collection('usuarios').doc(user.uid);
@@ -741,21 +743,18 @@ auth.onAuthStateChanged(async (user) => {
                     return b;
                 });
                 
+                saveLocal();
+                toast('Sincronizado! ✓');
             } else {
-                loadLocal();
-                syncToCloud();
+                syncToCloud(); 
+                toast('Dados salvos na nuvem! ✓');
             }
         } catch(e) {
-            console.error("Erro ao puxar dados, usando local.", e);
-            loadLocal();
+            console.error("Erro Nuvem:", e);
+            toast('Trabalhando offline.');
         }
         
-        if(!isAppInitialized) {
-            isAppInitialized = true;
-            initApp();
-        } else {
-            applyTheme(); applyName(); renderTasks(); renderNotes(); renderHabits(); renderFin(); renderCal();
-        }
+        applyTheme(); applyName(); renderTasks(); renderNotes(); renderHabits(); renderFin(); renderCal();
 
     } else {
         currentUser = null;
@@ -859,7 +858,7 @@ function getHol(y,m,d){return ensureHols(y)[ck(y,m,d)]||null;}
 // CLOSE MODAL HELPER
 function closeM(id) { document.getElementById(id).classList.remove('open'); }
 
-// CUSTOM DIALOG SYSTEM (Alert / Confirm / Prompt)
+// CUSTOM DIALOG SYSTEM
 let dialogResolve = null;
 function showDialog(type, title, text, defaultVal = '') {
     return new Promise(resolve => {
@@ -898,8 +897,7 @@ function createWheel(min, max, selVal, formatFn) {
     const w = document.createElement('div');
     w.className = 'wheel';
     let html = '<div class="w-pad"></div>';
-    let selIdx = 0;
-    let idx = 0;
+    let selIdx = 0; let idx = 0;
     for(let i=min; i<=max; i++) {
         if(i == selVal) selIdx = idx;
         html += `<div class="w-item" data-val="${i}" data-idx="${idx}" onclick="this.parentElement.scrollTo({top: (${idx} * 50), behavior: 'smooth'})">${formatFn(i)}</div>`;
@@ -917,12 +915,8 @@ function createWheel(min, max, selVal, formatFn) {
             if(closestIdx >= items.length) closestIdx = items.length - 1;
             
             items.forEach((it, i) => {
-                if(i === closestIdx) {
-                    it.classList.add('act');
-                    w.dataset.val = it.dataset.val;
-                } else {
-                    it.classList.remove('act');
-                }
+                if(i === closestIdx) { it.classList.add('act'); w.dataset.val = it.dataset.val; } 
+                else { it.classList.remove('act'); }
             });
             
             if (pkType === 'date') {
@@ -938,9 +932,7 @@ function createWheel(min, max, selVal, formatFn) {
                         if(parseInt(di.dataset.val) > maxD) di.style.display = 'none';
                         else di.style.display = 'flex';
                     });
-                    if(curD > maxD) {
-                        wheels[0].scrollTo({top: (maxD - 1) * 50, behavior: 'smooth'});
-                    }
+                    if(curD > maxD) { wheels[0].scrollTo({top: (maxD - 1) * 50, behavior: 'smooth'}); }
                 }
             }
         }, 50);
@@ -1010,88 +1002,14 @@ function confirmPicker() {
     closeM('mo-picker');
 }
 
-// Global Exports
-window.loginGoogle = loginGoogle;
-window.logout = logout;
-window.swTab = swTab;
-window.setView = setView;
-window.chMonth = chMonth;
-window.selDay = selDay;
-window.addEvent = addEvent;
-window.togTask = togTask;
-window.delTask = delTask;
-window.reactivate = reactivate;
-window.togEvDone = togEvDone;
-window.delEvGlobal = delEvGlobal;
-window.addTask = addTask;
-window.editTask = editTask;
-window.saveEditTask = saveEditTask;
-window.openNote = openNote;
-window.closeNote = closeNote;
-window.saveNote = saveNote;
-window.delNote = delNote;
-window.togListItem = togListItem;
-window.addListItem = addListItem;
-window.delListItem = delListItem;
-window.openHF = openHF;
-window.closeHF = closeHF;
-window.setHabTime = setHabTime;
-window.togCDay = togCDay;
-window.saveHabit = saveHabit;
-window.delHabit = delHabit;
-window.openFocus = openFocus;
-window.closeFocus = closeFocus;
-window.editFromFocus = editFromFocus;
-window.showCT = showCT;
-window.applyCT = applyCT;
-window.setTmr = setTmr;
-window.togTmr = togTmr;
-window.chgFinM = chgFinM;
-window.chgBillType = chgBillType;
-window.expandMonth = expandMonth;
-window.openTransfer = openTransfer;
-window.saveTransfer = saveTransfer;
-window.addAccount = addAccount;
-window.editAccount = editAccount;
-window.delAccount = delAccount;
-window.addBill = addBill;
-window.editBill = editBill;
-window.saveEditBill = saveEditBill;
-window.togBill = togBill;
-window.delBill = delBill;
-window.openAch = openAch;
-window.openSug = openSug;
-window.addSug = addSug;
-window.startTutorial = startTutorial;
-window.nextTut = nextTut;
-window.endTutorial = endTutorial;
-window.openCfg = openCfg;
-window.closeCfg = closeCfg;
-window.toggleTheme = toggleTheme;
-window.saveName = saveName;
-window.bgC = bgC;
-window.closeM = closeM;
-window.closeDialog = closeDialog;
-window.openPicker = openPicker;
-window.confirmPicker = confirmPicker;
-window.chgPkMonth = chgPkMonth;
-window.setPkDate = setPkDate;
-window.setPkTime = setPkTime;
-window.chgRep = async function(el) {
-    if(el.value === 'custom') {
-        const v = await showDialog('prompt', 'Repetição', 'Repetir por quantos meses a mais? (Ex: 24)');
-        const num = parseInt(v);
-        if(!isNaN(num) && num > 0) {
-            let exists = false; for(let i=0; i<el.options.length; i++) { if(el.options[i].value == num) { exists = true; break; } }
-            if(!exists) { const opt = document.createElement('option'); opt.value = num; opt.text = `Por mais ${num} meses`; el.add(opt, el.options[el.options.length-1]); }
-            el.value = num;
-        } else { el.value = "0"; }
-    }
-}
-
 // ── INIT BLINDADO ABSOLUTO ──
 function initApp() {
+    if (isAppInitialized) return;
+    isAppInitialized = true;
+    
     try {
+        loadLocal(); // Carrega imediatamente da memória do celular
+        applyTheme(); applyName();
         if(typeof chgBillType === 'function') chgBillType(); 
         
         document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
@@ -1105,8 +1023,7 @@ function initApp() {
         try{ renderNotes(); } catch(e){}
         try{ renderHabits(); } catch(e){}
         try{ if(typeof renderFin==='function') renderFin(); } catch(e){}
-        
-        try{ selDay(TD); } catch(e){}
+        try{ selDay(TD); } catch(e){} // Renderiza a agenda hoje
 
         try {
             bindDrag('ngrid', '.nc', () => { const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id)))); notes=arr.filter(Boolean); save(); });
@@ -1120,7 +1037,6 @@ function initApp() {
             const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();
             if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}
         } catch(e) {}
-        
         if(window._shared){swTab('notes',document.getElementById('tb-notes'));toast('✓ Texto salvo nas notas!');}
         
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
@@ -1134,6 +1050,10 @@ function initApp() {
         schedAll();
     } catch (err) { console.error("Erro na inicialização:", err); }
 }
+
+// Inicia imediatamente a tela offline ao carregar a página
+document.addEventListener('DOMContentLoaded', initApp);
+
 </script>
 </body>
 </html>
