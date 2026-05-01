@@ -121,7 +121,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 
 /* NOTES, LISTS & CARDS SELECTION LOCK */
 .nc, .hcard { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
-.ng{display:flex;flex-direction:column;gap:9px;flex:1; padding-bottom:10px; flex-shrink:0;}
+.ng{display:flex;flex-direction:column;gap:9px;flex:1;overflow-y:auto;overflow-x:hidden; padding-bottom:10px;}
 .nc{border-radius:11px;border:.5px solid var(--brd);padding:14px;cursor:pointer;background:var(--card);transition:transform 0.2s, opacity 0.2s, box-shadow 0.2s; flex-shrink:0;}
 .nc.dragging, .hcard.dragging { z-index: 10; position: relative; }
 .nc h3{font-size:14px;font-weight:500;color:var(--txt);margin-bottom:4px}
@@ -380,7 +380,7 @@ textarea{resize:none;line-height:1.65;width:100%}
                 <button onclick="addEvent()" style="margin-bottom:1px">+ Evento</button>
               </div>
             </div>
-            <div id="ev-list" style="padding-bottom:20px; flex-shrink:0;"></div>
+            <div id="ev-list" style="overflow-y:auto;max-height:35vh;padding-bottom:20px;"></div>
           </div>
         </div>
         
@@ -390,16 +390,21 @@ textarea{resize:none;line-height:1.65;width:100%}
             <div class="tf2">
               <div class="tff"><label>Dia</label><input type="text" id="task-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')" placeholder="Sem data"/></div>
               <div class="tff"><label>Hora</label><input type="text" id="task-time" class="pk-input" readonly onclick="openPicker(this.id, 'time')" placeholder="--:--"/></div>
+              <div class="tff"><label>Repetir</label>
+                <select id="task-rep">
+                  <option value="0">Não</option><option value="1">Diário</option>
+                  <option value="7">Semanal</option><option value="30">Mensal</option>
+                </select>
+              </div>
               <div class="tff"><label>Notificar</label>
                 <select id="task-ntf">
                   <option value="0">Sem aviso</option><option value="5">5 min</option>
-                  <option value="10" selected>10 min</option><option value="15">15 min</option>
-                  <option value="30">30 min</option><option value="60">1 hora</option>
+                  <option value="10" selected>10 min</option><option value="60">1 hora</option>
                 </select>
               </div>
             </div>
           </div>
-          <div id="t-pend" style="padding-bottom:10px; flex-shrink:0;"></div>
+          <div id="t-pend" style="overflow-y:auto;flex:1"></div>
           <div id="t-done-wrap"></div>
         </div>
 
@@ -427,7 +432,7 @@ textarea{resize:none;line-height:1.65;width:100%}
             <button class="bnn" style="margin-bottom:0;flex:1" onclick="openHF(null)">+ Novo Hábito</button>
             <button class="bnn" style="margin-bottom:0;flex:1;border-style:solid;background:var(--bg2)" onclick="openSug()">💡 Sugestões</button>
           </div>
-          <div id="hab-list" style="padding-bottom:15px; flex-shrink:0;"></div>
+          <div id="hab-list" style="flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:15px"></div>
         </div>
 
         <div id="sec-fin" class="sec">
@@ -437,7 +442,10 @@ textarea{resize:none;line-height:1.65;width:100%}
                   <div class="lbl">Saldo Total (Soma das Carteiras)</div>
                   <div class="f-v" id="fin-total">R$ 0,00</div>
                 </div>
-                <button class="ib" style="font-size:14px; padding:6px 12px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="addAccount()">+ Carteira</button>
+                <div style="display:flex; gap:6px;">
+                  <button class="ib" style="font-size:13px; padding:6px 12px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="openTransfer()">⇄ Transf.</button>
+                  <button class="ib" style="font-size:13px; padding:6px 12px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="addAccount()">+ Cart.</button>
+                </div>
              </div>
              <div id="acc-list" class="acc-list"></div>
           </div>
@@ -483,7 +491,7 @@ textarea{resize:none;line-height:1.65;width:100%}
               </div>
             </div>
           </div>
-          <div id="bill-list" style="padding-bottom:20px; flex-shrink:0;"></div>
+          <div id="bill-list" style="overflow-y:auto; flex:1; padding-bottom:20px;"></div>
         </div>
     </div>
   </div>
@@ -513,7 +521,7 @@ textarea{resize:none;line-height:1.65;width:100%}
      <div style="padding:20px 20px 10px; text-align:center;">
         <h3 id="dia-ttl" style="font-size:17px; margin-bottom:8px; color:var(--txt);"></h3>
         <p id="dia-txt" style="font-size:14px; color:var(--txt2); line-height:1.4;"></p>
-        <input type="text" id="dia-inp" style="width:100%; margin-top:15px; display:none; text-align:center;" />
+        <input type="text" id="dia-inp" style="width:100%; margin-top:15px; display:none; text-align:center; padding:10px; border-radius:10px; border:1px solid var(--brd2); font-size:15px;" />
      </div>
      <div class="dia-btns">
         <button id="dia-btn-cancel" class="dia-btn cancel" onclick="closeDialog(false)">Cancelar</button>
@@ -528,14 +536,14 @@ textarea{resize:none;line-height:1.65;width:100%}
   <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="confirmPicker()">Confirmar</button></div>
 </div></div>
 
-<div class="mo" id="mo-acc" onclick="bgC(event,'mo-acc')"><div class="md">
-  <div class="mh"><h2 id="acc-m-ttl">Nova Carteira</h2><button class="mc" onclick="closeM('mo-acc')">×</button></div>
+<div class="mo" id="mo-transfer" onclick="bgC(event,'mo-transfer')"><div class="md">
+  <div class="mh"><h2>Transferir Valores</h2><button class="mc" onclick="closeM('mo-transfer')">×</button></div>
   <div class="mb">
-    <input type="hidden" id="acc-m-id">
-    <div class="hff"><label>Nome da Carteira</label><input type="text" id="acc-m-nm" placeholder="Ex: NuBank"></div>
-    <div class="hff"><label>Saldo Atual (R$)</label><input type="number" id="acc-m-val" step="0.01" placeholder="0.00"></div>
+    <div class="hff"><label>De (Origem)</label><select id="tr-from"></select></div>
+    <div class="hff"><label>Para (Destino)</label><select id="tr-to"></select></div>
+    <div class="hff"><label>Valor (R$)</label><input type="number" id="tr-val" step="0.01" placeholder="0.00"></div>
   </div>
-  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveAccModal()">Salvar Carteira</button></div>
+  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveTransfer()">Confirmar Transferência</button></div>
 </div></div>
 
 <div class="mo" id="mo-ebill" onclick="bgC(event,'mo-ebill')"><div class="md">
@@ -550,11 +558,17 @@ textarea{resize:none;line-height:1.65;width:100%}
 </div></div>
 
 <div class="mo" id="mo-etask" onclick="bgC(event,'mo-etask')"><div class="md">
-  <div class="mh"><h2>Reprogramar Tarefa</h2><button class="mc" onclick="closeM('mo-etask')">×</button></div>
+  <div class="mh"><h2>Editar Tarefa</h2><button class="mc" onclick="closeM('mo-etask')">×</button></div>
   <div class="mb">
     <input type="hidden" id="etask-m-id">
     <div class="hff"><label>Nova Data</label><input type="text" id="etask-m-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')"></div>
     <div class="hff"><label>Nova Hora</label><input type="text" id="etask-m-time" class="pk-input" readonly onclick="openPicker(this.id, 'time')"></div>
+    <div class="hff"><label>Repetir</label>
+        <select id="etask-m-rep">
+            <option value="0">Não</option><option value="1">Diário</option>
+            <option value="7">Semanal</option><option value="30">Mensal</option>
+        </select>
+    </div>
   </div>
   <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditTask()">Salvar Alterações</button></div>
 </div></div>
@@ -648,9 +662,9 @@ const BADGE_DEFS=[
 
 const TUT_STEPS=[
   {ico:'✨',ttl:'Bem-vindo ao Organizador Premium!',txt:'Para começarmos, como você se chama?', html:'<input type="text" id="tut-name" placeholder="Seu nome..." style="width:100%; text-align:center; padding:12px; font-size:16px; border-radius:10px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt); margin-top:10px; outline:none; font-family:inherit;"/>',tab:null},
-  {ico:'📅',ttl:'Agenda Inteligente',txt:'Deslize a tela para navegar! O Mês mostra seus compromissos, finanças e tarefas juntos.',tab:'agenda'},
-  {ico:'💵',ttl:'Finanças Inteligentes',txt:'O app debita o valor automaticamente da sua Carteira quando você marca a conta como paga!',tab:'fin'},
-  {ico:'⏰',ttl:'Foco e Hábitos',txt:'Segure os itens por meio segundo para organizar. O Timer Pomodoro agora vibra ao final!',tab:'habitos'},
+  {ico:'📅',ttl:'A Central de Comando',txt:'O Mês mostra seus compromissos, e o Dia mostra as Tarefas, Contas e Hábitos que vencem hoje!',tab:'agenda'},
+  {ico:'💵',ttl:'Finanças e Transferências',txt:'Crie contas que se repetem ou transfira dinheiro entre suas carteiras sem afetar o balanço!',tab:'fin'},
+  {ico:'⏰',ttl:'Foco Inteligente',txt:'O Timer Pomodoro agora roda de forma inteligente no fundo sem gastar bateria.',tab:'habitos'},
   {ico:'🏆',ttl:'Tudo pronto!',txt:'Explore o menu da engrenagem para ativar notificações e modo escuro. Bom uso! 🚀',tab:null},
 ];
 let tutStep=0;
@@ -941,7 +955,7 @@ function swTab(name,btn){
   slider.style.transform = `translateX(-${curTab * 20}%)`;
 }
 
-// Eventos Touch aprimorados para permitir swipe contínuo
+// Eventos Touch aprimorados
 let tsX=0, tsY=0, isSwipe=false, isScroll=false, tsNoSwipe=false, tsOnCal=false;
 document.addEventListener('DOMContentLoaded', () => {
     const cnt = document.getElementById('cnt');
@@ -992,16 +1006,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }, {passive:true});
 });
 
-function toast(msg){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ac);color:var(--acfg);padding:8px 18px;border-radius:20px;font-size:13px;z-index:999;white-space:nowrap;pointer-events:none;box-shadow:0 2px 14px rgba(0,0,0,.18)';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>{t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(()=>t.remove(),300);},2200);}
-
 // TASKS + EVENTS
 function getEvItems(){const today=getToday(),res=[];Object.keys(events||{}).sort().forEach(k=>{if(k>=today)((events||{})[k]||[]).filter(Boolean).forEach(ev=>res.push({id:ev.id,text:ev.text,done:ev.done||false,dk:k,dt:ev.time,isEv:true,evKey:k}));});return res;}
-function togTask(id){tasks=tasks.map(t=>t.id===id?{...t,done:!t.done}:t);save();renderTasks();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
+function togTask(id){
+    const t = tasks.find(x=>x.id===id);
+    if(!t) return;
+    const wasDone = t.done;
+    t.done = !t.done;
+    
+    // Repetição de Tarefas
+    if(!wasDone && t.done && t.rep > 0 && t.dk) {
+        const [y, m, d] = t.dk.split('-').map(Number);
+        let nextD = new Date(y, m-1, d);
+        if(t.rep === 30) nextD.setMonth(nextD.getMonth() + 1);
+        else nextD.setDate(nextD.getDate() + t.rep);
+
+        const nextDk = getDK(nextD);
+        const exists = tasks.some(x => x.text === t.text && x.dk === nextDk);
+        if(!exists) {
+            tasks.push({...t, id:Date.now(), dk:nextDk, done:false});
+            toast(`Tarefa recriada para ${fmtDt(nextDk)}`);
+        }
+    }
+    save(); renderTasks(); if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();
+}
 async function delTask(id){if(!(await showDialog('confirm','Excluir Tarefa','Excluir esta tarefa permanentemente?')))return;tasks=tasks.filter(t=>t.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function reactivate(id){tasks=tasks.map(t=>t.id===id?{...t,done:false}:t);save();renderTasks();}
 function togEvDone(k,id){events[k]=(events[k]||[]).map(e=>e.id===id?{...e,done:!e.done}:e);save();renderTasks();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 async function delEvGlobal(k,id){if(!(await showDialog('confirm','Excluir Evento','Excluir este evento permanentemente?')))return;events[k]=(events[k]||[]).filter(e=>e.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
-function addTask(){const inp=document.getElementById('task-in'),text=inp.value.trim();if(!text)return;const dk=document.getElementById('task-date').value||null,dt=document.getElementById('task-time').value||null,nb=parseInt(document.getElementById('task-ntf').value)||0;tasks.unshift({id:Date.now(),text,done:false,dk,dt,nb});inp.value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';save();schedAll();renderTasks();renderCal();}
+function addTask(){
+    const inp=document.getElementById('task-in'),text=inp.value.trim();if(!text)return;
+    const dk=document.getElementById('task-date').value||null,dt=document.getElementById('task-time').value||null,nb=parseInt(document.getElementById('task-ntf').value)||0;
+    const rep=parseInt(document.getElementById('task-rep').value)||0;
+    tasks.unshift({id:Date.now(),text,done:false,dk,dt,nb,rep});
+    inp.value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';save();schedAll();renderTasks();renderCal();
+}
 
 // MODAL REPROGRAMAR TAREFAS
 function editTask(id) {
@@ -1009,6 +1048,7 @@ function editTask(id) {
     document.getElementById('etask-m-id').value = id;
     document.getElementById('etask-m-date').value = t.dk || getToday();
     document.getElementById('etask-m-time').value = t.dt || '';
+    document.getElementById('etask-m-rep').value = t.rep || '0';
     document.getElementById('mo-etask').classList.add('open');
 }
 function saveEditTask(){
@@ -1016,6 +1056,7 @@ function saveEditTask(){
     const t = tasks.find(x => x.id === id); if(!t) return;
     t.dk = document.getElementById('etask-m-date').value;
     t.dt = document.getElementById('etask-m-time').value;
+    t.rep = parseInt(document.getElementById('etask-m-rep').value) || 0;
     save(); renderTasks(); renderCal(); if(selD !== null) renderEvList(); schedAll(); closeM('mo-etask');
 }
 
@@ -1025,7 +1066,8 @@ function tiHTML(item,isDone=false){
   const df=item.isEv?`delEvGlobal('${item.evKey}',${item.id})`:`delTask(${item.id})`;
   const editBtn = (!isDone && !item.isEv) ? `<button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${item.id})">✏️</button>` : '';
   const acts=isDone?`<div class="dtb">${!item.isEv?`<button class="brev no-swipe" onclick="reactivate(${item.id})">↩</button>`:''}<button class="bperm no-swipe" onclick="${df}">🗑</button></div>`:`<div class="dtb">${editBtn}<button class="bd no-swipe" onclick="${df}">×</button></div>`;
-  return`<div class="ti ${item.done?'done-item':''}"><div class="tck no-swipe ${item.done?'done':''}" onclick="${tf}">${item.done?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="tb2"><div class="tt">${esc(item.text)}${badge}</div>${meta?`<div class="tm ${ov?'ov':''}">${ov?'⚠ ':'📅 '}${esc(meta)}</div>`:''}</div>${acts}</div>`;
+  const repIcon = item.rep > 0 && !item.isEv ? ' 🔁' : '';
+  return`<div class="ti ${item.done?'done-item':''}"><div class="tck no-swipe ${item.done?'done':''}" onclick="${tf}">${item.done?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="tb2"><div class="tt">${esc(item.text)}${repIcon}${badge}</div>${meta?`<div class="tm ${ov?'ov':''}">${ov?'⚠ ':'📅 '}${esc(meta)}</div>`:''}</div>${acts}</div>`;
 }
 
 function renderTasks(){
@@ -1035,7 +1077,7 @@ function renderTasks(){
       const done=[...(tasks||[])].filter(Boolean).filter(t=>t.done).map(t=>({...t,isEv:false})).concat(evI.filter(e=>e.done));
       const pEl=document.getElementById('t-pend'),dEl=document.getElementById('t-done-wrap');
       pEl.innerHTML=!pend.length&&!done.length?'<p class="empty">Nenhuma tarefa ainda.</p>':pend.length?`<p class="lbl">Pendentes · ${pend.length}</p>`+pend.map(t=>tiHTML(t)).join(''):'';
-      dEl.innerHTML=done.length?`<button class="dtoggle no-swipe ${doneExp?'open':''}" onclick="doneExp=!doneExp;renderTasks()"><svg width="12" height="12" viewBox="0 0 11 11" fill="none"><rect x="1" y="1" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M3 5.5l1.5 1.5 3.5-3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Concluídas · ${done.length}<span class="arr">›</span></button><div style="display:${doneExp?'block':'none'}">${done.map(t=>tiHTML(t,true)).join('')}</div>`:'';
+      dEl.innerHTML=done.length?`<button class="dtoggle no-swipe" onclick="this.classList.toggle('open'); const d=this.nextElementSibling; d.style.display=d.style.display==='none'?'block':'none';"><svg width="12" height="12" viewBox="0 0 11 11" fill="none"><rect x="1" y="1" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M3 5.5l1.5 1.5 3.5-3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Concluídas · ${done.length}<span class="arr">›</span></button><div style="display:none">${done.map(t=>tiHTML(t,true)).join('')}</div>`:'';
   } catch(e){}
 }
 
@@ -1187,8 +1229,13 @@ function isBillInDay(b, dk) {
     const bY = parseInt(b.date.substring(0,4)), bM = parseInt(b.date.substring(5,7))-1, bD = b.date.substring(8,10);
     const kY = parseInt(dk.substring(0,4)), kM = parseInt(dk.substring(5,7))-1, kD = dk.substring(8,10);
     if(bD !== kD) return false;
-    if(kY > bY) return true;
-    if(kY === bY && kM >= bM) return true;
+    if(kY === bY && kM === bM) return true;
+    if(!b.rep || b.rep === 0) return false;
+    const diff = (kY - bY) * 12 + (kM - bM);
+    if(diff > 0) {
+        if(b.rep === -1) return true;
+        if(diff <= b.rep) return true;
+    }
     return false;
 }
 
@@ -1270,7 +1317,23 @@ function renderEvList(){
       let dBills = Array.isArray(bills) ? bills.filter(Boolean).filter(b=>isBillInDay(b,k)) : [];
       
       const el=document.getElementById('ev-list');
-      if(!evs.length&&!dT.length&&!dBills.length){el.innerHTML='<p style="font-size:13px;color:var(--txt4)">Sem eventos, tarefas ou finanças neste dia.</p>';return;}
+      
+      let html = '';
+      
+      // COCKPIT MEU DIA: Se estiver no dia de hoje, puxa os hábitos!
+      if(k === getToday()) {
+          const dObj = new Date(cY, cM, selD);
+          const dh = (habits||[]).filter(Boolean).filter(h => isSchedOn(h, dObj));
+          if(dh.length > 0) {
+              html += `<div class="lbl" style="margin-top:0px;margin-bottom:5px">Hábitos de Hoje</div>`;
+              html += dh.map(h => {
+                  const cnt=(h.history||{})[k]||0; const done = cnt >= h.target;
+                  return `<div class="dti" onclick="swTab('habitos')" style="cursor:pointer;"><span class="dtt" style="font-size:18px">${h.icon}</span><div class="dtb2"><div class="dttl ${done?'done':''}">${esc(h.name)}</div><div class="tm">${cnt}/${h.target} vezes</div></div></div>`;
+              }).join('');
+          }
+      }
+
+      if(!evs.length && !dT.length && !dBills.length && !html){ el.innerHTML='<p style="font-size:13px;color:var(--txt4)">Sem tarefas ou eventos.</p>'; return; }
       
       const bh=dBills.map(b=>{
           const cEmoji=b.cat?b.cat.split(' ')[0]:''; 
@@ -1279,10 +1342,16 @@ function renderEvList(){
           const isPaid=b.paidMap&&b.paidMap[mK];
           return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck no-swipe ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="em2">${fmtC(b.val)}</div></div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd no-swipe" onclick="delBill(${b.id})">×</button></div>`
       }).join('');
-      const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck no-swipe ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}<span class="ebdg etask">tarefa</span></div>${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd no-swipe" onclick="delTask(${t.id})">×</button></div>`).join('');
+      
+      const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck no-swipe ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}${t.rep?' 🔁':''}<span class="ebdg etask">tarefa</span></div>${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd no-swipe" onclick="delTask(${t.id})">×</button></div>`).join('');
+      
       const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck no-swipe ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}</div></div><button class="bd no-swipe" onclick="delEvGlobal('${k}',${ev.id})">×</button></div>`).join('');
       
-      el.innerHTML=(dBills.length?`<p class="lbl" style="margin-bottom:5px">Finanças</p>`+bh:'')+(dT.length?`<p class="lbl" style="margin-top:${dBills.length?7:0}px;margin-bottom:5px">Tarefas</p>`+th:'')+(evs.length?`<p class="lbl" style="margin-top:${dT.length||dBills.length?7:0}px;margin-bottom:5px">Eventos</p>`+eh:'');
+      if(dBills.length) html += `<p class="lbl" style="margin-top:${html?10:0}px;margin-bottom:5px">Finanças</p>`+bh;
+      if(dT.length) html += `<p class="lbl" style="margin-top:${html?10:0}px;margin-bottom:5px">Tarefas</p>`+th;
+      if(evs.length) html += `<p class="lbl" style="margin-top:${html?10:0}px;margin-bottom:5px">Eventos</p>`+eh;
+      
+      el.innerHTML = html;
   } catch(e){}
 }
 
@@ -1338,22 +1407,7 @@ function renderDay(){
   try {
       if(selD===null){selD=TD;cY=TY;cM=TM;}
       const d=new Date(cY,cM,selD),k=ck(cY,cM,selD),hol=getHol(cY,cM,selD);
-      const mK=k.substring(0,7);
-      
-      let rawE = (events||{})[k];
-      let evs = Array.isArray(rawE) ? rawE.slice().sort((a,b)=>(a.time||'ZZ').localeCompare(b.time||'ZZ')) : [];
-      let dT = Array.isArray(tasks) ? tasks.filter(Boolean).filter(t=>t.dk===k).sort((a,b)=>(a.dt||'ZZ').localeCompare(b.dt||'ZZ')) : [];
-      let dBills = Array.isArray(bills) ? bills.filter(Boolean).filter(b=>isBillInDay(b,k)) : [];
-      
-      const items=[...dT.map(t=>({type:'task',time:t.dt||'',obj:t})),...evs.map(e=>({type:'ev',time:e.time||'',obj:e,k})),...dBills.map(b=>({type:'bill',time:'',obj:b}))].sort((a,b)=>a.time.localeCompare(b.time));
-      
-      const ihtml=items.length?items.map(it=>{
-        if(it.type==='task'){const t=it.obj;return`<div class="dti"><span class="dtt">${t.dt||'—'}</span><div class="dtb2"><div class="dttl ${t.done?'done':''}">${esc(t.text)}<span class="ebdg etask">tarefa</span></div></div><div class="tck no-swipe ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id});renderDay()">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd no-swipe" onclick="delTask(${t.id})">×</button></div>`;}
-        else if(it.type==='ev'){const e=it.obj;return`<div class="dti"><span class="dtt">${e.time||'—'}</span><div class="dtb2"><div class="dttl ${e.done?'done':''}">${esc(e.text)}<span class="ebdg eev">evento</span></div></div><div class="tck no-swipe ${e.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${it.k}',${e.id});renderDay()">${e.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><button class="bd no-swipe" onclick="delEvGlobal('${it.k}',${e.id})">×</button></div>`;}
-        else if(it.type==='bill'){const b=it.obj; const isP=b.paidMap&&b.paidMap[mK]; const cEmoji=b.cat?b.cat.split(' ')[0]:''; const cName=b.cat?b.cat.substring(cEmoji.length).trim():''; const dText=b.desc?esc(b.desc):cName; return `<div class="dti"><span class="dtt">—</span><div class="dtb2"><div class="dttl ${isP?'done':''}">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">${fmtC(b.val)}</div></div><div class="tck no-swipe ${isP?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}');renderDay()">...</div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd no-swipe" onclick="delBill(${b.id})">×</button></div>`;}
-      }).join(''):'<p class="empty" style="margin-top:1rem">Nenhum item neste dia.</p>';
-      
-      document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv no-swipe" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="cnv no-swipe" onclick="chMonth(1)">›</button></div>${hol?`<div class="holbanner">🎉 ${esc(hol)}</div>`:''}<div class="dtl">${ihtml}</div>`;
+      document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv no-swipe" onclick="chMonth(-1)">‹</button><span style="font-size:13px">${d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="cnv no-swipe" onclick="chMonth(1)">›</button></div>${hol?`<div class="holbanner">🎉 ${esc(hol)}</div>`:''}`;
       document.getElementById('ev-sec').style.display='block';
       document.getElementById('ev-dlbl').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
       document.getElementById('hol-row').style.display='none';
@@ -1386,7 +1440,7 @@ function habCardHTML(h){
     bubs+=`<div class="hbwrap"><div class="bub ${bsz} ${i<cnt?'filled':''}" style="color:${h.color}" onclick="event.stopPropagation();setBubble(${h.id},${i})"></div>${tl}</div>`;
   }
   const bubtip=cnt===0&&sched?`<span class="bubtip">← toque</span>`:'';
-  return`<div class="hcard" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
+  return`<div class="hcard no-swipe ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
 }
 function renderHabits(){
   try {
@@ -1418,21 +1472,38 @@ async function saveHabit(){
 }
 async function delHabit(id){if(!(await showDialog('confirm','Excluir Hábito','Excluir este hábito e todo o histórico permanentemente?')))return;habits=habits.filter(h=>h.id!==id);saveHabits();renderHabits();if(focusH&&focusH.id===id)closeFocus();}
 
-// FOCUS
+// FOCUS & BACKGROUND TIMER
 function openFocus(id){const h=habits.find(h=>h.id===id);if(!h)return;focusH=h;if(focTmr){clearInterval(focTmr.intv);focTmr=null;}document.getElementById('fc-ttl').textContent=`${h.icon} ${h.name}`;renderFocusBody();document.getElementById('mo-focus').classList.add('open');}
 function closeFocus(){document.getElementById('mo-focus').classList.remove('open');if(focTmr){clearInterval(focTmr.intv);focTmr=null;}focusH=null;}
 function editFromFocus(){if(focusH){const id=focusH.id;closeFocus();openHF(id);}}
-function renderFocusBody(){if(!focusH)return;const h=habits.find(x=>x.id===focusH.id)||focusH,cnt=getHabCnt(h),str=compStreak(h),bdg=getBadge(str),q=QUOTES[Math.floor(Math.random()*QUOTES.length)];let fb='';for(let i=0;i<h.target;i++){let t_str='';if(h.target>1&&h.times&&h.times[i])t_str=h.times[i];else if(h.target===1&&h.reminderTime)t_str=h.reminderTime;const tl=t_str?`<div style="font-size:10px;color:var(--txt4);margin-top:2px">${t_str}</div>`:'';fb+=`<div style="display:flex;flex-direction:column;align-items:center"><div class="fbub ${i<cnt?'filled':''}" style="color:${h.color}" onclick="setBubble(${h.id},${i})"></div>${tl}</div>`;}let hcells='';for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=getDK(d),dn=(h.history||{})[k]>=(h.target||1),sc=isSchedOn(h,d),isT=i===0;hcells+=`<div class="hcl ${dn?'done':''} ${!sc?'':''} ${isT?'today':''}" style="${dn?`background:${h.color}`:''}"></div>`;}const isC=focTmr&&![5,10,15,30].includes(focTmr.dur),td=focTmr?fmtTimer(focTmr.remaining):'--:--',tbLabel=!focTmr?'Iniciar':focTmr.running?'Pausar':'Continuar';document.getElementById('fc-body').innerHTML=`<div class="fbubs">${fb}</div><div class="fcnt">${cnt}/${h.target}${cnt>=h.target?' · ✓ Concluído!':''}</div>${str>0||bdg?`<div class="fsts">${str>0?`<div class="fs"><div class="fsn">🔥 ${str}</div><div class="fsl">dias seguidos</div></div>`:''} ${bdg?`<div class="fs"><div class="fsn">${bdg}</div><div class="fsl">${str>=100?'Diamante':str>=30?'Ouro':str>=14?'Prata':'Bronze'}</div></div>`:''}</div>`:''}<div class="fq">"${q}"</div><div class="hgs"><div class="lbl" style="margin-bottom:4px">Últimos 28 dias</div><div class="hdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div class="hgrid">${hcells}</div></div><div class="tmrsec"><div class="lbl" style="margin-bottom:7px">Timer de foco</div><div class="topts">${[5,10,15,30].map(m=>`<button class="topt ${focTmr&&focTmr.dur===m&&!isC?'sel':''}" onclick="setTmr(${m})">${m} min</button>`).join('')}<button class="topt ${isC?'sel':''}" onclick="showCT()">Personalizado</button></div><div id="ct-row" class="tcrow" style="display:${isC?'flex':'none'}"><input type="number" id="ct-in" min="1" max="360" value="${isC?focTmr.dur:25}"/><span style="font-size:12px;color:var(--txt3)">min (máx 6h)</span><button class="bbk" style="font-size:12px;padding:5px 10px" onclick="applyCT()">Ok</button></div><div class="tdisp" id="t-disp">${td}</div><button class="tbtn" id="t-btn" onclick="togTmr()">${tbLabel}</button></div>`;}
+function renderFocusBody(){
+    if(!focusH)return;
+    const h=habits.find(x=>x.id===focusH.id)||focusH,cnt=getHabCnt(h),str=compStreak(h),bdg=getBadge(str),q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+    let fb='';for(let i=0;i<h.target;i++){let t_str='';if(h.target>1&&h.times&&h.times[i])t_str=h.times[i];else if(h.target===1&&h.reminderTime)t_str=h.reminderTime;const tl=t_str?`<div style="font-size:10px;color:var(--txt4);margin-top:2px">${t_str}</div>`:'';fb+=`<div style="display:flex;flex-direction:column;align-items:center"><div class="fbub ${i<cnt?'filled':''}" style="color:${h.color}" onclick="setBubble(${h.id},${i})"></div>${tl}</div>`;}
+    let hcells='';for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=getDK(d),dn=(h.history||{})[k]>=(h.target||1),sc=isSchedOn(h,d),isT=i===0;hcells+=`<div class="hcl ${dn?'done':''} ${!sc?'':''} ${isT?'today':''}" style="${dn?`background:${h.color}`:''}"></div>`;}
+    
+    // Calcula o tempo real se estiver rodando em background
+    if(focTmr && focTmr.running) {
+        focTmr.remaining = Math.max(0, Math.ceil((focTmr.endTime - Date.now())/1000));
+    }
+    
+    const isC=focTmr&&![5,10,15,30].includes(focTmr.dur),td=focTmr?fmtTimer(focTmr.remaining):'--:--',tbLabel=!focTmr?'Iniciar':focTmr.running?'Pausar':'Continuar';
+    document.getElementById('fc-body').innerHTML=`<div class="fbubs">${fb}</div><div class="fcnt">${cnt}/${h.target}${cnt>=h.target?' · ✓ Concluído!':''}</div>${str>0||bdg?`<div class="fsts">${str>0?`<div class="fs"><div class="fsn">🔥 ${str}</div><div class="fsl">dias seguidos</div></div>`:''} ${bdg?`<div class="fs"><div class="fsn">${bdg}</div><div class="fsl">${str>=100?'Diamante':str>=30?'Ouro':str>=14?'Prata':'Bronze'}</div></div>`:''}</div>`:''}<div class="fq">"${q}"</div><div class="hgs"><div class="lbl" style="margin-bottom:4px">Últimos 28 dias</div><div class="hdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div class="hgrid">${hcells}</div></div><div class="tmrsec"><div class="lbl" style="margin-bottom:7px">Timer de foco</div><div class="topts">${[5,10,15,30].map(m=>`<button class="topt ${focTmr&&focTmr.dur===m&&!isC?'sel':''}" onclick="setTmr(${m})">${m} min</button>`).join('')}<button class="topt ${isC?'sel':''}" onclick="showCT()">Personalizado</button></div><div id="ct-row" class="tcrow" style="display:${isC?'flex':'none'}"><input type="number" id="ct-in" min="1" max="360" value="${isC?focTmr.dur:25}"/><span style="font-size:12px;color:var(--txt3)">min (máx 6h)</span><button class="bbk" style="font-size:12px;padding:5px 10px" onclick="applyCT()">Ok</button></div><div class="tdisp" id="t-disp">${td}</div><button class="tbtn" id="t-btn" onclick="togTmr()">${tbLabel}</button></div>`;
+}
 function showCT(){const r=document.getElementById('ct-row');if(r)r.style.display=r.style.display==='none'?'flex':'none';}
 function applyCT(){const v=Math.max(1,Math.min(360,parseInt(document.getElementById('ct-in').value)||25));setTmr(v);}
-function setTmr(min){if(focTmr)clearInterval(focTmr.intv);focTmr={dur:min,remaining:min*60,running:false,intv:null};renderFocusBody();}
+function setTmr(min){if(focTmr)clearInterval(focTmr.intv);focTmr={dur:min,remaining:min*60,running:false,intv:null,endTime:0};renderFocusBody();}
 function togTmr(){
   if(!focTmr)return;
   if(focTmr.running){
-    clearInterval(focTmr.intv);focTmr.running=false;focTmr.intv=null;const b=document.getElementById('t-btn');if(b)b.textContent='Continuar';
+    clearInterval(focTmr.intv);focTmr.running=false;focTmr.intv=null;
+    const b=document.getElementById('t-btn');if(b)b.textContent='Continuar';
   }else{
-    focTmr.running=true;focTmr.intv=setInterval(()=>{
-      focTmr.remaining--;const d=document.getElementById('t-disp');if(d)d.textContent=fmtTimer(focTmr.remaining);
+    focTmr.running=true;
+    focTmr.endTime = Date.now() + (focTmr.remaining * 1000);
+    focTmr.intv=setInterval(()=>{
+      focTmr.remaining = Math.max(0, Math.ceil((focTmr.endTime - Date.now())/1000));
+      const d=document.getElementById('t-disp');if(d)d.textContent=fmtTimer(focTmr.remaining);
       if(focTmr.remaining<=0){
         clearInterval(focTmr.intv);focTmr.running=false;focTmr.intv=null;
         const d2=document.getElementById('t-disp');if(d2)d2.textContent='00:00';
@@ -1441,7 +1512,7 @@ function togTmr(){
         if(navigator.vibrate) navigator.vibrate([500, 200, 500]);
         if(typeof Notification !== 'undefined' && Notification.permission==='granted')new Notification('Meu Organizador',{body:`⏱ Timer concluído: ${focusH?focusH.icon+' '+focusH.name:''}`});
       }
-    },1000);
+    }, 500); // Roda mais rápido pra UI não engasgar
     const b=document.getElementById('t-btn');if(b)b.textContent='Pausar';
   }
 }
@@ -1483,16 +1554,26 @@ function expandMonth(k, name) {
           catsOut[key].items.push(x);
       }
   });
+
+  const total = totalIn + totalOut;
+  const pctIn = total > 0 ? (totalIn / total) * 100 : 50;
+  const pctOut = total > 0 ? (totalOut / total) * 100 : 50;
   
   let html = `
-    <div style="display:flex; justify-content:space-between; margin-bottom:15px; background:var(--bg3); padding:14px; border-radius:12px;">
-        <div style="text-align:center; flex:1; border-right:.5px solid var(--brd2);">
-            <div style="font-size:10px; color:var(--txt3); font-weight:600; text-transform:uppercase;">Entradas</div>
-            <div style="font-size:16px; font-weight:600; color:#2e7d32; margin-top:4px;">+${fmtC(totalIn)}</div>
+    <div style="margin-bottom:15px; background:var(--bg3); padding:14px; border-radius:12px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom: 12px;">
+            <div style="text-align:center; flex:1; border-right:.5px solid var(--brd2);">
+                <div style="font-size:10px; color:var(--txt3); font-weight:600; text-transform:uppercase;">Entradas</div>
+                <div style="font-size:16px; font-weight:600; color:#2e7d32; margin-top:4px;">+${fmtC(totalIn)}</div>
+            </div>
+            <div style="text-align:center; flex:1;">
+                <div style="font-size:10px; color:var(--txt3); font-weight:600; text-transform:uppercase;">Saídas</div>
+                <div style="font-size:16px; font-weight:600; color:#e44; margin-top:4px;">-${fmtC(totalOut)}</div>
+            </div>
         </div>
-        <div style="text-align:center; flex:1;">
-            <div style="font-size:10px; color:var(--txt3); font-weight:600; text-transform:uppercase;">Saídas</div>
-            <div style="font-size:16px; font-weight:600; color:#e44; margin-top:4px;">-${fmtC(totalOut)}</div>
+        <div style="display:flex; height:6px; border-radius:3px; overflow:hidden; background:var(--brd2);">
+            <div style="width:${pctIn}%; background:#2e7d32; transition:width 0.3s;"></div>
+            <div style="width:${pctOut}%; background:#e44; transition:width 0.3s;"></div>
         </div>
     </div>`;
 
@@ -1608,7 +1689,32 @@ function renderFin(){
   } catch(e){}
 }
 
-// MODAL DA CARTEIRA
+function openTransfer(){
+    if(accounts.length < 2) { showDialog('alert','Transferência','Você precisa de pelo menos 2 carteiras.'); return; }
+    let opts = accounts.map(a=>`<option value="${a.id}">${a.name} (${fmtC(a.val)})</option>`).join('');
+    document.getElementById('tr-from').innerHTML = opts;
+    document.getElementById('tr-to').innerHTML = opts;
+    document.getElementById('tr-val').value = '';
+    document.getElementById('mo-transfer').classList.add('open');
+}
+function saveTransfer(){
+    const f = parseInt(document.getElementById('tr-from').value);
+    const t = parseInt(document.getElementById('tr-to').value);
+    const vStr = document.getElementById('tr-val').value;
+    const v = parseFloat(vStr.replace(',','.'));
+    
+    if(f === t) { toast('Selecione carteiras diferentes!'); return; }
+    if(!v || v<=0) { toast('Valor inválido!'); return; }
+
+    const accF = accounts.find(a=>a.id===f);
+    const accT = accounts.find(a=>a.id===t);
+    if(accF && accT) {
+        accF.val -= v;
+        accT.val += v;
+        save(); renderFin(); closeM('mo-transfer'); toast('Transferência realizada ✓');
+    }
+}
+
 async function addAccount(){
   const nm = await showDialog('prompt', 'Nova Carteira', 'Nome da Carteira/Banco:');
   if(!nm || !nm.trim()) return;
