@@ -444,16 +444,16 @@ textarea{resize:none;line-height:1.65;width:100%}
         <div id="sec-fin" class="sec">
           <div class="f-card">
              <div class="f-bal">
-                <div>
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <div class="lbl" style="margin-bottom:0">Saldo Total (Soma das Carteiras)</div>
+                <div style="flex:1; padding-right:12px; min-width:0;">
+                  <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <div class="lbl" style="margin-bottom:0">Saldo Total (Soma)</div>
                     <button class="bd no-swipe" id="btn-hide-vals" onclick="toggleHideVals()" style="padding:0; margin-bottom:2px; color:var(--txt3);" title="Ocultar valores">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     </button>
                   </div>
                   <div class="f-v v-hide" id="fin-total">R$ 0,00</div>
                 </div>
-                <div style="display:flex; gap:6px;">
+                <div style="display:flex; gap:6px; flex-shrink:0;">
                   <button class="ib" style="font-size:13px; padding:6px 12px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="openTransfer()">⇄ Transf.</button>
                   <button class="ib" style="font-size:13px; padding:6px 12px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="addAccount()">+ Cart.</button>
                 </div>
