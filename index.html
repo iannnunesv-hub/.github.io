@@ -63,6 +63,28 @@ body {
     box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
+/* ==========================================================================
+   TELAS DE LOGIN E SPLASH
+   ========================================================================== */
+#login-screen {
+    position: absolute; inset: 0; background: var(--bg); z-index: 100000;
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+    border-radius: 18px; padding: 20px; text-align: center;
+}
+.login-btn {
+    display: flex; align-items: center; gap: 12px; background: var(--card);
+    border: 1px solid var(--brd2); padding: 14px 28px; border-radius: 99px;
+    font-size: 15px; font-weight: 500; color: var(--txt); cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.2s; margin-top: 30px;
+}
+.login-btn:active { transform: scale(0.96); }
+.login-btn svg { width: 22px; height: 22px; }
+
+.login-skip {
+    background: none; border: none; font-size: 13px; color: var(--txt3);
+    margin-top: 25px; cursor: pointer; text-decoration: underline; padding: 10px;
+}
+
 #splash {
     position: absolute; inset: 0; background: var(--bg); z-index: 99999;
     display: flex; align-items: center; justify-content: center; flex-direction: column;
@@ -88,17 +110,17 @@ body {
 .cnt { flex: 1; overflow: hidden; position: relative; min-height: 0; }
 #slider { display: flex; width: 500%; height: 100%; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; }
 .sec { width: 20%; flex-shrink: 0; padding: 1.2rem 1.1rem; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; height: 100%; box-sizing: border-box; }
-.sec > * { flex-shrink: 0; }
+.sec > * { flex-shrink: 0; } 
 
 .tabbar { display: flex; border-top: 0.5px solid var(--brd); background: var(--bg2); flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom); }
 .tb { flex: 1; padding: 11px 2px 9px; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--txt4); font-size: 11px; font-family: inherit; transition: color 0.15s; }
 .tb.active { color: var(--txt); font-weight: 500; }
-.tb svg { width: 22px !important; height: 22px !important; }
+.tb svg { width: 22px; height: 22px; }
 
 /* ==========================================================================
    INPUTS GERAIS E BOTÕES
    ========================================================================== */
-input, textarea, select { padding: 9px 12px; border-radius: 9px; border: 0.5px solid var(--brd2); font-size: 14px; outline: none; font-family: inherit; background: var(--inp); color: var(--txt); width: 100%; box-sizing: border-box; }
+input, textarea, select { padding: 9px 12px; border-radius: 9px; border: 0.5px solid var(--brd2); font-size: 14px; outline: none; font-family: inherit; background: var(--inp); color: var(--txt); width: 100%; box-sizing: border-box; position: relative; z-index: 1;}
 .pk-input { cursor: pointer; caret-color: transparent; }
 textarea { resize: none; line-height: 1.65; width: 100%; }
 .ib { padding: 9px 15px; border-radius: 9px; border: none; background: var(--ac); color: var(--acfg); font-size: 18px; cursor: pointer; flex-shrink: 0; }
@@ -143,7 +165,7 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .w-item.act { font-size: 28px; font-weight: 700; color: var(--ac); }
 
 /* ==========================================================================
-   CONFIGURAÇÕES GERAIS
+   CONFIGURAÇÕES (COM LOGIN INTEGRADO)
    ========================================================================== */
 .cst { font-size: 11px; color: var(--txt3); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin: 15px 0 9px; }
 .cst:first-child { margin-top: 0; }
@@ -162,14 +184,13 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .bncfg { background: var(--ac); color: var(--acfg); border: none; border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: inherit; }
 
 /* ==========================================================================
-   TAREFAS & LANÇAMENTOS (BILLS)
+   TAREFAS & FINANÇAS
    ========================================================================== */
 .tf { background: var(--card); border-radius: 13px; border: 0.5px solid var(--brd); padding: 13px; margin-bottom: 1rem; flex-shrink: 0; }
 .tftop { display: flex; gap: 7px; margin-bottom: 10px; }
 .tf2 { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
 .tff { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 85px; }
-.tff label { font-size: 10px; color: var(--txt3); font-weight: 600; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tff select, .tff input { font-size: 13px; padding: 7px; height: 34px; }
+.tff label { font-size: 10px; color: var(--txt3); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ti { display: flex; align-items: flex-start; gap: 9px; padding: 11px 13px; border-radius: 10px; border: 0.5px solid var(--brd); margin-bottom: 6px; background: var(--card); }
 .ti.done-item .tt { text-decoration: line-through; color: var(--txt4); }
 .tck { width: 19px; height: 19px; border-radius: 50%; border: 1.5px solid var(--txt4); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 2px; transition: all 0.15s; }
@@ -204,7 +225,6 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 #nev { flex: 1; display: none; flex-direction: column; overflow: hidden; }
 #nev.open { display: flex; }
 .nli { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.nli input[type="text"] { flex: 1; padding: 8px 10px; font-size: 13px; }
 .nli-chk { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--txt4); display: flex; align-items: center; justify-content: center; cursor: pointer; color: transparent; flex-shrink: 0; transition: all 0.15s; }
 .nli-chk.done { background: var(--ac); border-color: var(--ac); color: var(--acfg); }
 .nli.done input { text-decoration: line-through; color: var(--txt4); }
@@ -216,7 +236,6 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .vbtn { flex: 1; padding: 7px; border-radius: 8px; border: 0.5px solid var(--brd2); background: var(--bg3); color: var(--txt2); font-size: 12px; cursor: pointer; font-family: inherit; }
 .vbtn.sel { background: var(--ac); color: var(--acfg); border-color: var(--ac); }
 .srow { display: flex; gap: 7px; margin-bottom: 0.8rem; flex-shrink: 0; }
-.srow input { flex: 1; font-size: 13px; }
 .sri { padding: 9px 11px; border-radius: 9px; border: 0.5px solid var(--brd); margin-bottom: 5px; background: var(--card); cursor: pointer; }
 .sri-t { font-size: 13px; color: var(--txt); }
 .sri-m { font-size: 11px; color: var(--txt3); margin-top: 2px; }
@@ -240,6 +259,7 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .evs { margin-top: 0.8rem; border-top: 0.5px solid var(--brd); padding-top: 0.8rem; flex-shrink: 0; }
 .edl { font-size: 12px; color: var(--txt3); margin-bottom: 8px; }
 .holbanner { background: rgba(200, 0, 50, 0.07); border: 0.5px solid rgba(200, 0, 50, 0.18); border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; font-size: 12px; color: var(--hol); display: flex; align-items: center; gap: 5px; }
+
 @keyframes slideCalNext { 0% { transform: translateX(30px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
 @keyframes slideCalPrev { 0% { transform: translateX(-30px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
 .cal-next { animation: slideCalNext 0.25s ease-out; }
@@ -270,7 +290,7 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .wd.past .wdd { color: var(--txt4); }
 .wd.dot::after { content: ''; width: 3px; height: 3px; border-radius: 50%; background: var(--ac); position: absolute; bottom: 3px; opacity: 0.6; }
 .wd.sel.dot::after { background: var(--acfg); }
-.wd.hol .wdd { color: var(--hol); }
+
 .dtl { display: flex; flex-direction: column; gap: 5px; }
 .dti { display: flex; gap: 9px; align-items: center; padding: 9px 11px; border-radius: 9px; border: 0.5px solid var(--brd); background: var(--card); }
 .dtt { font-size: 11px; color: var(--txt3); min-width: 36px; flex-shrink: 0; }
@@ -313,7 +333,6 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .hct { font-size: 12px; font-weight: 500; margin-left: 4px; }
 .huns { opacity: 0.5; }
 .hnt { font-size: 11px; color: var(--txt4); font-style: italic; margin-top: 5px; }
-.bubtip { font-size: 10px; color: var(--txt4); margin-left: 4px; font-style: italic; align-self: center; }
 
 /* Habit Form */
 .hff { margin-bottom: 13px; }
@@ -409,7 +428,7 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 .tut-next { flex: 2; padding: 11px; border-radius: 10px; border: none; background: var(--ac); color: var(--acfg); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; }
 
 /* ==========================================================================
-   FINANÇAS E CARTEIRAS
+   FINANÇAS
    ========================================================================== */
 .f-card { background: var(--card); border-radius: 13px; border: 0.5px solid var(--brd); padding: 13px; margin-bottom: 1rem; flex-shrink: 0; }
 .f-bal { display: flex; justify-content: space-between; align-items: flex-start; }
@@ -423,19 +442,6 @@ textarea { resize: none; line-height: 1.65; width: 100%; }
 </style>
 </head>
 <body>
-
-<div id="login-screen" style="display:none;">
-    <div class="sp-ico">👑</div>
-    <div class="sp-title" style="margin-bottom:30px;">Organizador <span class="sp-prem">Premium</span></div>
-    
-    <button class="login-btn" id="login-btn" onclick="loginGoogle()">
-        <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-        Entrar com Google
-    </button>
-    <button class="login-skip" onclick="skipLogin()">Usar sem conta (Modo Offline)</button>
-    
-    <p style="font-size:12px; color:var(--txt3); margin-top:15px;">Sincronização na nuvem e acesso rápido.</p>
-</div>
 
 <div id="splash">
     <div class="sp-ico">👑</div>
@@ -958,7 +964,7 @@ function renderAll() {
 }
 
 // ==========================================================================
-// INIT OFFLINE-FIRST E NOTIFICAÇÕES (Roda instantaneamente)
+// INIT OFFLINE-FIRST (Roda instantaneamente)
 // ==========================================================================
 let isAppInitialized = false;
 
@@ -968,6 +974,7 @@ function initApp() {
     
     try {
         loadLocal(); 
+        
         if(typeof chgBillType === 'function') chgBillType(); 
         
         document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
@@ -998,7 +1005,6 @@ function initApp() {
             if(!localStorage.getItem('o_tut_done')) { document.getElementById('tut').style.display='flex'; showStep(); }
         }, 1200);
 
-        schedAll();
     } catch (err) { console.error("Erro na inicialização:", err); }
 }
 
@@ -1008,43 +1014,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(initFirebase, 500); // Depois de meio segundo, tenta acordar a nuvem.
 });
 
-// NOTIFICAÇÕES (Recuperado)
-function updN() {
-    const st=document.getElementById('nst'), btn=document.getElementById('nbtn');
-    if(typeof Notification === 'undefined'){ st.textContent='Não suportado'; st.className='ns off'; btn.style.display='none'; return; }
-    const p=Notification.permission; st.className='ns '+(p==='granted'?'on':'off');
-    if(p==='granted'){st.textContent='● Ativas';btn.textContent='Info';btn.onclick=()=>showDialog('alert','Notificações','Desative no navegador.');}
-    else if(p==='denied'){st.textContent='● Bloqueadas';btn.textContent='Ativar';btn.onclick=()=>showDialog('alert','Bloqueado','Vá em Configurações do navegador.');}
-    else{st.textContent='● Inativas';btn.textContent='Ativar';btn.onclick=reqN;}
-}
-function reqN() {
-    if(typeof Notification === 'undefined') return;
-    Notification.requestPermission().then(p => { updN(); if(p==='granted') { schedAll(); toast('Notificações ativadas ✓'); }});
-}
-
-let fbT=[];
-function schedN(title,body,delay,tag) {
-    if(delay<=0)return;
-    fbT.push(setTimeout(()=>{if(typeof Notification !== 'undefined' && Notification.permission==='granted')new Notification(title,{body});},delay));
-}
-function schedAll() {
-  fbT.forEach(t=>clearTimeout(t));fbT=[];
-  if(typeof Notification === 'undefined' || Notification.permission!=='granted')return;
-  const nl=n=>n>=60?`${n/60}h`:`${n}min`;
-  (tasks||[]).filter(Boolean).filter(t=>!t.done&&t.dk&&t.dt&&t.nb).forEach(t=>{const[y,m,d]=t.dk.split('-').map(Number);const[h,mi]=t.dt.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-t.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`✅ "${t.text}" — faltam ${nl(t.nb)}`,delay,`t-${t.id}`);});
-  Object.keys(events||{}).forEach(key=>{const[y,m,d]=key.split('-').map(Number);((events||{})[key]||[]).filter(Boolean).forEach(ev=>{if(!ev.time||!ev.nb)return;const[h,mi]=ev.time.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-ev.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`📅 "${ev.text}" às ${ev.time} — faltam ${nl(ev.nb)}`,delay,`e-${ev.id}`);});});
-  if(cfg.nHab !== false) {
-    (habits||[]).filter(Boolean).forEach(h=>{
-      if(!isSchedOn(h,new Date()))return;
-      if(h.times&&h.times.length){ const cnt=getHabCnt(h); h.times.forEach((t,i)=>{if(!t||i<cnt)return;const[hh,mm]=t.split(':').map(Number);const at=new Date();at.setHours(hh,mm,0,0);const delay=at-Date.now();if(delay>0)schedN('Meu Organizador',`${h.icon} ${h.name} — ocorrência ${i+1}!`,delay,`hab-${h.id}-${i}`);}); }
-      else if(h.reminderTime){ const[hh,mm]=h.reminderTime.split(':').map(Number);const at=new Date();at.setHours(hh,mm,0,0);const delay=at-Date.now();if(delay>0)schedN('Meu Organizador',`${h.icon} ${h.name} — não esqueça! 🔥`,delay,`hab-${h.id}`); }
-    });
-  }
-}
-
 
 // ==========================================================================
-// FIREBASE SYNC (Roda escondido no fundo)
+// FIREBASE SYNC E NOTIFICAÇÕES (Roda escondido no fundo)
 // ==========================================================================
 let currentUser = null;
 let syncTimeout = null;
@@ -1083,12 +1055,9 @@ function initFirebase() {
                             tasks = data.tasks || []; notes = data.notes || []; events = data.events || {};
                             accounts = data.accounts || []; habits = data.habits || []; cfg = data.cfg || {dark:false,name:'',nHab:true};
                             bills = (data.bills || []).map(b => { if(!b.paidMap) b.paidMap = {}; return b; });
-                            saveLocal(); 
-                            renderAll();
-                            toast('Nuvem Sincronizada! ✓');
+                            saveLocal(); renderAll(); toast('Nuvem Sincronizada! ✓');
                         } else {
-                            syncToCloud(); 
-                            toast('Dados enviados para a nuvem! ✓');
+                            window.syncToCloud(); toast('Dados enviados para a nuvem! ✓');
                         }
                     } catch(e) {}
                 } else {
@@ -1097,9 +1066,18 @@ function initFirebase() {
                     document.getElementById('auth-logged-in').style.display = 'none';
                 }
             });
+
+            window.syncToCloud = () => {
+                if(!currentUser) return;
+                clearTimeout(syncTimeout);
+                syncTimeout = setTimeout(() => {
+                    db.collection('usuarios').doc(currentUser.uid).set({ tasks, notes, events, accounts, bills, habits, cfg }).catch(e=>{});
+                }, 1500); 
+            };
         }
     } catch(err) {
         console.warn("Firebase offline");
+        window.syncToCloud = () => {};
     }
 }
 
@@ -1131,11 +1109,11 @@ function syncToCloud() {
     }, 1500); 
 }
 
-function save() { saveLocal(); syncToCloud(); }
-function saveHabits() { saveLocal(); syncToCloud(); }
+function save() { saveLocal(); if(window.syncToCloud) window.syncToCloud(); }
+function saveHabits() { saveLocal(); if(window.syncToCloud) window.syncToCloud(); }
 
-// CONFIG E TEMAS (Recuperado)
-function toggleTheme(on){cfg.dark=on;saveLocal();syncToCloud();applyTheme();}
+// CONFIG E TEMAS
+function toggleTheme(on){cfg.dark=on;saveLocal();if(window.syncToCloud) window.syncToCloud();applyTheme();}
 function applyName(){
   document.getElementById('aname').textContent=cfg.name?`Organizador de ${cfg.name}`:'Organizador Premium';
   document.getElementById('dlbl').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
@@ -1143,7 +1121,7 @@ function applyName(){
 function applyTheme(){document.documentElement.setAttribute('data-theme',cfg.dark?'dark':'');const t=document.getElementById('tog-dark');if(t)t.checked=cfg.dark;}
 function saveName() {
     const v = document.getElementById('cfg-name').value.trim();
-    if(v) { cfg.name=v; saveLocal(); applyName(); syncToCloud(); toast('Nome atualizado ✓'); }
+    if(v) { cfg.name=v; saveLocal(); applyName(); if(window.syncToCloud) window.syncToCloud(); toast('Nome atualizado ✓'); }
 }
 function openCfg() {
     document.getElementById('cfg-name').value=cfg.name||'';
@@ -1153,6 +1131,39 @@ function openCfg() {
     document.getElementById('mo-cfg').classList.add('open');
 }
 function closeCfg() { document.getElementById('mo-cfg').classList.remove('open'); }
+
+// NOTIFICAÇÕES GERAIS E HÁBITOS
+function updN() {
+    const st=document.getElementById('nst'), btn=document.getElementById('nbtn');
+    if(typeof Notification === 'undefined'){ st.textContent='Não suportado'; st.className='ns off'; btn.style.display='none'; return; }
+    const p=Notification.permission; st.className='ns '+(p==='granted'?'on':'off');
+    if(p==='granted'){st.textContent='● Ativas';btn.textContent='Info';btn.onclick=()=>showDialog('alert','Notificações','Desative no navegador.');}
+    else if(p==='denied'){st.textContent='● Bloqueadas';btn.textContent='Ativar';btn.onclick=()=>showDialog('alert','Bloqueado','Vá em Configurações do navegador.');}
+    else{st.textContent='● Inativas';btn.textContent='Ativar';btn.onclick=reqN;}
+}
+function reqN() {
+    if(typeof Notification === 'undefined') return;
+    Notification.requestPermission().then(p => { updN(); if(p==='granted') { schedAll(); toast('Notificações ativadas ✓'); }});
+}
+let fbT=[];
+function schedN(title,body,delay,tag) {
+    if(delay<=0)return;
+    fbT.push(setTimeout(()=>{if(typeof Notification !== 'undefined' && Notification.permission==='granted')new Notification(title,{body});},delay));
+}
+function schedAll() {
+  fbT.forEach(t=>clearTimeout(t));fbT=[];
+  if(typeof Notification === 'undefined' || Notification.permission!=='granted')return;
+  const nl=n=>n>=60?`${n/60}h`:`${n}min`;
+  (tasks||[]).filter(Boolean).filter(t=>!t.done&&t.dk&&t.dt&&t.nb).forEach(t=>{const[y,m,d]=t.dk.split('-').map(Number);const[h,mi]=t.dt.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-t.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`✅ "${t.text}" — faltam ${nl(t.nb)}`,delay,`t-${t.id}`);});
+  Object.keys(events||{}).forEach(key=>{const[y,m,d]=key.split('-').map(Number);((events||{})[key]||[]).filter(Boolean).forEach(ev=>{if(!ev.time||!ev.nb)return;const[h,mi]=ev.time.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-ev.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`📅 "${ev.text}" às ${ev.time} — faltam ${nl(ev.nb)}`,delay,`e-${ev.id}`);});});
+  if(cfg.nHab !== false) {
+    (habits||[]).filter(Boolean).forEach(h=>{
+      if(!isSchedOn(h,new Date()))return;
+      if(h.times&&h.times.length){ const cnt=getHabCnt(h); h.times.forEach((t,i)=>{if(!t||i<cnt)return;const[hh,mm]=t.split(':').map(Number);const at=new Date();at.setHours(hh,mm,0,0);const delay=at-Date.now();if(delay>0)schedN('Meu Organizador',`${h.icon} ${h.name} — ocorrência ${i+1}!`,delay,`hab-${h.id}-${i}`);}); }
+      else if(h.reminderTime){ const[hh,mm]=h.reminderTime.split(':').map(Number);const at=new Date();at.setHours(hh,mm,0,0);const delay=at-Date.now();if(delay>0)schedN('Meu Organizador',`${h.icon} ${h.name} — não esqueça! 🔥`,delay,`hab-${h.id}`); }
+    });
+  }
+}
 
 // ==========================================================================
 // TABS E SWIPE NATIVO
@@ -1658,7 +1669,6 @@ async function editAccount(id){
   if(nv !== false && nv !== null && !isNaN(parseFloat(nv.replace(',','.')))) { acc.val = parseFloat(nv.replace(',','.')); save(); renderFin(); }
 }
 async function delAccount(id){ if(await showDialog('confirm','Remover Carteira','Remover esta carteira permanentemente?')) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
-
 async function chgRep(el) {
     if(el.value === 'custom') {
         const v = await showDialog('prompt', 'Repetição', 'Repetir por quantos meses a mais? (Ex: 24)');
@@ -1737,7 +1747,6 @@ function showStep(){
 }
 function nextTut(){ if(tutStep===0){ const n = document.getElementById('tut-name'); if(n && n.value.trim()){ cfg.name = n.value.trim(); saveCfg(); applyName(); } } if(tutStep<TUT_STEPS.length-1){tutStep++;showStep();}else endTutorial(); }
 function endTutorial(){ document.getElementById('tut').style.display='none'; localStorage.setItem('o_tut_done','true'); }
-
 </script>
 </body>
 </html>
