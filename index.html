@@ -13,6 +13,10 @@
 :root{--bg:#fafafa;--bg2:#fff;--bg3:#f5f5f5;--bg4:#e8e8e8;--brd:#eee;--brd2:#ddd;--txt:#222;--txt2:#666;--txt3:#aaa;--txt4:#ccc;--ac:#222;--acfg:#fff;--card:#fff;--inp:#fff;--hol:#e05;}
 [data-theme=dark]{--bg:#111;--bg2:#1a1a1a;--bg3:#252525;--bg4:#0d0d0d;--brd:#2a2a2a;--brd2:#383838;--txt:#eee;--txt2:#aaa;--txt3:#666;--txt4:#444;--ac:#e0e0e0;--acfg:#111;--card:#1e1e1e;--inp:#2a2a2a;--hol:#ff6b8a;}
 
+/* PRIVACIDADE: Ocultar valores */
+body.hide-vals .v-hide { filter: blur(6px); opacity: 0.6; user-select: none; pointer-events: none; transition: filter 0.2s, opacity 0.2s; }
+.v-hide { transition: filter 0.2s, opacity 0.2s; }
+
 /* LAYOUT NATIVO BLINDADO: Impede que a tela inteira role (Scroll do Body) */
 body { font-family: system-ui, sans-serif; background: var(--bg4); display: flex; justify-content: center; align-items: center; height: 100vh; height: 100dvh; overflow: hidden; padding: 0.5rem; transition: background .2s; }
 #app { width: 100%; height: 100%; max-width: 490px; background: var(--bg); border-radius: 18px; border: .5px solid var(--brd); overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
@@ -441,8 +445,13 @@ textarea{resize:none;line-height:1.65;width:100%}
           <div class="f-card">
              <div class="f-bal">
                 <div>
-                  <div class="lbl">Saldo Total (Soma das Carteiras)</div>
-                  <div class="f-v" id="fin-total">R$ 0,00</div>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="lbl" style="margin-bottom:0">Saldo Total (Soma das Carteiras)</div>
+                    <button class="bd no-swipe" id="btn-hide-vals" onclick="toggleHideVals()" style="padding:0; margin-bottom:2px; color:var(--txt3);" title="Ocultar valores">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                  </div>
+                  <div class="f-v v-hide" id="fin-total">R$ 0,00</div>
                 </div>
                 <div style="display:flex; gap:6px;">
                   <button class="ib" style="font-size:13px; padding:6px 12px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="openTransfer()">⇄ Transf.</button>
@@ -888,8 +897,8 @@ function save(){
   localStorage.setItem('o_bills', JSON.stringify(bills));
 }
 
-// CONFIG
-let cfg={dark:false,name:'',nHab:true};
+// CONFIG & PRIVACY
+let cfg={dark:false,name:'',nHab:true,hideVals:false};
 function loadCfg(){try{const c=JSON.parse(localStorage.getItem('o_cfg'));if(c)cfg={...cfg,...c};}catch(e){}}
 function saveCfg(){localStorage.setItem('o_cfg',JSON.stringify(cfg));}
 function applyTheme(){document.documentElement.setAttribute('data-theme',cfg.dark?'dark':'');const t=document.getElementById('tog-dark');if(t)t.checked=cfg.dark;}
@@ -903,6 +912,22 @@ async function saveName(){
     if(v){cfg.name=v;saveCfg();applyName();toast('Nome atualizado ✓');}
 }
 function openCfg(){document.getElementById('cfg-name').value=cfg.name||'';document.getElementById('tog-dark').checked=cfg.dark;document.getElementById('tog-nhab').checked=cfg.nHab!==false;updN();document.getElementById('mo-cfg').classList.add('open');}
+
+function toggleHideVals() {
+    cfg.hideVals = !cfg.hideVals;
+    saveCfg();
+    applyHideVals();
+}
+function applyHideVals() {
+    const btn = document.getElementById('btn-hide-vals');
+    if(cfg.hideVals) {
+        document.body.classList.add('hide-vals');
+        if(btn) btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+    } else {
+        document.body.classList.remove('hide-vals');
+        if(btn) btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+    }
+}
 
 // SW + NOTIF
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
@@ -1342,7 +1367,7 @@ function renderEvList(){
           const cName=b.cat?b.cat.substring(cEmoji.length).trim():''; 
           const dText=b.desc?esc(b.desc):cName;
           const isPaid=b.paidMap&&b.paidMap[mK];
-          return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck no-swipe ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="em2">${fmtC(b.val)}</div></div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd no-swipe" onclick="delBill(${b.id})">×</button></div>`
+          return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck no-swipe ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="em2 v-hide">${fmtC(b.val)}</div></div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd no-swipe" onclick="delBill(${b.id})">×</button></div>`
       }).join('');
       
       const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck no-swipe ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}${t.rep?' 🔁':''}<span class="ebdg etask">tarefa</span></div>${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd no-swipe" onclick="delTask(${t.id})">×</button></div>`).join('');
@@ -1566,11 +1591,11 @@ function expandMonth(k, name) {
         <div style="display:flex; justify-content:space-between; margin-bottom: 12px;">
             <div style="text-align:center; flex:1; border-right:.5px solid var(--brd2);">
                 <div style="font-size:10px; color:var(--txt3); font-weight:600; text-transform:uppercase;">Entradas</div>
-                <div style="font-size:16px; font-weight:600; color:#2e7d32; margin-top:4px;">+${fmtC(totalIn)}</div>
+                <div class="v-hide" style="font-size:16px; font-weight:600; color:#2e7d32; margin-top:4px;">+${fmtC(totalIn)}</div>
             </div>
             <div style="text-align:center; flex:1;">
                 <div style="font-size:10px; color:var(--txt3); font-weight:600; text-transform:uppercase;">Saídas</div>
-                <div style="font-size:16px; font-weight:600; color:#e44; margin-top:4px;">-${fmtC(totalOut)}</div>
+                <div class="v-hide" style="font-size:16px; font-weight:600; color:#e44; margin-top:4px;">-${fmtC(totalOut)}</div>
             </div>
         </div>
         <div style="display:flex; height:6px; border-radius:3px; overflow:hidden; background:var(--brd2);">
@@ -1595,7 +1620,7 @@ function expandMonth(k, name) {
                          <span class="arr" style="display:inline-block; transition:transform 0.2s; color:var(--txt3); font-size:16px; line-height:1;">›</span>
                          <span>${c}</span>
                      </div>
-                     <span style="color:${color}; font-weight:600">${fmtC(cc.total)}</span>
+                     <span class="v-hide" style="color:${color}; font-weight:600">${fmtC(cc.total)}</span>
                  </div>
                  <div style="display:none; padding:4px 12px 12px 12px;">`;
               cc.items.forEach(it => {
@@ -1604,7 +1629,7 @@ function expandMonth(k, name) {
                   res += `
                     <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--txt2); padding:8px 0; border-bottom:.5px dashed var(--brd2);">
                       <span style="flex:1; padding-right:10px; ${isPaid ? 'text-decoration:line-through;color:var(--txt4)' : ''}">${esc(dText)} ${it.rep?' 🔁':''}</span>
-                      <span style="${isPaid ? 'color:var(--txt4)' : ''}">${fmtC(it.val)}</span>
+                      <span class="v-hide" style="${isPaid ? 'color:var(--txt4)' : ''}">${fmtC(it.val)}</span>
                     </div>`;
               });
               res = res.replace(/border-bottom:\.5px dashed var\(--brd2\);(">.*?<\/div>)$/, '">$1');
@@ -1646,9 +1671,9 @@ function renderFin(){
           runBal = runBal + inM - outM;
           projHtml += `<div class="no-swipe" onclick="expandMonth('${mk}', '${MO[m]}/${y}')" style="min-width:125px; padding:10px; cursor:pointer; background:var(--bg3); border:.5px solid var(--brd2); border-radius:10px; flex-shrink:0;">
              <div style="font-size:11px; color:var(--txt3); font-weight:600; text-transform:uppercase">${MO[m].substring(0,3)}/${y}</div>
-             <div style="font-size:14px; font-weight:600; color:${runBal<0?'#e44':'var(--txt)'}; margin-top:4px">${fmtC(runBal)}</div>
+             <div class="v-hide" style="font-size:14px; font-weight:600; color:${runBal<0?'#e44':'var(--txt)'}; margin-top:4px">${fmtC(runBal)}</div>
              <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:10px;">
-               <span style="color:#2e7d32">↑ ${fmtC(inM)}</span> <span style="color:#e44">↓ ${fmtC(outM)}</span>
+               <span style="color:#2e7d32">↑ <span class="v-hide">${fmtC(inM)}</span></span> <span style="color:#e44">↓ <span class="v-hide">${fmtC(outM)}</span></span>
              </div>
           </div>`;
       }
@@ -1659,7 +1684,7 @@ function renderFin(){
         <div class="acc-it">
            <span class="acc-nm"><button class="bd no-swipe" style="font-size:14px;color:#e44" onclick="delAccount(${a.id})">×</button> ${esc(a.name)}</span>
            <div style="display:flex;gap:8px;align-items:center">
-              <span class="acc-val">${fmtC(a.val)}</span>
+              <span class="acc-val v-hide">${fmtC(a.val)}</span>
               <button class="bd no-swipe" style="font-size:12px;color:var(--txt3)" onclick="editAccount(${a.id})">✏️</button>
            </div>
         </div>
@@ -1683,7 +1708,7 @@ function renderFin(){
 
         return `<div class="ti ${isPaid?'done-item':''}">
           <div class="tck no-swipe ${isPaid?'done':''}" onclick="togBill(${b.id}, '${mKey}')">${isPaid?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
-          <div class="tb2"><div class="tt">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="tm">Dia ${bDay} ${b.val ? ` · ${fmtC(b.val)}` : ''}</div></div>
+          <div class="tb2"><div class="tt">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="tm">Dia ${bDay} ${b.val ? ` · <span class="v-hide">${fmtC(b.val)}</span>` : ''}</div></div>
           <button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id}, '${mKey}')">✏️</button>
           <button class="bd no-swipe" onclick="delBill(${b.id})">×</button>
         </div>`;
@@ -1876,7 +1901,7 @@ function endTutorial(){
 function initApp() {
     try {
         load(); loadCfg(); loadHabits();
-        applyTheme(); applyName();
+        applyTheme(); applyName(); applyHideVals();
         if(typeof chgBillType === 'function') chgBillType(); 
         
         // Define aba ativa silenciosamente
