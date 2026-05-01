@@ -132,7 +132,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 
 /* NOTES, LISTS & CARDS SELECTION LOCK */
 .nc, .hcard { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
-.ng{display:flex;flex-direction:column;gap:9px; padding-bottom:10px;}
+.ng{display:flex;flex-direction:column;gap:9px; flex-shrink:0; padding-bottom:10px;}
 .nc{border-radius:11px;border:.5px solid var(--brd);padding:14px;cursor:pointer;background:var(--card);transition:transform 0.2s, opacity 0.2s, box-shadow 0.2s;}
 .nc.dragging, .hcard.dragging { z-index: 10; position: relative; }
 .nc h3{font-size:14px;font-weight:500;color:var(--txt);margin-bottom:4px}
@@ -477,9 +477,9 @@ textarea{resize:none;line-height:1.65;width:100%}
           </div>
           
           <div class="cnr" style="margin:1.2rem 0 .5rem">
-            <button class="cnv" onclick="chgFinM(-1)">‹</button>
+            <button class="cnv no-swipe" onclick="chgFinM(-1)">‹</button>
             <span id="fin-mlbl" style="font-size:13px;font-weight:600"></span>
-            <button class="cnv" onclick="chgFinM(1)">›</button>
+            <button class="cnv no-swipe" onclick="chgFinM(1)">›</button>
           </div>
 
           <div class="tf">
@@ -672,10 +672,14 @@ let currentUser = null;
 let isAppInitialized = false;
 
 function loginGoogle() {
-    auth.signInWithPopup(googleProvider).catch(e => {
-        showDialog('alert', 'Erro de Login', e.message);
-    });
+    // RESOLUÇÃO DO BUG: Muda de Popup para Redirect para não travar no celular
+    auth.signInWithRedirect(googleProvider);
 }
+
+// Captura eventuais erros no retorno do redirecionamento
+auth.getRedirectResult().catch(e => {
+    showDialog('alert', 'Erro de Login', e.message);
+});
 
 function logout() {
     auth.signOut().then(() => { location.reload(); });
@@ -694,7 +698,6 @@ auth.onAuthStateChanged(async (user) => {
             const docSnap = await docRef.get();
             
             if(docSnap.exists) {
-                // Tem dados na nuvem! Baixar.
                 const data = docSnap.data();
                 tasks = data.tasks || [];
                 notes = data.notes || [];
@@ -717,7 +720,6 @@ auth.onAuthStateChanged(async (user) => {
                 });
                 
             } else {
-                // Primeiro login! Puxar do local e subir pra nuvem.
                 loadLocal();
                 syncToCloud();
             }
@@ -730,7 +732,6 @@ auth.onAuthStateChanged(async (user) => {
             isAppInitialized = true;
             initApp();
         } else {
-            // Se já estava inicializado, só re-renderiza
             applyTheme(); applyName(); renderTasks(); renderNotes(); renderHabits(); renderFin(); renderCal();
         }
 
@@ -755,7 +756,7 @@ function syncToCloud() {
             habits: habits,
             cfg: cfg
         }).catch(e => console.error("Erro ao sincronizar", e));
-    }, 1500); // Debounce de 1.5s
+    }, 1500); 
 }
 
 // ------------------------------------------------------------
@@ -807,9 +808,6 @@ const TUT_STEPS=[
 ];
 let tutStep=0;
 
-const CATS_OUT=['📄 Assinaturas','🛍️ Compra pessoal','🍔 Delivery','🎓 Educação','🏦 Empréstimo','📌 Fixos','🎬 Lazer','🔧 Manutenção','💸 Outros','🏥 Saúde','🛒 Supermercado','🚗 Transporte'];
-const CATS_IN=['💰 Comissões/bônus','💸 Outros','📈 Renda variável','💼 Salário'];
-
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const getDK=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const getToday=()=>getDK(new Date());
@@ -833,6 +831,10 @@ function ensureHols(y){
 }
 function getHol(y,m,d){return ensureHols(y)[ck(y,m,d)]||null;}
 
+// CLOSE MODAL HELPER
+function closeM(id) { document.getElementById(id).classList.remove('open'); }
+
+// STORAGE
 function loadLocal(){
   try{tasks=JSON.parse(localStorage.getItem('o_tasks')); if(!Array.isArray(tasks)) tasks=[];}catch(e){tasks=[];}
   try{notes=JSON.parse(localStorage.getItem('o_notes')); if(!Array.isArray(notes)) notes=[];}catch(e){notes=[];}
@@ -882,6 +884,46 @@ function applyName(){
 }
 function applyTheme(){document.documentElement.setAttribute('data-theme',cfg.dark?'dark':'');const t=document.getElementById('tog-dark');if(t)t.checked=cfg.dark;}
 
+// SW + NOTIF
+function updN(){
+  const st=document.getElementById('nst'),btn=document.getElementById('nbtn');
+  if(typeof Notification === 'undefined'){ st.textContent='Não suportado';st.className='ns off';btn.style.display='none'; return; }
+  const p=Notification.permission;st.className='ns '+(p==='granted'?'on':'off');
+  if(p==='granted'){st.textContent='● Ativas';btn.textContent='Info';btn.onclick=()=>showDialog('alert','Notificações','Desative em Configurações do Chrome → Notificações.');}
+  else if(p==='denied'){st.textContent='● Bloqueadas';btn.textContent='Ativar';btn.onclick=()=>showDialog('alert','Bloqueado','Vá em Configurações do Chrome → Notificações.');}
+  else{st.textContent='● Inativas';btn.textContent='Ativar';btn.onclick=reqN;}
+}
+function reqN(){
+  if(typeof Notification === 'undefined')return;
+  Notification.requestPermission().then(p=>{ updN(); if(p==='granted'){schedAll();toast('Notificações ativadas ✓');} });
+}
+
+let fbT=[];
+async function schedN(title,body,delay,tag){
+  if(delay<=0)return;
+  try{const r=await navigator.serviceWorker.ready;if(r.active){r.active.postMessage({type:'NOTIFY',title,body,delay,tag});return;}}catch(e){}
+  fbT.push(setTimeout(()=>{if(typeof Notification !== 'undefined' && Notification.permission==='granted')new Notification(title,{body});},delay));
+}
+function schedAll(){
+  fbT.forEach(t=>clearTimeout(t));fbT=[];
+  if(typeof Notification === 'undefined' || Notification.permission!=='granted')return;
+  navigator.serviceWorker.ready.then(r=>{if(r.active)r.active.postMessage({type:'CLEAR_ALL'});}).catch(()=>{});
+  const nl=n=>n>=60?`${n/60}h`:`${n}min`;
+  (tasks||[]).filter(Boolean).filter(t=>!t.done&&t.dk&&t.dt&&t.nb).forEach(t=>{const[y,m,d]=t.dk.split('-').map(Number);const[h,mi]=t.dt.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-t.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`✅ "${t.text}" — faltam ${nl(t.nb)}`,delay,`t-${t.id}`);});
+  Object.keys(events||{}).forEach(key=>{const[y,m,d]=key.split('-').map(Number);((events||{})[key]||[]).filter(Boolean).forEach(ev=>{if(!ev.time||!ev.nb)return;const[h,mi]=ev.time.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-ev.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`📅 "${ev.text}" às ${ev.time} — faltam ${nl(ev.nb)}`,delay,`e-${ev.id}`);});});
+  
+  if(cfg.nHab !== false) {
+    (habits||[]).filter(Boolean).forEach(h=>{
+      if(!isSchedOn(h,new Date()))return;
+      if(h.times&&h.times.length){
+        const cnt=getHabCnt(h);
+        h.times.forEach((t,i)=>{if(!t||i<cnt)return;const[hh,mm]=t.split(':').map(Number);const at=new Date();at.setHours(hh,mm,0,0);const delay=at-Date.now();if(delay>0)schedN('Meu Organizador',`${h.icon} ${h.name} — ocorrência ${i+1}!`,delay,`hab-${h.id}-${i}`);});
+      }else if(h.reminderTime){
+        const[hh,mm]=h.reminderTime.split(':').map(Number);const at=new Date();at.setHours(hh,mm,0,0);const delay=at-Date.now();if(delay>0)schedN('Meu Organizador',`${h.icon} ${h.name} — não esqueça! 🔥`,delay,`hab-${h.id}`);
+      }
+    });
+  }
+}
 
 // TABS E SWIPE NATIVO
 let curTab = 0;
@@ -894,6 +936,7 @@ function swTab(name,btn){
   slider.style.transform = `translateX(-${curTab * 20}%)`;
 }
 
+// Eventos Touch
 let tsX=0, tsY=0, isSwipe=false, isScroll=false, tsNoSwipe=false, tsOnCal=false;
 document.addEventListener('DOMContentLoaded', () => {
     const cnt = document.getElementById('cnt');
@@ -940,6 +983,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }, {passive:true});
 });
 
+function toast(msg){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ac);color:var(--acfg);padding:8px 18px;border-radius:20px;font-size:13px;z-index:999;white-space:nowrap;pointer-events:none;box-shadow:0 2px 14px rgba(0,0,0,.18)';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>{t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(()=>t.remove(),300);},2200);}
+
 // TASKS + EVENTS
 function getEvItems(){const today=getToday(),res=[];Object.keys(events||{}).sort().forEach(k=>{if(k>=today)((events||{})[k]||[]).filter(Boolean).forEach(ev=>res.push({id:ev.id,text:ev.text,done:ev.done||false,dk:k,dt:ev.time,isEv:true,evKey:k}));});return res;}
 function togTask(id){
@@ -947,6 +992,7 @@ function togTask(id){
     if(!t) return;
     const wasDone = t.done;
     t.done = !t.done;
+    
     if(!wasDone && t.done && t.rep > 0 && t.dk) {
         const [y, m, d] = t.dk.split('-').map(Number);
         let nextD = new Date(y, m-1, d);
@@ -969,6 +1015,7 @@ function addTask(){
     tasks.unshift({id:Date.now(),text,done:false,dk,dt,nb,rep});
     inp.value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';save();schedAll();renderTasks();renderCal();
 }
+
 function editTask(id) {
     const t = tasks.find(x => x.id === id); if(!t) return;
     document.getElementById('etask-m-id').value = id;
@@ -994,6 +1041,7 @@ function tiHTML(item,isDone=false){
   const repIcon = item.rep > 0 && !item.isEv ? ' 🔁' : '';
   return`<div class="ti ${item.done?'done-item':''}"><div class="tck no-swipe ${item.done?'done':''}" onclick="${tf}">${item.done?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="tb2"><div class="tt">${esc(item.text)}${repIcon}${badge}</div>${meta?`<div class="tm ${ov?'ov':''}">${ov?'⚠ ':'📅 '}${esc(meta)}</div>`:''}</div>${acts}</div>`;
 }
+
 function renderTasks(){
   try {
       const evI=getEvItems();
@@ -1007,63 +1055,39 @@ function renderTasks(){
 
 // NOTES
 function openNote(id, type='text'){
-    enid=id;
-    const n = id==='new'?null:(notes||[]).find(x=>x.id===id);
-    origNTitle = n?n.title:'';
-    origNType = n?(n.type||'text'):type;
-    origNBody = n?(n.body||''):'';
-    curList = n?JSON.parse(JSON.stringify(n.list||[])):[];
-    origNList = JSON.parse(JSON.stringify(curList)); 
+    enid=id; const n = id==='new'?null:(notes||[]).find(x=>x.id===id);
+    origNTitle = n?n.title:''; origNType = n?(n.type||'text'):type; origNBody = n?(n.body||''):'';
+    curList = n?JSON.parse(JSON.stringify(n.list||[])):[]; origNList = JSON.parse(JSON.stringify(curList)); 
     document.getElementById('nt-ttl').value=origNTitle;
     if(origNType === 'list') {
-        document.getElementById('nt-bdy').style.display = 'none';
-        document.getElementById('nt-list-wrap').style.display = 'flex';
-        if(curList.length === 0) curList.push({t:'', d:false});
-        renderListItems();
+        document.getElementById('nt-bdy').style.display = 'none'; document.getElementById('nt-list-wrap').style.display = 'flex';
+        if(curList.length === 0) curList.push({t:'', d:false}); renderListItems();
     } else {
-        document.getElementById('nt-bdy').style.display = 'block';
-        document.getElementById('nt-list-wrap').style.display = 'none';
-        document.getElementById('nt-bdy').value=origNBody;
+        document.getElementById('nt-bdy').style.display = 'block'; document.getElementById('nt-list-wrap').style.display = 'none'; document.getElementById('nt-bdy').value=origNBody;
     }
-    document.getElementById('nlv').style.display='none';
-    document.getElementById('nev').classList.add('open');
-    history.pushState({note:true},'');
+    document.getElementById('nlv').style.display='none'; document.getElementById('nev').classList.add('open'); history.pushState({note:true},'');
 }
 function renderListItems() {
     const wrap = document.getElementById('nt-list-items');
-    wrap.innerHTML = curList.map((item, i) => `
-        <div class="nli ${item.d?'done':''}">
-            <div class="nli-chk no-swipe ${item.d?'done':''}" onclick="togListItem(${i})">
-                ${item.d ? `<svg width="10" height="8" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
-            </div>
-            <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..."/>
-            <button class="bd no-swipe" style="font-size:22px; color:var(--txt4)" onclick="delListItem(${i})">×</button>
-        </div>
-    `).join('');
+    wrap.innerHTML = curList.map((item, i) => `<div class="nli ${item.d?'done':''}"><div class="nli-chk no-swipe ${item.d?'done':''}" onclick="togListItem(${i})">${item.d ? `<svg width="10" height="8" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}</div><input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..."/><button class="bd no-swipe" style="font-size:22px; color:var(--txt4)" onclick="delListItem(${i})">×</button></div>`).join('');
 }
 function togListItem(i) { curList[i].d = !curList[i].d; renderListItems(); }
 function addListItem() { curList.push({t:'', d:false}); renderListItems(); }
 function delListItem(i) { curList.splice(i,1); renderListItems(); }
+
 async function closeNote(auto=false){
     let changed = false;
     if(origNTitle !== document.getElementById('nt-ttl').value.trim()) changed = true;
     if(origNType === 'text' && origNBody !== document.getElementById('nt-bdy').value.trim()) changed = true;
-    if(origNType === 'list') {
-        const cl = curList.filter(x => x.t.trim() !== '');
-        if(JSON.stringify(cl) !== JSON.stringify(origNList)) changed = true;
-    }
+    if(origNType === 'list') { const cl = curList.filter(x => x.t.trim() !== ''); if(JSON.stringify(cl) !== JSON.stringify(origNList)) changed = true; }
     if(changed){ const ans = await showDialog('confirm','Nota não salva','Existem alterações não salvas. Deseja salvá-las?'); if(ans) { saveNote(); return; } }
-    document.getElementById('nlv').style.display='flex';
-    document.getElementById('nev').classList.remove('open');
-    enid=null;
+    document.getElementById('nlv').style.display='flex'; document.getElementById('nev').classList.remove('open'); enid=null;
 }
 function saveNote(){
-    const title = document.getElementById('nt-ttl').value.trim()||'Sem título';
-    let body = ''; let listToSave = [];
+    const title = document.getElementById('nt-ttl').value.trim()||'Sem título'; let body = ''; let listToSave = [];
     if(origNType === 'text') { body = document.getElementById('nt-bdy').value.trim(); } else { listToSave = curList.filter(x => x.t.trim() !== ''); }
     if(enid==='new') { notes.unshift({id:Date.now(), title, type:origNType, body, list:listToSave, date:NOW.toLocaleDateString('pt-BR')}); } else { notes = notes.map(n => n.id===enid ? {...n, title, type:origNType, body, list:listToSave} : n); }
-    save(); renderNotes();
-    document.getElementById('nlv').style.display='flex'; document.getElementById('nev').classList.remove('open'); enid=null;
+    save(); renderNotes(); document.getElementById('nlv').style.display='flex'; document.getElementById('nev').classList.remove('open'); enid=null;
 }
 async function delNote(id){if(!(await showDialog('confirm','Excluir Anotação','Excluir permanentemente?')))return;notes=notes.filter(n=>n.id!==id);save();renderNotes();}
 function renderNotes(){
@@ -1218,7 +1242,6 @@ function jumpDK(dk){if(!dk)return;const[y,m,d]=dk.split('-').map(Number);cY=y;cM
 function renderCal(){if(calView==='month')renderMonth();else if(calView==='week')renderWeek();else renderDay();}
 
 // HABITS
-function loadHabits(){try{habits=JSON.parse(localStorage.getItem('o_habits2')); if(!Array.isArray(habits)) habits=[];}catch(e){habits=[];}}
 function isSchedOn(h,date){const w=date.getDay();if(h.frequency==='daily')return true;if(h.frequency==='weekdays')return w>=1&&w<=5;if(h.frequency==='custom')return(h.customDays||[]).includes(w);return true;}
 function getHabCnt(h){return(h.history||{})[getToday()]||0;}
 function isHabDone(h){return getHabCnt(h)>=h.target;}
@@ -1418,19 +1441,7 @@ function saveTransfer(){
     if(accF && accT) { accF.val -= v; accT.val += v; save(); renderFin(); closeM('mo-transfer'); toast('Transferência realizada ✓'); }
 }
 
-async function addAccount(){
-  const nm = await showDialog('prompt', 'Nova Carteira', 'Nome da Carteira/Banco:'); if(!nm || !nm.trim()) return;
-  const vl = await showDialog('prompt', 'Saldo Inicial', `Saldo inicial para '${nm}' (use ponto para centavos):`, "0.00");
-  if(vl !== false && vl !== null && !isNaN(parseFloat(vl.replace(',','.')))) { accounts.push({id:Date.now(), name:nm.trim(), val:parseFloat(vl.replace(',','.'))}); save(); renderFin(); }
-}
-async function editAccount(id){
-  const acc = accounts.find(a => a.id === id); if(!acc) return;
-  const nv = await showDialog('prompt', 'Editar Saldo', `Novo saldo para '${acc.name}' (use ponto para centavos):`, acc.val);
-  if(nv !== false && nv !== null && !isNaN(parseFloat(nv.replace(',','.')))) { acc.val = parseFloat(nv.replace(',','.')); save(); renderFin(); }
-}
-async function delAccount(id){ if(await showDialog('confirm','Remover Carteira','Remover esta carteira permanentemente?')) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
-
-// Export globally so modules don't break simple HTML flow
+// Global Exports
 window.loginGoogle = loginGoogle;
 window.logout = logout;
 window.swTab = swTab;
@@ -1514,7 +1525,6 @@ function initApp() {
     try {
         if(typeof chgBillType === 'function') chgBillType(); 
         
-        // Define aba ativa silenciosamente
         document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
         document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
         document.getElementById('sec-agenda').classList.add('active');
@@ -1527,7 +1537,6 @@ function initApp() {
         try{ renderHabits(); } catch(e){}
         try{ if(typeof renderFin==='function') renderFin(); } catch(e){}
         
-        // Renderiza o calendário, focando no dia de hoje automaticamente
         try{ selDay(TD); } catch(e){}
 
         try {
@@ -1547,7 +1556,6 @@ function initApp() {
         
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         
-        // Remove Splash 
         setTimeout(() => {
             const sp = document.getElementById('splash');
             if(sp) sp.remove(); 
