@@ -39,7 +39,7 @@ body { font-family: system-ui, sans-serif; background: var(--bg4); display: flex
 .cnt{flex:1; overflow:hidden; position:relative; min-height:0;} 
 #slider { display:flex; width:500%; height:100%; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; }
 .sec{width:20%; flex-shrink:0; padding:1.2rem 1.1rem; display:flex; flex-direction:column; overflow-y:auto; overflow-x:hidden; height:100%; box-sizing:border-box;}
-.sec > * { flex-shrink: 0; } /* Proteção anti-esmagamento: todos os blocos internos mantêm seu tamanho natural */
+.sec > * { flex-shrink: 0; } 
 
 .tabbar{display:flex;border-top:.5px solid var(--brd);background:var(--bg2);flex-shrink:0; padding-bottom: env(safe-area-inset-bottom);}
 .tb{flex:1;padding:11px 2px 9px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--txt4);font-size:11px;font-family:inherit;transition:color .15s}
@@ -209,36 +209,39 @@ textarea{resize:none;line-height:1.65;width:100%}
 .dtb2{flex:1;min-width:0}
 .dttl{font-size:13px;color:var(--txt)}.dttl.done{text-decoration:line-through;color:var(--txt4)}
 
-/* HABITS */
+/* --- HABITOS: NOVO VISUAL --- */
 .hprog{background:var(--card);border-radius:13px;border:.5px solid var(--brd);padding:13px 14px;margin-bottom:.9rem;flex-shrink:0}
 .hph{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
 .hph span{font-size:13px;color:var(--txt2);font-weight:500}
 .pbw{background:var(--bg3);border-radius:99px;height:7px;overflow:hidden}
 .pbf{height:100%;border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1)}
 .pbm{font-size:12px;color:var(--txt3);margin-top:6px;text-align:center}
-.hcard{background:var(--card);border-radius:13px;border:.5px solid var(--brd);margin-bottom:10px;overflow:hidden;flex-shrink:0;transition:transform .2s, opacity .2s, box-shadow .2s}
-.hcard:active{transform:scale(.985)}
-.hcbar{height:4px}.hcbody{padding:12px 14px}
-.hctop{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.hico{font-size:20px;flex-shrink:0;line-height:1}
-.hnm{flex:1;font-size:14px;font-weight:500;color:var(--txt);line-height:1.3}
-.hcm{display:flex;align-items:center;gap:5px;flex-shrink:0}
-.hstr{font-size:13px;color:var(--txt2);font-weight:600}
-.hedit{background:none;border:none;cursor:pointer;font-size:12px;color:var(--txt4);padding:3px 4px}
-.hdelbtn{background:none;border:.5px solid #e4444433;border-radius:6px;cursor:pointer;font-size:13px;padding:3px 7px;color:#e44;line-height:1}
-.hbub{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end}
-.bub{border-radius:50%;border:2.5px solid currentColor;cursor:pointer;transition:background .15s,transform .1s;flex-shrink:0}
-.bub:active{transform:scale(.85)}
-.bub:not(.filled){animation:pulse 2.8s ease-in-out infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(84,160,255,0)}50%{box-shadow:0 0 0 5px rgba(84,160,255,.12)}}
-.bub.filled{background:currentColor;animation:none}
-.bsm{width:28px;height:28px}.blg{width:38px;height:38px}
-.htl{font-size:9px;color:var(--txt4);text-align:center;margin-top:2px}
-.hbwrap{display:flex;flex-direction:column;align-items:center;gap:1px}
-.hpc{font-size:12px;color:var(--txt3);margin-left:4px}
-.hct{font-size:12px;font-weight:500;margin-left:4px}
-.huns{opacity:.5}.hnt{font-size:11px;color:var(--txt4);font-style:italic;margin-top:5px}
-.bubtip{font-size:10px;color:var(--txt4);margin-left:4px;font-style:italic;align-self:center}
+
+.hcard{display:flex;align-items:center;padding:14px;gap:14px;border-radius:18px;background:var(--card);border:.5px solid var(--brd);margin-bottom:12px;transition:all .3s ease;position:relative;flex-shrink:0;}
+.hcard.done{opacity:0.55;background:var(--bg3);}
+.hcard.huns{opacity:0.4; filter: grayscale(0.8);}
+.h-ico-wrap{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.h-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;}
+.h-nm{font-size:15px;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.h-meta{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--txt3);}
+.h-dots{display:flex;gap:3px;}
+.h-dot{width:6px;height:6px;border-radius:50%;background:var(--brd2);}
+.h-act{width:48px;height:48px;flex-shrink:0;position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .1s;}
+.h-act:active{transform:scale(.9);}
+.h-ring{transform:rotate(-90deg);width:48px;height:48px;overflow:visible;}
+.h-ring circle{fill:transparent;stroke-width:4;stroke-linecap:round;}
+.h-ring-bg{stroke:var(--brd2);}
+.h-ring-fg{transition:stroke-dashoffset 0.4s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.3s;}
+.h-act-in{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:all 0.3s;}
+.h-act-v{font-size:13px;font-weight:600;color:var(--txt);line-height:1;}
+.h-act-plus{font-size:14px;line-height:1;color:var(--txt3);margin-bottom:1px;font-weight:500;}
+.h-menu-btn{background:none;border:none;font-size:20px;color:var(--txt4);padding:4px;cursor:pointer;line-height:1;margin-left:-4px;}
+.h-opts{position:absolute;right:16px;top:40px;background:var(--card);border:.5px solid var(--brd);border-radius:12px;padding:6px;display:flex;flex-direction:column;gap:2px;box-shadow:0 6px 16px rgba(0,0,0,0.1);z-index:10;opacity:0;pointer-events:none;transform:translateY(-10px);transition:all 0.2s;}
+.h-opts.open{opacity:1;pointer-events:all;transform:translateY(0);}
+.h-opt-btn{background:transparent;border:none;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:500;color:var(--txt2);cursor:pointer;text-align:left;white-space:nowrap;font-family:inherit;}
+.h-opt-btn:hover{background:var(--bg3);color:var(--txt);}
+.h-opt-btn.del{color:#e44;}
+.h-opt-btn.del:hover{background:#ffebee;color:#c62828;}
 
 /* HABIT FORM */
 .hff{margin-bottom:13px}
@@ -349,7 +352,7 @@ textarea{resize:none;line-height:1.65;width:100%}
   <div class="hdr">
     <div><h1 id="aname">Meu Organizador</h1><p id="dlbl"></p></div>
     <div class="hdr-r">
-      <button class="ibt" onclick="openAch()" title="Conquistas">🏆</button>
+      <button class="ibt" onclick="openM('mo-ach')" title="Conquistas">🏆</button>
       <button class="gear-btn" onclick="openCfg()" title="Configurações">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -436,7 +439,7 @@ textarea{resize:none;line-height:1.65;width:100%}
         <div id="sec-habitos" class="sec">
           <div style="display:flex;gap:8px;margin-bottom:1rem">
             <button class="bnn" style="margin-bottom:0;flex:1" onclick="openHF(null)">+ Novo Hábito</button>
-            <button class="bnn" style="margin-bottom:0;flex:1;border-style:solid;background:var(--bg2)" onclick="openSug()">💡 Sugestões</button>
+            <button class="bnn" style="margin-bottom:0;flex:1;border-style:solid;background:var(--bg2)" onclick="openM('mo-sug')">💡 Sugestões</button>
           </div>
           <div id="hab-list" style="padding-bottom:15px"></div>
         </div>
@@ -707,7 +710,7 @@ function ensureHols(y){
 }
 function getHol(y,m,d){return ensureHols(y)[ck(y,m,d)]||null;}
 
-// MODALS SYSTEM (Open, Close, Background Click & History Back)
+// MODALS SYSTEM
 function openM(id) {
     document.getElementById(id).classList.add('open');
     history.pushState({modal: id}, '');
@@ -717,7 +720,7 @@ function closeM(id) {
     if(el && el.classList.contains('open')) {
         el.classList.remove('open');
         if(history.state && history.state.modal === id) {
-            history.back(); // Isso aciona o popstate e resolve o histórico
+            history.back(); 
         }
     }
 }
@@ -725,7 +728,7 @@ function bgC(e, id) {
     if(e.target.id === id) closeM(id);
 }
 
-// CUSTOM DIALOG SYSTEM (Alert / Confirm / Prompt)
+// CUSTOM DIALOG SYSTEM
 let dialogResolve = null;
 function showDialog(type, title, text, defaultVal = '') {
     return new Promise(resolve => {
@@ -756,7 +759,7 @@ function closeDialog(isOk) {
     dialogResolve = null;
 }
 
-// CUSTOM DATE/TIME PICKER SYSTEM
+// CUSTOM DATE/TIME PICKER
 let pkTarget = null;
 let pkType = ''; 
 
@@ -1052,6 +1055,12 @@ document.addEventListener('DOMContentLoaded', () => {
             swTab(TABS[curTab]);
         }
     }, {passive:true});
+    
+    document.addEventListener('click', e => {
+        if(!e.target.closest('.h-menu-btn')) {
+            document.querySelectorAll('.h-opts').forEach(el => el.classList.remove('open'));
+        }
+    });
 });
 
 // TASKS + EVENTS
@@ -1062,7 +1071,6 @@ function togTask(id){
     const wasDone = t.done;
     t.done = !t.done;
     
-    // Repetição de Tarefas
     if(!wasDone && t.done && t.rep > 0 && t.dk) {
         const [y, m, d] = t.dk.split('-').map(Number);
         let nextD = new Date(y, m-1, d);
@@ -1090,7 +1098,6 @@ function addTask(){
     inp.value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';save();schedAll();renderTasks();renderCal();
 }
 
-// MODAL REPROGRAMAR TAREFAS
 function editTask(id) {
     const t = tasks.find(x => x.id === id); if(!t) return;
     document.getElementById('etask-m-id').value = id;
@@ -1231,20 +1238,16 @@ function renderNotes(){
   } catch(e){}
 }
 
-// Global POPSTATE Listener (Manages back button for everything)
 window.addEventListener('popstate', (e) => {
-    // Tenta fechar as notas abertas se a pessoa apertou voltar
     if(document.getElementById('nev').classList.contains('open')) {
         document.getElementById('nlv').style.display='flex';
         document.getElementById('nev').classList.remove('open');
         enid=null;
     }
     
-    // Tenta fechar qualquer modal que esteja aberto
     document.querySelectorAll('.mo.open').forEach(m => {
         m.classList.remove('open');
         
-        // Comportamentos extras ao fechar
         if(m.id === 'mo-dialog' && dialogResolve) {
             dialogResolve(false);
             dialogResolve = null;
@@ -1264,7 +1267,7 @@ function bindDrag(containerId, itemClass, onReorder) {
 
     g.addEventListener('touchstart', e => {
         const t = e.target.closest(itemClass);
-        if(!t || e.target.closest('button') || e.target.closest('.bub')) return;
+        if(!t || e.target.closest('button') || e.target.closest('.bub') || e.target.closest('.h-act') || e.target.closest('.h-opts')) return;
         sx = e.touches[0].clientX; sy = e.touches[0].clientY;
         dTimer = setTimeout(() => {
             dEl = t; dEl.classList.add('dragging');
@@ -1396,7 +1399,6 @@ function renderEvList(){
       
       let html = '';
       
-      // COCKPIT MEU DIA: Se estiver no dia de hoje, puxa os hábitos!
       if(k === getToday()) {
           const dObj = new Date(cY, cM, selD);
           const dh = (habits||[]).filter(Boolean).filter(h => isSchedOn(h, dObj));
@@ -1503,28 +1505,146 @@ function getHabCnt(h){return(h.history||{})[getToday()]||0;}
 function isHabDone(h){return getHabCnt(h)>=h.target;}
 function compStreak(h){const hist=h.history||{};let s=0,d=new Date();d.setHours(0,0,0,0);if(!isHabDone(h))d.setDate(d.getDate()-1);for(let i=0;i<366;i++){if(!isSchedOn(h,d)){d.setDate(d.getDate()-1);continue;}const k=getDK(d);if((hist[k]||0)>=h.target){s++;d.setDate(d.getDate()-1);}else break;}return s;}
 function getBadge(s){return s>=100?'💎':s>=30?'🥇':s>=14?'🥈':s>=7?'🥉':'';}
-function setBubble(id,idx){const h=habits.find(h=>h.id===id);if(!h)return;const today=getToday();if(!h.history)h.history={};const cur=h.history[today]||0;h.history[today]=cur===h.target&&idx===h.target-1?0:idx+1;saveHabits();renderHabits();if(focusH&&focusH.id===id){focusH=habits.find(x=>x.id===id);renderFocusBody();}}
-function habCardHTML(h){
-  const cnt=getHabCnt(h),str=compStreak(h),bdg=getBadge(str),sched=isSchedOn(h,new Date()),done=isHabDone(h);
-  const bsz=h.target===1?'blg':'bsm';
-  let bubs='';
-  for(let i=0;i<h.target;i++){
-    let t_str = '';
-    if(h.target > 1 && h.times && h.times[i]) t_str = h.times[i];
-    else if(h.target === 1 && h.reminderTime) t_str = h.reminderTime;
-    const tl = t_str ? `<div class="htl">${t_str}</div>` : '';
-    bubs+=`<div class="hbwrap"><div class="bub ${bsz} ${i<cnt?'filled':''}" style="color:${h.color}" onclick="event.stopPropagation();setBubble(${h.id},${i})"></div>${tl}</div>`;
-  }
-  const bubtip=cnt===0&&sched?`<span class="bubtip">← toque</span>`:'';
-  return`<div class="hcard no-swipe ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})"><div class="hcbar" style="background:${h.color}"></div><div class="hcbody"><div class="hctop"><span class="hico">${h.icon}</span><span class="hnm">${esc(h.name)}</span><div class="hcm">${str>0?`<span class="hstr">🔥${str}</span>`:''} ${bdg?`<span style="font-size:14px">${bdg}</span>`:''} <button class="hedit no-swipe" onclick="event.stopPropagation();openHF(${h.id})" title="Editar">✏</button> <button class="hdelbtn no-swipe" onclick="event.stopPropagation();delHabit(${h.id})" title="Excluir">🗑</button></div></div><div class="hbub">${bubs}${bubtip}<span class="hpc">${cnt}/${h.target}</span>${done?`<span class="hct" style="color:${h.color}">✓ Feito!</span>`:''}</div>${!sched?'<div class="hnt">Não programado para hoje</div>':''}</div></div>`;
+
+function getHabDots(h) {
+    let html = '';
+    for(let i=6; i>=0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const k = getDK(d);
+        const cnt = (h.history||{})[k] || 0;
+        const isD = cnt >= h.target;
+        
+        let style = '';
+        if(isD) {
+            style = `background:${h.color}; opacity: ${i===0?1:0.5};`;
+        } else {
+            if(i===0) style = `border:1.5px solid ${h.color}; background:transparent; width:4px; height:4px;`;
+            else style = `background:var(--brd2); opacity:0.6;`;
+        }
+        html += `<div class="h-dot" style="${style}"></div>`;
+    }
+    return html;
 }
+
+function incHabit(id) {
+    const h = habits.find(x=>x.id===id); if(!h) return;
+    const today = getToday();
+    if(!h.history) h.history = {};
+    let cnt = h.history[today] || 0;
+    
+    if(cnt < h.target) {
+        h.history[today] = cnt + 1;
+        saveHabits(); renderHabits();
+        if(h.history[today] >= h.target) {
+            toast(`🎉 "${h.name}" concluído!`);
+            if(navigator.vibrate) navigator.vibrate(50);
+        }
+    } else {
+        if(h.target === 1) { h.history[today] = 0; saveHabits(); renderHabits(); }
+        else toast('Hábito já concluído! (Use o menu ⋮ para desfazer)');
+    }
+    if(focusH && focusH.id === id) { focusH = habits.find(x=>x.id===id); renderFocusBody(); }
+}
+
+function undoHabit(id) {
+    const h = habits.find(x=>x.id===id); if(!h) return;
+    const today = getToday();
+    let cnt = (h.history||{})[today] || 0;
+    if(cnt > 0) {
+        h.history[today] = cnt - 1;
+        saveHabits(); renderHabits();
+        if(focusH && focusH.id === id) { focusH = habits.find(x=>x.id===id); renderFocusBody(); }
+    }
+}
+
+function togHabOpt(id) {
+    document.querySelectorAll('.h-opts').forEach(el => {
+        if(el.id !== `h-opt-${id}`) el.classList.remove('open');
+    });
+    const el = document.getElementById(`h-opt-${id}`);
+    if(el) el.classList.toggle('open');
+}
+
+function habCardHTML(h){
+    const cnt = getHabCnt(h);
+    const str = compStreak(h);
+    const bdg = getBadge(str);
+    const done = cnt >= h.target;
+    const sched = isSchedOn(h, new Date());
+    
+    const r = 21; const circ = 2 * Math.PI * r;
+    const pct = Math.min(cnt / h.target, 1);
+    const offset = circ - (pct * circ);
+    
+    let actIn = '';
+    if(done) {
+        actIn = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+    } else if (h.target === 1) {
+        actIn = `<div class="h-act-v" style="color:var(--txt3)"></div>`; 
+    } else {
+        actIn = `<div class="h-act-plus">+</div><div class="h-act-v">${cnt}/${h.target}</div>`;
+    }
+
+    return `
+    <div class="hcard no-swipe ${done?'done':''} ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})">
+        <div class="h-ico-wrap" style="background:${h.color}22; color:${h.color};">
+            ${h.icon}
+        </div>
+        <div class="h-info">
+            <div class="h-nm">${esc(h.name)}</div>
+            <div class="h-meta">
+                ${str > 0 ? `<span style="color:#e67e22; font-weight:600;">🔥 ${str}</span>` : ''}
+                ${bdg ? `<span style="font-size:13px">${bdg}</span>` : ''}
+                <div class="h-dots">${getHabDots(h)}</div>
+            </div>
+        </div>
+        <div class="h-act no-swipe" onclick="event.stopPropagation(); incHabit(${h.id})">
+            <svg class="h-ring">
+                <circle class="h-ring-bg" cx="24" cy="24" r="${r}"></circle>
+                <circle class="h-ring-fg" cx="24" cy="24" r="${r}" stroke="${done ? '#1DD1A1' : h.color}" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"></circle>
+            </svg>
+            <div class="h-act-in" style="${done ? 'background:#1DD1A1; border-radius:50%; width:36px; height:36px;' : ''}">
+                ${actIn}
+            </div>
+        </div>
+        <button class="h-menu-btn no-swipe" onclick="event.stopPropagation(); togHabOpt(${h.id})">⋮</button>
+        <div class="h-opts no-swipe" id="h-opt-${h.id}">
+            <button class="h-opt-btn" onclick="event.stopPropagation(); openHF(${h.id}); togHabOpt(${h.id})">✏ Editar</button>
+            ${cnt > 0 ? `<button class="h-opt-btn" onclick="event.stopPropagation(); undoHabit(${h.id}); togHabOpt(${h.id})">↩ Desfazer</button>` : ''}
+            <button class="h-opt-btn del" onclick="event.stopPropagation(); delHabit(${h.id}); togHabOpt(${h.id})">🗑 Excluir</button>
+        </div>
+    </div>`;
+}
+
 function renderHabits(){
   try {
-      const tod=(habits||[]).filter(Boolean).filter(h=>isSchedOn(h,new Date())),dn=tod.filter(h=>isHabDone(h)),pct=tod.length?Math.round(dn.length/tod.length*100):0;
+      let tod=(habits||[]).filter(Boolean).filter(h=>isSchedOn(h,new Date()));
+      let unsched=(habits||[]).filter(Boolean).filter(h=>!isSchedOn(h,new Date()));
+      
+      // Organiza para os concluídos irem automaticamente para o fim da lista
+      tod.sort((a, b) => {
+          const doneA = isHabDone(a);
+          const doneB = isHabDone(b);
+          if(doneA && !doneB) return 1;
+          if(!doneA && doneB) return -1;
+          return 0;
+      });
+
+      const dn=tod.filter(h=>isHabDone(h)), pct=tod.length?Math.round(dn.length/tod.length*100):0;
       const g=pct===100?'#1DD1A1,#48DBFB':'#54A0FF,#A29BFE';
-      document.getElementById('hab-list').innerHTML=`<div class="hprog"><div class="hph"><span>${dn.length}/${tod.length} hoje</span><span style="font-size:12px;color:var(--txt3)">${pct}%</span></div><div class="pbw"><div class="pbf" style="width:${pct}%;background:linear-gradient(90deg,${g})"></div></div>${pct===100&&tod.length?'<div class="pbm">🎉 Todos concluídos hoje!</div>':''}</div>${(habits||[]).filter(Boolean).length?(habits||[]).filter(Boolean).map(habCardHTML).join(''):'<p class="empty">Nenhum hábito ainda.</p>'}`;
+      
+      document.getElementById('hab-list').innerHTML=`
+        <div class="hprog">
+            <div class="hph"><span>${dn.length}/${tod.length} hoje</span><span style="font-size:12px;color:var(--txt3)">${pct}%</span></div>
+            <div class="pbw"><div class="pbf" style="width:${pct}%;background:linear-gradient(90deg,${g})"></div></div>
+            ${pct===100&&tod.length?'<div class="pbm">🎉 Todos concluídos hoje!</div>':''}
+        </div>
+        ${tod.length ? tod.map(habCardHTML).join('') : '<p class="empty" style="margin-bottom:15px;">Nenhum hábito para hoje.</p>'}
+        ${unsched.length ? `<div class="lbl" style="margin-top:15px; margin-bottom:10px;">Não programados para hoje</div>` + unsched.map(habCardHTML).join('') : ''}
+      `;
   } catch(e){}
 }
+
 function openHF(id){if(id){const h=habits.find(h=>h.id===id);if(h)hfd={...h,customDays:[...(h.customDays||[])],times:[...(h.times||[])]};document.getElementById('hf-ttl').textContent='Editar hábito';}else{hfd={id:null,icon:'⭐',name:'',color:COLORS[5],target:1,times:[],frequency:'daily',customDays:[],reminderTime:''};document.getElementById('hf-ttl').textContent='Novo hábito';}renderHF();openM('mo-hf');}
 function closeHF(){closeM('mo-hf');}
 function setHabTime(i,v){if(!hfd.times)hfd.times=[];hfd.times[i]=v;}
@@ -1552,13 +1672,16 @@ async function delHabit(id){if(!(await showDialog('confirm','Excluir Hábito','E
 function openFocus(id){const h=habits.find(h=>h.id===id);if(!h)return;focusH=h;if(focTmr){clearInterval(focTmr.intv);focTmr=null;}document.getElementById('fc-ttl').textContent=`${h.icon} ${h.name}`;renderFocusBody();openM('mo-focus');}
 function closeFocus(){closeM('mo-focus');if(focTmr){clearInterval(focTmr.intv);focTmr=null;}focusH=null;}
 function editFromFocus(){if(focusH){const id=focusH.id;closeFocus();openHF(id);}}
+
+// Helper antigo de focus mantido
+function setBubble(id,idx){const h=habits.find(h=>h.id===id);if(!h)return;const today=getToday();if(!h.history)h.history={};const cur=h.history[today]||0;h.history[today]=cur===h.target&&idx===h.target-1?0:idx+1;saveHabits();renderHabits();if(focusH&&focusH.id===id){focusH=habits.find(x=>x.id===id);renderFocusBody();}}
+
 function renderFocusBody(){
     if(!focusH)return;
     const h=habits.find(x=>x.id===focusH.id)||focusH,cnt=getHabCnt(h),str=compStreak(h),bdg=getBadge(str),q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
     let fb='';for(let i=0;i<h.target;i++){let t_str='';if(h.target>1&&h.times&&h.times[i])t_str=h.times[i];else if(h.target===1&&h.reminderTime)t_str=h.reminderTime;const tl=t_str?`<div style="font-size:10px;color:var(--txt4);margin-top:2px">${t_str}</div>`:'';fb+=`<div style="display:flex;flex-direction:column;align-items:center"><div class="fbub ${i<cnt?'filled':''}" style="color:${h.color}" onclick="setBubble(${h.id},${i})"></div>${tl}</div>`;}
     let hcells='';for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=getDK(d),dn=(h.history||{})[k]>=(h.target||1),sc=isSchedOn(h,d),isT=i===0;hcells+=`<div class="hcl ${dn?'done':''} ${!sc?'':''} ${isT?'today':''}" style="${dn?`background:${h.color}`:''}"></div>`;}
     
-    // Calcula o tempo real se estiver rodando em background
     if(focTmr && focTmr.running) {
         focTmr.remaining = Math.max(0, Math.ceil((focTmr.endTime - Date.now())/1000));
     }
@@ -1588,7 +1711,7 @@ function togTmr(){
         if(navigator.vibrate) navigator.vibrate([500, 200, 500]);
         if(typeof Notification !== 'undefined' && Notification.permission==='granted')new Notification('Meu Organizador',{body:`⏱ Timer concluído: ${focusH?focusH.icon+' '+focusH.name:''}`});
       }
-    }, 500); // Roda mais rápido pra UI não engasgar
+    }, 500); 
     const b=document.getElementById('t-btn');if(b)b.textContent='Pausar';
   }
 }
