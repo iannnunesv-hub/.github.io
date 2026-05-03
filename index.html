@@ -352,7 +352,7 @@ textarea{resize:none;line-height:1.65;width:100%}
   <div class="hdr">
     <div><h1 id="aname">Meu Organizador</h1><p id="dlbl"></p></div>
     <div class="hdr-r">
-      <button class="ibt" onclick="openAch()" title="Conquistas">🏆</button>
+      <button class="ibt" onclick="openM('mo-ach')" title="Conquistas">🏆</button>
       <button class="gear-btn" onclick="openCfg()" title="Configurações">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -439,7 +439,7 @@ textarea{resize:none;line-height:1.65;width:100%}
         <div id="sec-habitos" class="sec">
           <div style="display:flex;gap:8px;margin-bottom:1rem">
             <button class="bnn" style="margin-bottom:0;flex:1" onclick="openHF(null)">+ Novo Hábito</button>
-            <button class="bnn" style="margin-bottom:0;flex:1;border-style:solid;background:var(--bg2)" onclick="openSug()">💡 Sugestões</button>
+            <button class="bnn" style="margin-bottom:0;flex:1;border-style:solid;background:var(--bg2)" onclick="openM('mo-sug')">💡 Sugestões</button>
           </div>
           <div id="hab-list" style="padding-bottom:15px"></div>
         </div>
@@ -682,6 +682,9 @@ const TUT_STEPS=[
   {ico:'🏆',ttl:'Tudo pronto!',txt:'Explore o menu da engrenagem para ativar notificações e modo escuro. Bom uso! 🚀',tab:null},
 ];
 let tutStep=0;
+
+const CATS_OUT=['📄 Assinaturas','🛍️ Compra pessoal','🍔 Delivery','🎓 Educação','🏦 Empréstimo','📌 Fixos','🎬 Lazer','🔧 Manutenção','💸 Outros','🏥 Saúde','🛒 Supermercado','🚗 Transporte'];
+const CATS_IN=['💰 Comissões/bônus','💸 Outros','📈 Renda variável','💼 Salário'];
 
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const getDK=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -1235,7 +1238,6 @@ function renderNotes(){
   } catch(e){}
 }
 
-// Global POPSTATE Listener
 window.addEventListener('popstate', (e) => {
     if(document.getElementById('nev').classList.contains('open')) {
         document.getElementById('nlv').style.display='flex';
@@ -1619,6 +1621,7 @@ function renderHabits(){
       let tod=(habits||[]).filter(Boolean).filter(h=>isSchedOn(h,new Date()));
       let unsched=(habits||[]).filter(Boolean).filter(h=>!isSchedOn(h,new Date()));
       
+      // Organiza para os concluídos irem automaticamente para o fim da lista
       tod.sort((a, b) => {
           const doneA = isHabDone(a);
           const doneB = isHabDone(b);
@@ -1670,10 +1673,13 @@ function openFocus(id){const h=habits.find(h=>h.id===id);if(!h)return;focusH=h;i
 function closeFocus(){closeM('mo-focus');if(focTmr){clearInterval(focTmr.intv);focTmr=null;}focusH=null;}
 function editFromFocus(){if(focusH){const id=focusH.id;closeFocus();openHF(id);}}
 
+// Helper antigo de focus mantido
+function setBubble(id,idx){const h=habits.find(h=>h.id===id);if(!h)return;const today=getToday();if(!h.history)h.history={};const cur=h.history[today]||0;h.history[today]=cur===h.target&&idx===h.target-1?0:idx+1;saveHabits();renderHabits();if(focusH&&focusH.id===id){focusH=habits.find(x=>x.id===id);renderFocusBody();}}
+
 function renderFocusBody(){
     if(!focusH)return;
     const h=habits.find(x=>x.id===focusH.id)||focusH,cnt=getHabCnt(h),str=compStreak(h),bdg=getBadge(str),q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
-    let fb='';for(let i=0;i<h.target;i++){let t_str='';if(h.target>1&&h.times&&h.times[i])t_str=h.times[i];else if(h.target===1&&h.reminderTime)t_str=h.reminderTime;const tl=t_str?`<div style="font-size:10px;color:var(--txt4);margin-top:2px">${t_str}</div>`:'';fb+=`<div style="display:flex;flex-direction:column;align-items:center"><div class="fbub ${i<cnt?'filled':''}" style="color:${h.color}" onclick="incHabit(${h.id})"></div>${tl}</div>`;}
+    let fb='';for(let i=0;i<h.target;i++){let t_str='';if(h.target>1&&h.times&&h.times[i])t_str=h.times[i];else if(h.target===1&&h.reminderTime)t_str=h.reminderTime;const tl=t_str?`<div style="font-size:10px;color:var(--txt4);margin-top:2px">${t_str}</div>`:'';fb+=`<div style="display:flex;flex-direction:column;align-items:center"><div class="fbub ${i<cnt?'filled':''}" style="color:${h.color}" onclick="setBubble(${h.id},${i})"></div>${tl}</div>`;}
     let hcells='';for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=getDK(d),dn=(h.history||{})[k]>=(h.target||1),sc=isSchedOn(h,d),isT=i===0;hcells+=`<div class="hcl ${dn?'done':''} ${!sc?'':''} ${isT?'today':''}" style="${dn?`background:${h.color}`:''}"></div>`;}
     
     if(focTmr && focTmr.running) {
