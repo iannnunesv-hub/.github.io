@@ -400,7 +400,13 @@ textarea{resize:none;line-height:1.65;width:100%}
         
         <div id="sec-tasks" class="sec">
           <div class="tf">
-            <div class="tftop"><input type="text" id="task-in" placeholder="Nova tarefa..."/><button class="ib" onclick="addTask()">+</button></div>
+            <div class="tftop">
+               <input type="text" id="task-in" placeholder="Nova tarefa..."/>
+               <button class="ib" onclick="addTask()">+</button>
+            </div>
+            <div style="margin-bottom:10px;">
+               <input type="text" id="task-obs" placeholder="Observação (opcional)..." style="font-size:13px; padding:7px 11px; height:34px;"/>
+            </div>
             <div class="tf2">
               <div class="tff"><label>Dia</label><input type="text" id="task-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')" placeholder="Sem data"/></div>
               <div class="tff"><label>Hora</label><input type="text" id="task-time" class="pk-input" readonly onclick="openPicker(this.id, 'time')" placeholder="--:--"/></div>
@@ -584,6 +590,7 @@ textarea{resize:none;line-height:1.65;width:100%}
   <div class="mb">
     <input type="hidden" id="etask-m-id">
     <div class="hff"><label>Nome da Tarefa</label><input type="text" id="etask-m-name" placeholder="Nome..."></div>
+    <div class="hff"><label>Observação</label><input type="text" id="etask-m-obs" placeholder="Observação..."></div>
     <div class="hff"><label>Nova Data</label><input type="text" id="etask-m-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')"></div>
     <div class="hff"><label>Nova Hora</label><input type="text" id="etask-m-time" class="pk-input" readonly onclick="openPicker(this.id, 'time')"></div>
     <div class="hff"><label>Repetir</label>
@@ -1117,18 +1124,20 @@ function togEvDone(k,id){events[k]=(events[k]||[]).map(e=>e.id===id?{...e,done:!
 async function delEvGlobal(k,id){if(!(await showDialog('confirm','Excluir Evento','Excluir este evento permanentemente?')))return;events[k]=(events[k]||[]).filter(e=>e.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function addTask(){
     const inp=document.getElementById('task-in'),text=inp.value.trim();if(!text)return;
+    const obs=document.getElementById('task-obs').value.trim();
     const dk=document.getElementById('task-date').value||null,dt=document.getElementById('task-time').value||null;
     const ntfVal=document.getElementById('task-ntf').value;
     const nb=ntfVal==='none'?'none':parseInt(ntfVal);
     const rep=parseInt(document.getElementById('task-rep').value)||0;
-    tasks.unshift({id:Date.now(),text,done:false,dk,dt,nb,rep});
-    inp.value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';save();schedAll();renderTasks();renderCal();
+    tasks.unshift({id:Date.now(),text,obs,done:false,dk,dt,nb,rep});
+    inp.value='';document.getElementById('task-obs').value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';save();schedAll();renderTasks();renderCal();
 }
 
 function editTask(id) {
     const t = tasks.find(x => x.id === id); if(!t) return;
     document.getElementById('etask-m-id').value = id;
     document.getElementById('etask-m-name').value = t.text || '';
+    document.getElementById('etask-m-obs').value = t.obs || '';
     document.getElementById('etask-m-date').value = t.dk || getToday();
     document.getElementById('etask-m-time').value = t.dt || '';
     document.getElementById('etask-m-rep').value = t.rep || '0';
@@ -1138,6 +1147,7 @@ function saveEditTask(){
     const id = Number(document.getElementById('etask-m-id').value);
     const t = tasks.find(x => x.id === id); if(!t) return;
     t.text = document.getElementById('etask-m-name').value.trim() || t.text;
+    t.obs = document.getElementById('etask-m-obs').value.trim();
     t.dk = document.getElementById('etask-m-date').value;
     t.dt = document.getElementById('etask-m-time').value;
     t.rep = parseInt(document.getElementById('etask-m-rep').value) || 0;
@@ -1151,7 +1161,7 @@ function tiHTML(item,isDone=false){
   const editBtn = (!isDone && !item.isEv) ? `<button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${item.id})">✏️</button>` : '';
   const acts=isDone?`<div class="dtb">${!item.isEv?`<button class="brev no-swipe" onclick="reactivate(${item.id})">↩</button>`:''}<button class="bperm no-swipe" onclick="${df}">🗑</button></div>`:`<div class="dtb">${editBtn}<button class="bd no-swipe" onclick="${df}">×</button></div>`;
   const repIcon = item.rep > 0 && !item.isEv ? ' 🔁' : '';
-  return`<div class="ti ${item.done?'done-item':''}"><div class="tck no-swipe ${item.done?'done':''}" onclick="${tf}">${item.done?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="tb2"><div class="tt">${esc(item.text)}${repIcon}${badge}</div>${meta?`<div class="tm ${ov?'ov':''}">${ov?'⚠ ':'📅 '}${esc(meta)}</div>`:''}</div>${acts}</div>`;
+  return`<div class="ti ${item.done?'done-item':''}"><div class="tck no-swipe ${item.done?'done':''}" onclick="${tf}">${item.done?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="tb2"><div class="tt">${esc(item.text)}${repIcon}${badge}</div>${item.obs?`<div style="font-size:12px;color:var(--txt3);margin-top:2px;line-height:1.3">${esc(item.obs)}</div>`:''}${meta?`<div class="tm ${ov?'ov':''}">${ov?'⚠ ':'📅 '}${esc(meta)}</div>`:''}</div>${acts}</div>`;
 }
 
 function renderTasks(){
@@ -1274,22 +1284,24 @@ function renderNotes(){
 }
 
 window.addEventListener('popstate', (e) => {
-    if(document.getElementById('nev').classList.contains('open')) {
+    if(document.getElementById('nev').classList.contains('open') && !(e.state && e.state.note)) {
         document.getElementById('nlv').style.display='flex';
         document.getElementById('nev').classList.remove('open');
         enid=null;
     }
     
     document.querySelectorAll('.mo.open').forEach(m => {
-        m.classList.remove('open');
-        
-        if(m.id === 'mo-dialog' && dialogResolve) {
-            dialogResolve(false);
-            dialogResolve = null;
-        }
-        if(m.id === 'mo-focus') {
-            if(focTmr){clearInterval(focTmr.intv);focTmr=null;}
-            focusH=null;
+        if (!e.state || e.state.modal !== m.id) {
+            m.classList.remove('open');
+            
+            if(m.id === 'mo-dialog' && dialogResolve) {
+                dialogResolve(false);
+                dialogResolve = null;
+            }
+            if(m.id === 'mo-focus') {
+                if(focTmr){clearInterval(focTmr.intv);focTmr=null;}
+                focusH=null;
+            }
         }
     });
 });
@@ -1463,7 +1475,7 @@ function renderEvList(){
           return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck no-swipe ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="em2 v-hide">${fmtC(b.val)}</div></div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd no-swipe" onclick="delBill(${b.id})">×</button></div>`
       }).join('');
       
-      const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck no-swipe ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}${t.rep?' 🔁':''}<span class="ebdg etask">tarefa</span></div>${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd no-swipe" onclick="delTask(${t.id})">×</button></div>`).join('');
+      const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck no-swipe ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}${t.rep?' 🔁':''}<span class="ebdg etask">tarefa</span></div>${t.obs?`<div style="font-size:11px;color:var(--txt3);margin-top:2px;line-height:1.2">${esc(t.obs)}</div>`:''}${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd no-swipe" onclick="delTask(${t.id})">×</button></div>`).join('');
       
       const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck no-swipe ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}</div></div><button class="bd no-swipe" onclick="delEvGlobal('${k}',${ev.id})">×</button></div>`).join('');
       
