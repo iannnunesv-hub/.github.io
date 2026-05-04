@@ -28,10 +28,11 @@ body { font-family: system-ui, sans-serif; background: var(--bg4); display: flex
 .sp-prem { font-weight: 700; color: #d4af37; font-style: italic; letter-spacing: 0; }
 @keyframes fadeOutSplash { 0% { opacity: 1; visibility: visible; } 100% { opacity: 0; visibility: hidden; z-index: -1; display: none; } }
 
-.hdr{background:var(--bg2);border-bottom:.5px solid var(--brd);padding:14px 17px 11px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.hdr h1{font-size:18px;font-weight:500;color:var(--txt)}
-.hdr p{font-size:11px;color:var(--txt2);margin-top:4px;font-style:italic;line-height:1.4}
-.hdr-r{display:flex;gap:7px;align-items:center}
+.hdr{background:var(--bg2);border-bottom:.5px solid var(--brd);padding:14px 17px 11px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;gap:10px;}
+.hdr > div { flex: 1; min-width: 0; }
+.hdr h1{font-size:18px;font-weight:500;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hdr p{font-size:11px;color:var(--txt2);margin-top:4px;font-style:italic;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hdr-r{display:flex;gap:7px;align-items:center;flex-shrink:0;}
 .ibt{background:none;border:.5px solid var(--brd2);border-radius:9px;padding:6px 8px;cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center}
 .gear-btn{background:none;border:.5px solid var(--brd2);border-radius:9px;padding:7px;cursor:pointer;display:flex;align-items:center;color:var(--txt2)}
 
@@ -722,11 +723,13 @@ const BADGE_DEFS=[
 ];
 
 const TUT_STEPS=[
-  {ico:'✨',ttl:'Bem-vindo ao Organizador Premium!',txt:'Para começarmos, como você se chama?', html:'<input type="text" id="tut-name" placeholder="Seu nome..." style="width:100%; text-align:center; padding:12px; font-size:16px; border-radius:10px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt); margin-top:10px; outline:none; font-family:inherit;"/>',tab:null, target:null},
-  {ico:'📅',ttl:'A Central de Comando',txt:'O Mês mostra seus compromissos, e o Dia mostra as Tarefas, Contas e Hábitos que vencem hoje!',tab:'agenda', target:'#tb-agenda'},
-  {ico:'💵',ttl:'Finanças Inteligentes',txt:'Controle seu saldo, crie contas recorrentes e veja a projeção para os próximos meses.',tab:'fin', target:'#tb-fin'},
-  {ico:'🏆',ttl:'Hábitos e Foco',txt:'Crie hábitos saudáveis e use o timer Pomodoro inteligente no fundo da tela.',tab:'habitos', target:'#tb-habitos'},
-  {ico:'⚙️',ttl:'Personalize tudo!',txt:'Na engrenagem você ativa o modo escuro, edita seu nome e gerencia notificações. Pronto para decolar! 🚀',tab:'agenda', target:'.gear-btn'},
+  {ico:'✨',ttl:'Bem-vindo ao Organizador!',txt:'Para começarmos, como podemos te chamar? (Primeiro nome)', html:'<input type="text" id="tut-name" maxlength="15" placeholder="Seu primeiro nome..." style="width:100%; text-align:center; padding:12px; font-size:16px; border-radius:10px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt); margin-top:10px; outline:none; font-family:inherit;"/>',tab:null, target:null},
+  {ico:'📅',ttl:'Sua Agenda',txt:'Aqui você acompanha seu mês e seus eventos. Veja os feriados e gerencie seus dias com facilidade!',tab:'agenda', target:'#tb-agenda'},
+  {ico:'✅',ttl:'Suas Tarefas',txt:'Crie tarefas com data, hora, lembretes e repetições. Nunca mais esqueça um compromisso!',tab:'tasks', target:'#tb-tasks'},
+  {ico:'📝',ttl:'Notas e Listas',txt:'Guarde informações importantes, crie textos livres ou listas de checagem (como compras do mercado).',tab:'notes', target:'#tb-notes'},
+  {ico:'🏆',ttl:'Hábitos e Foco',txt:'Construa rotinas! Crie hábitos diários ou semanais e use o Timer Pomodoro inteligente para manter o foco.',tab:'habitos', target:'#tb-habitos'},
+  {ico:'💵',ttl:'Finanças Inteligentes',txt:'Controle carteiras, adicione contas que se repetem e veja as projeções dos próximos meses!',tab:'fin', target:'#tb-fin'},
+  {ico:'⚙️',ttl:'Personalize tudo!',txt:'Na engrenagem você ativa o modo escuro, altera seu nome e liga as notificações. Pronto para decolar! 🚀',tab:'agenda', target:'.gear-btn'},
 ];
 let tutStep=0;
 
@@ -969,7 +972,7 @@ function saveCfg(){localStorage.setItem('o_cfg',JSON.stringify(cfg));}
 function applyTheme(){document.documentElement.setAttribute('data-theme',cfg.dark?'dark':'');const t=document.getElementById('tog-dark');if(t)t.checked=cfg.dark;}
 function toggleTheme(on){cfg.dark=on;saveCfg();applyTheme();}
 function applyName(){
-  document.getElementById('aname').textContent=cfg.name?`Organizador de ${cfg.name}`:'Organizador Premium';
+  document.getElementById('aname').textContent=cfg.name?`Olá, ${cfg.name}`:'Organizador Premium';
   document.getElementById('dlbl').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
 }
 async function saveName(){
