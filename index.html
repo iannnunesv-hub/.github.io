@@ -315,10 +315,11 @@ textarea{resize:none;line-height:1.65;width:100%}
 .sug-dt{font-size:11px;color:var(--txt3);margin-top:1px}
 .sug-add{background:var(--ac);color:var(--acfg);border:none;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;flex-shrink:0}
 
-/* TUTORIAL */
-#tut{position:fixed;inset:0;z-index:200;display:flex;align-items:flex-end;justify-content:center;padding:0 1rem 1rem}
-#tut-bg{position:absolute;inset:0;background:rgba(0,0,0,.55)}
-.tut-card{position:relative;background:var(--bg2);border-radius:18px;padding:22px;width:100%;max-width:460px;z-index:1}
+/* TUTORIAL OVERLAY & CARD */
+#spotlight-wrap { position:fixed; inset:0; z-index:9998; overflow:hidden; display:none; }
+.spotlight-hole { position:absolute; border-radius:14px; box-shadow:0 0 0 9999px rgba(0,0,0,0.65); pointer-events:auto; transition:all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+#tut { position:fixed; inset:0; z-index:9999; pointer-events:none; display:flex; flex-direction:column; padding:1rem; }
+.tut-card { background:var(--bg2); border-radius:18px; padding:22px; width:100%; max-width:400px; margin:0 auto; pointer-events:auto; transition:transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); box-shadow:0 10px 30px rgba(0,0,0,0.25); position:relative; }
 .tut-ico{font-size:38px;text-align:center;margin-bottom:9px}
 .tut-ttl{font-size:17px;font-weight:600;color:var(--txt);text-align:center;margin-bottom:7px}
 .tut-txt{font-size:13px;color:var(--txt2);text-align:center;line-height:1.65;margin-bottom:16px}
@@ -533,9 +534,11 @@ textarea{resize:none;line-height:1.65;width:100%}
   </div>
 </div>
 
+<div id="spotlight-wrap">
+   <div class="spotlight-hole" id="spot-hole"></div>
+</div>
 <div id="tut" style="display:none">
-  <div id="tut-bg"></div>
-  <div class="tut-card">
+  <div class="tut-card" id="tut-card">
     <div class="tut-ico" id="tut-ico"></div>
     <div class="tut-ttl" id="tut-ttl"></div>
     <div class="tut-txt" id="tut-txt"></div>
@@ -564,6 +567,16 @@ textarea{resize:none;line-height:1.65;width:100%}
   <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="confirmPicker()">Confirmar</button></div>
 </div></div>
 
+<div class="mo" id="mo-eacc" onclick="bgC(event,'mo-eacc')"><div class="md">
+  <div class="mh"><h2>Editar Carteira</h2><button class="mc" onclick="closeM('mo-eacc')">×</button></div>
+  <div class="mb">
+    <input type="hidden" id="eacc-id">
+    <div class="hff"><label>Nome da Carteira</label><input type="text" id="eacc-name"></div>
+    <div class="hff"><label>Saldo Atual (R$)</label><input type="number" id="eacc-val" step="0.01"></div>
+  </div>
+  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditAcc()">Salvar Alterações</button></div>
+</div></div>
+
 <div class="mo" id="mo-transfer" onclick="bgC(event,'mo-transfer')"><div class="md">
   <div class="mh"><h2>Transferir Valores</h2><button class="mc" onclick="closeM('mo-transfer')">×</button></div>
   <div class="mb">
@@ -578,11 +591,29 @@ textarea{resize:none;line-height:1.65;width:100%}
   <div class="mh"><h2>Editar Lançamento</h2><button class="mc" onclick="closeM('mo-ebill')">×</button></div>
   <div class="mb">
     <input type="hidden" id="ebill-m-id">
-    <div class="hff"><label>Data</label><input type="text" id="ebill-m-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')"></div>
+    <input type="hidden" id="ebill-m-mk">
+    <div class="hff" id="ebill-scope-wrap"><label>Aplicar em</label>
+        <select id="ebill-scope">
+            <option value="one">Somente neste mês</option>
+            <option value="all">Todos os meses (Recorrência toda)</option>
+        </select>
+    </div>
+    <div class="hff"><label>Data base / Vencimento</label><input type="text" id="ebill-m-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')"></div>
     <div class="hff"><label>Descrição (deixe em branco para usar a categoria)</label><input type="text" id="ebill-m-desc" placeholder="Nova descrição..."></div>
     <div class="hff"><label>Valor (R$)</label><input type="number" id="ebill-m-val" step="0.01" placeholder="0.00"></div>
   </div>
   <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditBill()">Salvar Alterações</button></div>
+</div></div>
+
+<div class="mo" id="mo-dbill" onclick="bgC(event,'mo-dbill')"><div class="md">
+  <div class="mh"><h2>Excluir Recorrência</h2><button class="mc" onclick="closeM('mo-dbill')">×</button></div>
+  <div class="mb">
+    <p style="font-size:14px;color:var(--txt2);margin-bottom:15px;line-height:1.5;">Este é um lançamento recorrente. O que deseja excluir?</p>
+    <input type="hidden" id="dbill-id"><input type="hidden" id="dbill-mk">
+    <button class="bnn" onclick="execDelBill('one')">Somente este mês</button>
+    <button class="bnn" onclick="execDelBill('future')">Este e os próximos</button>
+    <button class="bnn" style="color:#e44; border-color:rgba(238,68,68,0.3);" onclick="execDelBill('all')">Todos os lançamentos (passados e futuros)</button>
+  </div>
 </div></div>
 
 <div class="mo" id="mo-etask" onclick="bgC(event,'mo-etask')"><div class="md">
@@ -691,11 +722,11 @@ const BADGE_DEFS=[
 ];
 
 const TUT_STEPS=[
-  {ico:'✨',ttl:'Bem-vindo ao Organizador Premium!',txt:'Para começarmos, como você se chama?', html:'<input type="text" id="tut-name" placeholder="Seu nome..." style="width:100%; text-align:center; padding:12px; font-size:16px; border-radius:10px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt); margin-top:10px; outline:none; font-family:inherit;"/>',tab:null},
-  {ico:'📅',ttl:'A Central de Comando',txt:'O Mês mostra seus compromissos, e o Dia mostra as Tarefas, Contas e Hábitos que vencem hoje!',tab:'agenda'},
-  {ico:'💵',ttl:'Finanças e Transferências',txt:'Crie contas que se repetem ou transfira dinheiro entre suas carteiras sem afetar o balanço!',tab:'fin'},
-  {ico:'⏰',ttl:'Foco Inteligente',txt:'O Timer Pomodoro agora roda de forma inteligente no fundo sem gastar bateria.',tab:'habitos'},
-  {ico:'🏆',ttl:'Tudo pronto!',txt:'Explore o menu da engrenagem para ativar notificações e modo escuro. Bom uso! 🚀',tab:null},
+  {ico:'✨',ttl:'Bem-vindo ao Organizador Premium!',txt:'Para começarmos, como você se chama?', html:'<input type="text" id="tut-name" placeholder="Seu nome..." style="width:100%; text-align:center; padding:12px; font-size:16px; border-radius:10px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt); margin-top:10px; outline:none; font-family:inherit;"/>',tab:null, target:null},
+  {ico:'📅',ttl:'A Central de Comando',txt:'O Mês mostra seus compromissos, e o Dia mostra as Tarefas, Contas e Hábitos que vencem hoje!',tab:'agenda', target:'#tb-agenda'},
+  {ico:'💵',ttl:'Finanças Inteligentes',txt:'Controle seu saldo, crie contas recorrentes e veja a projeção para os próximos meses.',tab:'fin', target:'#tb-fin'},
+  {ico:'🏆',ttl:'Hábitos e Foco',txt:'Crie hábitos saudáveis e use o timer Pomodoro inteligente no fundo da tela.',tab:'habitos', target:'#tb-habitos'},
+  {ico:'⚙️',ttl:'Personalize tudo!',txt:'Na engrenagem você ativa o modo escuro, edita seu nome e gerencia notificações. Pronto para decolar! 🚀',tab:'agenda', target:'.gear-btn'},
 ];
 let tutStep=0;
 
@@ -1350,7 +1381,11 @@ function bindDrag(containerId, itemClass, onReorder) {
 let cY=TY,cM=TM,selD=null,calView='month',wkOff=0;
 
 function isBillInDay(b, dk) {
+    const mk = dk.substring(0,7);
+    if(b.delMap && b.delMap[mk]) return false;
+    if(b.endMk && mk >= b.endMk) return false;
     if(!b.date) return false;
+    
     if(!b.rep) return b.date === dk; 
     const bY = parseInt(b.date.substring(0,4)), bM = parseInt(b.date.substring(5,7))-1, bD = b.date.substring(8,10);
     const kY = parseInt(dk.substring(0,4)), kM = parseInt(dk.substring(5,7))-1, kD = dk.substring(8,10);
@@ -1366,7 +1401,10 @@ function isBillInDay(b, dk) {
 }
 
 function isBillInMonth(b, mk) {
+    if(b.delMap && b.delMap[mk]) return false;
+    if(b.endMk && mk >= b.endMk) return false;
     if(!b.date) return false;
+    
     const bMk = b.date.substring(0,7);
     if(bMk === mk) return true;
     if(!b.rep || b.rep === 0) return false;
@@ -1379,6 +1417,9 @@ function isBillInMonth(b, mk) {
     }
     return false;
 }
+
+function getBillVal(b, mk) { return (b.valMap && b.valMap[mk] !== undefined) ? Number(b.valMap[mk]) : Number(b.val||0); }
+function getBillDesc(b, mk) { return (b.descMap && b.descMap[mk] !== undefined) ? b.descMap[mk] : b.desc; }
 
 function checkDot(k) {
     let dot = false;
@@ -1470,9 +1511,11 @@ function renderEvList(){
       const bh=dBills.map(b=>{
           const cEmoji=b.cat?b.cat.split(' ')[0]:''; 
           const cName=b.cat?b.cat.substring(cEmoji.length).trim():''; 
-          const dText=b.desc?esc(b.desc):cName;
+          const rawDesc = getBillDesc(b, mK);
+          const dText = rawDesc ? esc(rawDesc) : cName;
           const isPaid=b.paidMap&&b.paidMap[mK];
-          return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck no-swipe ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="em2 v-hide">${fmtC(b.val)}</div></div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd no-swipe" onclick="delBill(${b.id})">×</button></div>`
+          const bVal = getBillVal(b, mK);
+          return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck no-swipe ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="em2 v-hide">${fmtC(bVal)}</div></div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd no-swipe" onclick="delBill(${b.id}, '${mK}')">×</button></div>`
       }).join('');
       
       const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck no-swipe ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}${t.rep?' 🔁':''}<span class="ebdg etask">tarefa</span></div>${t.obs?`<div style="font-size:11px;color:var(--txt3);margin-top:2px;line-height:1.2">${esc(t.obs)}</div>`:''}${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd no-swipe" onclick="delTask(${t.id})">×</button></div>`).join('');
@@ -1794,7 +1837,7 @@ function expandMonth(k, name) {
   
   b.forEach(x => {
       const key = x.cat || 'Outro';
-      const val = Number(x.val||0);
+      const val = getBillVal(x, k);
       if(x.type === '+') {
           totalIn += val;
           if(!catsIn[key]) catsIn[key] = {total:0, items:[]};
@@ -1850,12 +1893,13 @@ function expandMonth(k, name) {
                  </div>
                  <div style="display:none; padding:4px 12px 12px 12px;">`;
               cc.items.forEach(it => {
-                  const dText = it.desc || c;
+                  const dText = getBillDesc(it, k) || c;
                   const isPaid = it.paidMap && it.paidMap[k];
+                  const bValFmt = fmtC(getBillVal(it, k));
                   res += `
                     <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--txt2); padding:8px 0; border-bottom:.5px dashed var(--brd2);">
                       <span style="flex:1; padding-right:10px; ${isPaid ? 'text-decoration:line-through;color:var(--txt4)' : ''}">${esc(dText)} ${it.rep?' 🔁':''}</span>
-                      <span class="v-hide" style="${isPaid ? 'color:var(--txt4)' : ''}">${fmtC(it.val)}</span>
+                      <span class="v-hide" style="${isPaid ? 'color:var(--txt4)' : ''}">${bValFmt}</span>
                     </div>`;
               });
               res = res.replace(/border-bottom:\.5px dashed var\(--brd2\);(">.*?<\/div>)$/, '">$1');
@@ -1891,7 +1935,8 @@ function renderFin(){
               if(!b.paidMap) b.paidMap = {};
               const isPaid = b.paidMap[mk];
               if(!isPaid && isBillInMonth(b, mk)) { 
-                  if(b.type === '+') inM += Number(b.val||0); else outM += Number(b.val||0); 
+                  let bVal = getBillVal(b, mk);
+                  if(b.type === '+') inM += bVal; else outM += bVal; 
               }
           });
           runBal = runBal + inM - outM;
@@ -1928,15 +1973,17 @@ function renderFin(){
       list.innerHTML = mBills.map(b => {
         const cEmoji = b.cat ? b.cat.split(' ')[0] : '';
         const cName = b.cat ? b.cat.substring(cEmoji.length).trim() : '';
-        const dText = b.desc ? esc(b.desc) : cName;
+        const rawDesc = getBillDesc(b, mKey);
+        const dText = rawDesc ? esc(rawDesc) : cName;
         const isPaid = b.paidMap && b.paidMap[mKey];
         const bDay = b.date ? b.date.substring(8,10) : '--';
+        const bVal = getBillVal(b, mKey);
 
         return `<div class="ti ${isPaid?'done-item':''}">
           <div class="tck no-swipe ${isPaid?'done':''}" onclick="togBill(${b.id}, '${mKey}')">${isPaid?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
-          <div class="tb2"><div class="tt">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="tm">Dia ${bDay} ${b.val ? ` · <span class="v-hide">${fmtC(b.val)}</span>` : ''}</div></div>
+          <div class="tb2"><div class="tt">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="tm">Dia ${bDay} ${bVal ? ` · <span class="v-hide">${fmtC(bVal)}</span>` : ''}</div></div>
           <button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id}, '${mKey}')">✏️</button>
-          <button class="bd no-swipe" onclick="delBill(${b.id})">×</button>
+          <button class="bd no-swipe" onclick="delBill(${b.id}, '${mKey}')">×</button>
         </div>`;
       }).join('') || '<p class="empty" style="margin-top:1rem">Nenhum lançamento neste mês.</p>';
   } catch(e){}
@@ -1974,10 +2021,19 @@ async function addAccount(){
   const vl = await showDialog('prompt', 'Saldo Inicial', `Saldo inicial para '${nm}' (use ponto para centavos):`, "0.00");
   if(vl !== false && vl !== null && !isNaN(parseFloat(vl.replace(',','.')))) { accounts.push({id:Date.now(), name:nm.trim(), val:parseFloat(vl.replace(',','.'))}); save(); renderFin(); }
 }
-async function editAccount(id){
-  const acc = accounts.find(a => a.id === id); if(!acc) return;
-  const nv = await showDialog('prompt', 'Editar Saldo', `Novo saldo para '${acc.name}' (use ponto para centavos):`, acc.val);
-  if(nv !== false && nv !== null && !isNaN(parseFloat(nv.replace(',','.')))) { acc.val = parseFloat(nv.replace(',','.')); save(); renderFin(); }
+function editAccount(id){
+  const acc = accounts.find(a=>a.id===id); if(!acc) return;
+  document.getElementById('eacc-id').value = id;
+  document.getElementById('eacc-name').value = acc.name;
+  document.getElementById('eacc-val').value = acc.val;
+  openM('mo-eacc');
+}
+function saveEditAcc(){
+  const id = Number(document.getElementById('eacc-id').value);
+  const acc = accounts.find(a=>a.id===id); if(!acc) return;
+  acc.name = document.getElementById('eacc-name').value.trim() || acc.name;
+  acc.val = parseFloat(document.getElementById('eacc-val').value) || 0;
+  save(); renderFin(); closeM('mo-eacc'); toast('Carteira atualizada!');
 }
 async function delAccount(id){ if(await showDialog('confirm','Remover Carteira','Remover esta carteira permanentemente?')) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
 
@@ -2013,7 +2069,7 @@ function addBill(){
   const val = document.getElementById('bill-val').value;
   const rep = parseInt(document.getElementById('bill-rep').value) || 0;
   
-  bills.push({id: Date.now(), type, cat, desc, date, val, rep, paidMap: {}});
+  bills.push({id: Date.now(), type, cat, desc, date, val, rep, paidMap: {}, valMap: {}, descMap: {}, delMap: {}});
   document.getElementById('bill-desc').value=''; document.getElementById('bill-date').value=''; document.getElementById('bill-val').value=''; document.getElementById('bill-rep').value='0';
   save(); renderFin(); renderCal();
 }
@@ -2022,23 +2078,42 @@ function addBill(){
 function editBill(id, mk){
   const b = bills.find(x => x.id === id); if(!b) return;
   document.getElementById('ebill-m-id').value = id;
+  document.getElementById('ebill-m-mk').value = mk;
   document.getElementById('ebill-m-date').value = b.date || '';
-  document.getElementById('ebill-m-desc').value = b.desc || '';
-  document.getElementById('ebill-m-val').value = b.val || '';
+  document.getElementById('ebill-m-desc').value = (b.descMap && b.descMap[mk] !== undefined) ? b.descMap[mk] : (b.desc || '');
+  document.getElementById('ebill-m-val').value = (b.valMap && b.valMap[mk] !== undefined) ? b.valMap[mk] : (b.val || '');
+  
+  if(b.rep !== 0) {
+      document.getElementById('ebill-scope-wrap').style.display = 'block';
+      document.getElementById('ebill-scope').value = 'one';
+  } else {
+      document.getElementById('ebill-scope-wrap').style.display = 'none';
+  }
   openM('mo-ebill');
 }
 function saveEditBill(){
   const id = Number(document.getElementById('ebill-m-id').value);
+  const mk = document.getElementById('ebill-m-mk').value;
   const b = bills.find(x => x.id === id); if(!b) return;
   
   const ndate = document.getElementById('ebill-m-date').value;
-  if(ndate) b.date = ndate;
-  
-  b.desc = document.getElementById('ebill-m-desc').value.trim();
+  const desc = document.getElementById('ebill-m-desc').value.trim();
   const valStr = document.getElementById('ebill-m-val').value;
-  if(valStr) b.val = parseFloat(valStr.replace(',','.')) || 0;
+  const val = parseFloat(valStr.replace(',','.')) || 0;
   
-  save(); renderFin(); renderEvList(); renderCal(); closeM('mo-ebill');
+  if(b.rep !== 0 && document.getElementById('ebill-scope').value === 'one') {
+      if(!b.valMap) b.valMap = {};
+      if(!b.descMap) b.descMap = {};
+      b.valMap[mk] = val;
+      b.descMap[mk] = desc;
+      if(ndate && ndate !== b.date) { toast("A data base não muda no modo de edição individual."); }
+  } else {
+      if(ndate) b.date = ndate;
+      b.desc = desc; b.val = val;
+      b.valMap = {}; b.descMap = {};
+  }
+  
+  save(); renderFin(); renderEvList(); renderCal(); closeM('mo-ebill'); toast('Lançamento atualizado!');
 }
 
 function togBill(id, mk){ 
@@ -2050,7 +2125,7 @@ function togBill(id, mk){
           b.paidMap[mk] = !wasPaid;
           
           if(accounts.length > 0) {
-              const v = Number(b.val||0);
+              const v = getBillVal(b, mk);
               if(v > 0) {
                   let change = 0;
                   if(!wasPaid) change = b.type === '+' ? v : -v; 
@@ -2066,7 +2141,37 @@ function togBill(id, mk){
   save(); renderFin(); renderEvList(); renderCal(); 
   if(msg) toast(msg);
 }
-async function delBill(id){ if(await showDialog('confirm','Excluir Conta','Excluir este lançamento permanentemente?')){ bills = bills.filter(b => b.id !== id); save(); renderFin(); renderEvList(); renderCal(); } }
+
+function delBill(id, mk){ 
+  const b = bills.find(x => x.id === id); if(!b) return;
+  if(b.rep === 0) {
+      showDialog('confirm','Excluir Conta','Excluir este lançamento permanentemente?').then(ans => {
+          if(ans) { bills = bills.filter(x => x.id !== id); save(); renderFin(); renderEvList(); renderCal(); }
+      });
+  } else {
+      document.getElementById('dbill-id').value = id;
+      document.getElementById('dbill-mk').value = mk;
+      openM('mo-dbill');
+  }
+}
+function execDelBill(scope) {
+    const id = Number(document.getElementById('dbill-id').value);
+    const mk = document.getElementById('dbill-mk').value;
+    let b = bills.find(x => x.id === id); if(!b) return;
+    
+    if(scope === 'one') {
+        if(!b.delMap) b.delMap = {};
+        b.delMap[mk] = true;
+        toast('Lançamento deste mês excluído.');
+    } else if(scope === 'future') {
+        b.endMk = mk;
+        toast('Lançamentos futuros excluídos.');
+    } else if(scope === 'all') {
+        bills = bills.filter(x => x.id !== id);
+        toast('Todos os lançamentos foram excluídos.');
+    }
+    save(); renderFin(); renderEvList(); renderCal(); closeM('mo-dbill');
+}
 
 // ACHIEVEMENTS
 function openAch(){
@@ -2112,6 +2217,35 @@ function showStep(){
     document.getElementById('tut-dots').innerHTML=d;
     document.getElementById('tut-next').textContent=tutStep===TUT_STEPS.length-1?'Começar!':'Próximo →';
     if(s.tab)swTab(s.tab,document.getElementById('tb-'+s.tab));
+    
+    setTimeout(() => {
+        const wrap = document.getElementById('spotlight-wrap');
+        const hole = document.getElementById('spot-hole');
+        const card = document.getElementById('tut-card');
+        wrap.style.display = 'block';
+
+        if(s.target) {
+            const el = document.querySelector(s.target);
+            if(el) {
+                const rect = el.getBoundingClientRect();
+                hole.style.left = (rect.left - 6) + 'px';
+                hole.style.top = (rect.top - 6) + 'px';
+                hole.style.width = (rect.width + 12) + 'px';
+                hole.style.height = (rect.height + 12) + 'px';
+                hole.style.opacity = '1';
+                
+                let ty = rect.bottom + 20;
+                if(rect.top > window.innerHeight / 2) ty = rect.top - card.offsetHeight - 20;
+                card.style.transform = `translateY(${ty}px)`;
+            }
+        } else {
+            hole.style.width = '0'; hole.style.height = '0';
+            hole.style.left = '50%'; hole.style.top = '50%';
+            hole.style.opacity = '0';
+            hole.style.boxShadow = '0 0 0 9999px rgba(0,0,0,0.65)';
+            card.style.transform = `translateY(${(window.innerHeight - card.offsetHeight)/2 - 20}px)`;
+        }
+    }, 300);
 }
 function nextTut(){
     if(tutStep===0){ const n = document.getElementById('tut-name'); if(n && n.value.trim()){ cfg.name = n.value.trim(); saveCfg(); applyName(); } }
@@ -2119,6 +2253,7 @@ function nextTut(){
 }
 function endTutorial(){
     document.getElementById('tut').style.display='none';
+    document.getElementById('spotlight-wrap').style.display='none';
     localStorage.setItem('o_tut_done','true');
     setTimeout(() => { if(typeof Notification !== 'undefined' && Notification.permission === 'default') { if(confirm("Deseja ativar as notificações para ser lembrado das suas tarefas e hábitos?")) { reqN(); } } }, 400);
 }
