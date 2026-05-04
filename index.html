@@ -381,9 +381,14 @@ textarea{resize:none;line-height:1.65;width:100%}
                 <div class="efl"><label>Hora</label><input type="text" id="ev-time" class="pk-input" readonly onclick="openPicker(this.id, 'time')" placeholder="--:--"/></div>
                 <div class="efl"><label>Notificar</label>
                   <select id="ev-ntf">
-                    <option value="0">Sem aviso</option><option value="5">5 min</option>
-                    <option value="10" selected>10 min</option><option value="15">15 min</option>
-                    <option value="30">30 min</option><option value="60">1h</option><option value="120">2h</option>
+                    <option value="none">Sem aviso</option>
+                    <option value="0">Na hora</option>
+                    <option value="5">5 min</option>
+                    <option value="10" selected>10 min</option>
+                    <option value="15">15 min</option>
+                    <option value="30">30 min</option>
+                    <option value="60">1h</option>
+                    <option value="120">2h</option>
                   </select>
                 </div>
                 <button onclick="addEvent()" style="margin-bottom:1px">+ Evento</button>
@@ -407,8 +412,11 @@ textarea{resize:none;line-height:1.65;width:100%}
               </div>
               <div class="tff"><label>Notificar</label>
                 <select id="task-ntf">
-                  <option value="0">Sem aviso</option><option value="5">5 min</option>
-                  <option value="10" selected>10 min</option><option value="60">1 hora</option>
+                  <option value="none">Sem aviso</option>
+                  <option value="0">Na hora</option>
+                  <option value="5">5 min antes</option>
+                  <option value="10" selected>10 min antes</option>
+                  <option value="60">1 hora antes</option>
                 </select>
               </div>
             </div>
@@ -575,6 +583,7 @@ textarea{resize:none;line-height:1.65;width:100%}
   <div class="mh"><h2>Editar Tarefa</h2><button class="mc" onclick="closeM('mo-etask')">×</button></div>
   <div class="mb">
     <input type="hidden" id="etask-m-id">
+    <div class="hff"><label>Nome da Tarefa</label><input type="text" id="etask-m-name" placeholder="Nome..."></div>
     <div class="hff"><label>Nova Data</label><input type="text" id="etask-m-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')"></div>
     <div class="hff"><label>Nova Hora</label><input type="text" id="etask-m-time" class="pk-input" readonly onclick="openPicker(this.id, 'time')"></div>
     <div class="hff"><label>Repetir</label>
@@ -979,8 +988,24 @@ function schedAll(){
   if(typeof Notification === 'undefined' || Notification.permission!=='granted')return;
   navigator.serviceWorker.ready.then(r=>{if(r.active)r.active.postMessage({type:'CLEAR_ALL'});}).catch(()=>{});
   const nl=n=>n>=60?`${n/60}h`:`${n}min`;
-  (tasks||[]).filter(Boolean).filter(t=>!t.done&&t.dk&&t.dt&&t.nb).forEach(t=>{const[y,m,d]=t.dk.split('-').map(Number);const[h,mi]=t.dt.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-t.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`✅ "${t.text}" — faltam ${nl(t.nb)}`,delay,`t-${t.id}`);});
-  Object.keys(events||{}).forEach(key=>{const[y,m,d]=key.split('-').map(Number);((events||{})[key]||[]).filter(Boolean).forEach(ev=>{if(!ev.time||!ev.nb)return;const[h,mi]=ev.time.split(':').map(Number);const delay=new Date(y,m-1,d,h,mi).getTime()-ev.nb*60000-Date.now();if(delay>0)schedN('Meu Organizador',`📅 "${ev.text}" às ${ev.time} — faltam ${nl(ev.nb)}`,delay,`e-${ev.id}`);});});
+  
+  (tasks||[]).filter(Boolean).filter(t=>!t.done&&t.dk&&t.dt&&t.nb!=='none').forEach(t=>{
+      const[y,m,d]=t.dk.split('-').map(Number);
+      const[h,mi]=t.dt.split(':').map(Number);
+      const shift = typeof t.nb === 'number' ? t.nb*60000 : 0;
+      const delay=new Date(y,m-1,d,h,mi).getTime()-shift-Date.now();
+      if(delay>0) schedN('Meu Organizador',`✅ "${t.text}"${t.nb>0?` — faltam ${nl(t.nb)}`:' — agora!'}`,delay,`t-${t.id}`);
+  });
+  Object.keys(events||{}).forEach(key=>{
+      const[y,m,d]=key.split('-').map(Number);
+      ((events||{})[key]||[]).filter(Boolean).forEach(ev=>{
+          if(!ev.time||ev.nb==='none')return;
+          const[h,mi]=ev.time.split(':').map(Number);
+          const shift = typeof ev.nb === 'number' ? ev.nb*60000 : 0;
+          const delay=new Date(y,m-1,d,h,mi).getTime()-shift-Date.now();
+          if(delay>0) schedN('Meu Organizador',`📅 "${ev.text}" às ${ev.time}${ev.nb>0?` — faltam ${nl(ev.nb)}`:' — agora!'}`,delay,`e-${ev.id}`);
+      });
+  });
   
   if(cfg.nHab !== false) {
     (habits||[]).filter(Boolean).forEach(h=>{
@@ -1092,7 +1117,9 @@ function togEvDone(k,id){events[k]=(events[k]||[]).map(e=>e.id===id?{...e,done:!
 async function delEvGlobal(k,id){if(!(await showDialog('confirm','Excluir Evento','Excluir este evento permanentemente?')))return;events[k]=(events[k]||[]).filter(e=>e.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function addTask(){
     const inp=document.getElementById('task-in'),text=inp.value.trim();if(!text)return;
-    const dk=document.getElementById('task-date').value||null,dt=document.getElementById('task-time').value||null,nb=parseInt(document.getElementById('task-ntf').value)||0;
+    const dk=document.getElementById('task-date').value||null,dt=document.getElementById('task-time').value||null;
+    const ntfVal=document.getElementById('task-ntf').value;
+    const nb=ntfVal==='none'?'none':parseInt(ntfVal);
     const rep=parseInt(document.getElementById('task-rep').value)||0;
     tasks.unshift({id:Date.now(),text,done:false,dk,dt,nb,rep});
     inp.value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';save();schedAll();renderTasks();renderCal();
@@ -1101,6 +1128,7 @@ function addTask(){
 function editTask(id) {
     const t = tasks.find(x => x.id === id); if(!t) return;
     document.getElementById('etask-m-id').value = id;
+    document.getElementById('etask-m-name').value = t.text || '';
     document.getElementById('etask-m-date').value = t.dk || getToday();
     document.getElementById('etask-m-time').value = t.dt || '';
     document.getElementById('etask-m-rep').value = t.rep || '0';
@@ -1109,6 +1137,7 @@ function editTask(id) {
 function saveEditTask(){
     const id = Number(document.getElementById('etask-m-id').value);
     const t = tasks.find(x => x.id === id); if(!t) return;
+    t.text = document.getElementById('etask-m-name').value.trim() || t.text;
     t.dk = document.getElementById('etask-m-date').value;
     t.dt = document.getElementById('etask-m-time').value;
     t.rep = parseInt(document.getElementById('etask-m-rep').value) || 0;
@@ -1128,7 +1157,13 @@ function tiHTML(item,isDone=false){
 function renderTasks(){
   try {
       const evI=getEvItems();
-      const pend=[...(tasks||[])].filter(Boolean).filter(t=>!t.done).map(t=>({...t,isEv:false})).concat(evI.filter(e=>!e.done)).sort((a,b)=>{if(!a.dk&&!b.dk)return 0;if(!a.dk)return 1;if(!b.dk)return-1;return a.dk.localeCompare(b.dk);});
+      const pend=[...(tasks||[])].filter(Boolean).filter(t=>!t.done).map(t=>({...t,isEv:false})).concat(evI.filter(e=>!e.done)).sort((a,b)=>{
+          if(!a.dk&&!b.dk)return 0;if(!a.dk)return 1;if(!b.dk)return -1;
+          const dkCmp = a.dk.localeCompare(b.dk);
+          if(dkCmp !== 0) return dkCmp;
+          const tA = a.dt || '23:59'; const tB = b.dt || '23:59';
+          return tA.localeCompare(tB);
+      });
       const done=[...(tasks||[])].filter(Boolean).filter(t=>t.done).map(t=>({...t,isEv:false})).concat(evI.filter(e=>e.done));
       const pEl=document.getElementById('t-pend'),dEl=document.getElementById('t-done-wrap');
       pEl.innerHTML=!pend.length&&!done.length?'<p class="empty">Nenhuma tarefa ainda.</p>':pend.length?`<p class="lbl">Pendentes · ${pend.length}</p>`+pend.map(t=>tiHTML(t)).join(''):'';
@@ -1382,7 +1417,14 @@ function selDay(d){
     renderEvList();
 }
 
-function addEvent(){const text=document.getElementById('ev-in').value.trim();if(!text||selD===null)return;const time=document.getElementById('ev-time').value||null,nb=parseInt(document.getElementById('ev-ntf').value)||0;const k=ckSel();if(!events[k])events[k]=[];events[k].push({id:Date.now(),text,time,nb,done:false});document.getElementById('ev-in').value='';document.getElementById('ev-time').value='';save();schedAll();renderEvList();renderCal();renderTasks();}
+function addEvent(){
+    const text=document.getElementById('ev-in').value.trim();if(!text||selD===null)return;
+    const time=document.getElementById('ev-time').value||null;
+    const ntfVal=document.getElementById('ev-ntf').value;
+    const nb=ntfVal==='none'?'none':parseInt(ntfVal);
+    const k=ckSel();if(!events[k])events[k]=[];events[k].push({id:Date.now(),text,time,nb,done:false});
+    document.getElementById('ev-in').value='';document.getElementById('ev-time').value='';save();schedAll();renderEvList();renderCal();renderTasks();
+}
 
 function renderEvList(){
   try {
@@ -1391,8 +1433,8 @@ function renderEvList(){
       const mK=k.substring(0,7);
       
       let rawE = (events||{})[k];
-      let evs = Array.isArray(rawE) ? rawE.slice().sort((a,b)=>(a.time||'').localeCompare(b.time||'')) : [];
-      let dT = Array.isArray(tasks) ? tasks.filter(Boolean).filter(t=>t.dk===k) : [];
+      let evs = Array.isArray(rawE) ? rawE.slice().sort((a,b)=>(a.time||'23:59').localeCompare(b.time||'23:59')) : [];
+      let dT = Array.isArray(tasks) ? tasks.filter(Boolean).filter(t=>t.dk===k).sort((a,b)=>(a.dt||'23:59').localeCompare(b.dt||'23:59')) : [];
       let dBills = Array.isArray(bills) ? bills.filter(Boolean).filter(b=>isBillInDay(b,k)) : [];
       
       const el=document.getElementById('ev-list');
