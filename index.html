@@ -11,7 +11,12 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#fafafa;--bg2:#fff;--bg3:#f5f5f5;--bg4:#e8e8e8;--brd:#eee;--brd2:#ddd;--txt:#222;--txt2:#666;--txt3:#aaa;--txt4:#ccc;--ac:#222;--acfg:#fff;--card:#fff;--inp:#fff;--hol:#e05;}
-[data-theme=dark]{--bg:#111;--bg2:#1a1a1a;--bg3:#252525;--bg4:#0d0d0d;--brd:#2a2a2a;--brd2:#383838;--txt:#eee;--txt2:#aaa;--txt3:#666;--txt4:#444;--ac:#e0e0e0;--acfg:#111;--card:#1e1e1e;--inp:#2a2a2a;--hol:#ff6b8a;}
+:root[data-theme="dark"], body[data-theme="dark"], [data-theme="dark"] {
+    --bg:#111; --bg2:#1a1a1a; --bg3:#252525; --bg4:#0d0d0d;
+    --brd:#2a2a2a; --brd2:#383838; --txt:#eee; --txt2:#aaa;
+    --txt3:#666; --txt4:#444; --ac:#e0e0e0; --acfg:#111;
+    --card:#1e1e1e; --inp:#2a2a2a; --hol:#ff6b8a;
+}
 
 /* PRIVACIDADE */
 body.hide-vals .v-hide { filter: blur(6px); opacity: 0.6; user-select: none; pointer-events: none; transition: filter 0.2s, opacity 0.2s; }
@@ -978,7 +983,19 @@ function save(){
 let cfg={dark:false,name:'',nHab:true,hideVals:false, tabOrder:['agenda','tasks','notes','habitos','fin']};
 function loadCfg(){try{const c=JSON.parse(localStorage.getItem('o_cfg'));if(c)cfg={...cfg,...c};}catch(e){}}
 function saveCfg(){localStorage.setItem('o_cfg',JSON.stringify(cfg));}
-function applyTheme(){document.documentElement.setAttribute('data-theme',cfg.dark?'dark':'');const t=document.getElementById('tog-dark');if(t)t.checked=cfg.dark;}
+function applyTheme(){
+    const isDark = !!cfg.dark;
+    if(isDark) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.body.setAttribute('data-theme', 'dark');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        document.body.removeAttribute('data-theme');
+    }
+    const t = document.getElementById('tog-dark');
+    if (t) t.checked = isDark;
+}
+function toggleTheme(on){cfg.dark=on;saveCfg();applyTheme();}
 function applyName(){
   document.getElementById('aname').textContent=cfg.name?`Olá, ${cfg.name}`:'Organizador Premium';
   document.getElementById('dlbl').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
@@ -1014,7 +1031,6 @@ function applyTabOrder() {
 
 function openCfg(){
     document.getElementById('cfg-name').value=cfg.name||'';
-    document.getElementById('tog-dark').checked=cfg.dark;
     document.getElementById('tog-nhab').checked=cfg.nHab!==false;
     updN();
     renderTabCfg();
@@ -1194,23 +1210,7 @@ function togEvDone(k, id){
     if(!evArr) return;
     const ev = evArr.find(e=>e.id===id);
     if(!ev) return;
-    const wasDone = ev.done;
     ev.done = !ev.done;
-    
-    if(!wasDone && ev.done && ev.rep > 0) {
-        const [y, m, d] = k.split('-').map(Number);
-        let nextD = new Date(y, m-1, d);
-        if(ev.rep === 30) nextD.setMonth(nextD.getMonth() + 1);
-        else nextD.setDate(nextD.getDate() + ev.rep);
-
-        const nextDk = getDK(nextD);
-        if(!events[nextDk]) events[nextDk] = [];
-        const exists = events[nextDk].some(x => x.text === ev.text);
-        if(!exists) {
-            events[nextDk].push({...ev, id:Date.now(), done:false});
-            toast(`Evento recriado para ${fmtDt(nextDk)}`);
-        }
-    }
     save(); renderTasks(); if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();
 }
 
@@ -1538,7 +1538,31 @@ function addEvent(){
     const ntfVal=document.getElementById('ev-ntf').value;
     const nb=ntfVal==='none'?'none':parseInt(ntfVal);
     const rep=parseInt(document.getElementById('ev-rep').value)||0;
-    const k=ckSel();if(!events[k])events[k]=[];events[k].push({id:Date.now(),text,time,nb,done:false,rep});
+    
+    const k=ckSel();
+    const baseId = Date.now();
+    
+    if (rep > 0) {
+        let [y, m, d] = k.split('-').map(Number);
+        let curDate = new Date(y, m-1, d);
+        let maxOccurrences = rep === 1 ? 730 : (rep === 7 ? 104 : 24); 
+        
+        for(let i=0; i < maxOccurrences; i++) {
+            const iterK = getDK(curDate);
+            if(!events[iterK]) events[iterK] = [];
+            events[iterK].push({id: baseId + i, text, time, nb, done: false, rep: rep, groupId: baseId});
+            
+            if(rep === 30) {
+                curDate.setMonth(curDate.getMonth() + 1);
+            } else {
+                curDate.setDate(curDate.getDate() + rep);
+            }
+        }
+    } else {
+        if(!events[k]) events[k] = [];
+        events[k].push({id: baseId, text, time, nb, done: false, rep: 0});
+    }
+    
     document.getElementById('ev-in').value='';document.getElementById('ev-time').value='';document.getElementById('ev-rep').value='0';
     save();schedAll();renderEvList();renderCal();renderTasks();
 }
