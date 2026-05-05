@@ -13,15 +13,15 @@
 :root{--bg:#fafafa;--bg2:#fff;--bg3:#f5f5f5;--bg4:#e8e8e8;--brd:#eee;--brd2:#ddd;--txt:#222;--txt2:#666;--txt3:#aaa;--txt4:#ccc;--ac:#222;--acfg:#fff;--card:#fff;--inp:#fff;--hol:#e05;}
 [data-theme=dark]{--bg:#111;--bg2:#1a1a1a;--bg3:#252525;--bg4:#0d0d0d;--brd:#2a2a2a;--brd2:#383838;--txt:#eee;--txt2:#aaa;--txt3:#666;--txt4:#444;--ac:#e0e0e0;--acfg:#111;--card:#1e1e1e;--inp:#2a2a2a;--hol:#ff6b8a;}
 
-/* PRIVACIDADE: Ocultar valores */
+/* PRIVACIDADE */
 body.hide-vals .v-hide { filter: blur(6px); opacity: 0.6; user-select: none; pointer-events: none; transition: filter 0.2s, opacity 0.2s; }
 .v-hide { transition: filter 0.2s, opacity 0.2s; }
 
-/* LAYOUT NATIVO BLINDADO: Impede que a tela inteira role (Scroll do Body) */
+/* LAYOUT NATIVO BLINDADO */
 body { font-family: system-ui, sans-serif; background: var(--bg4); display: flex; justify-content: center; align-items: center; height: 100vh; height: 100dvh; overflow: hidden; padding: 0.5rem; transition: background .2s; }
 #app { width: 100%; height: 100%; max-width: 490px; background: var(--bg); border-radius: 18px; border: .5px solid var(--brd); overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
 
-/* SPLASH SCREEN PREMIUM */
+/* SPLASH SCREEN */
 #splash { position: absolute; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; border-radius: 18px; animation: fadeOutSplash 0.6s ease-in-out forwards; animation-delay: 1.4s; pointer-events: none; }
 .sp-ico { font-size: 54px; margin-bottom: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
 .sp-title { font-size: 24px; font-weight: 300; color: var(--txt); letter-spacing: 1px; }
@@ -36,7 +36,6 @@ body { font-family: system-ui, sans-serif; background: var(--bg4); display: flex
 .ibt{background:none;border:.5px solid var(--brd2);border-radius:9px;padding:6px 8px;cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center}
 .gear-btn{background:none;border:.5px solid var(--brd2);border-radius:9px;padding:7px;cursor:pointer;display:flex;align-items:center;color:var(--txt2)}
 
-/* NATIVE SLIDER CSS & SCROLL DA ABA INTEIRA */
 .cnt{flex:1; overflow:hidden; position:relative; min-height:0;} 
 #slider { display:flex; width:500%; height:100%; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; }
 .sec{width:20%; flex-shrink:0; padding:1.2rem 1.1rem; display:flex; flex-direction:column; overflow-y:auto; overflow-x:hidden; height:100%; box-sizing:border-box;}
@@ -67,7 +66,6 @@ textarea{resize:none;line-height:1.65;width:100%}
 .mb{overflow-y:auto;flex:1;padding:14px 19px}
 .mf{padding:12px 19px 20px;flex-shrink:0;border-top:.5px solid var(--brd)}
 
-/* CUSTOM DIALOG */
 #mo-dialog { z-index: 150; align-items: center; padding: 1rem; }
 .md-center { margin: auto; transform: translateY(20px) scale(0.95); max-width: 320px; border-radius: 18px; padding-top: 15px; background: var(--bg2); width: 100%; display: flex; flex-direction: column; transition: all .2s; }
 #mo-dialog.open .md-center { transform: translateY(0) scale(1); }
@@ -76,7 +74,6 @@ textarea{resize:none;line-height:1.65;width:100%}
 .dia-btn.cancel { border-right: .5px solid var(--brd); color: var(--txt3); }
 .dia-btn.ok { color: var(--ac); font-weight: 600; }
 
-/* ROLLING WHEEL PICKER */
 #mo-picker { z-index: 140; }
 .pk-wheels { display: flex; justify-content: center; gap: 15px; height: 210px; position: relative; width: 100%; overflow: hidden; margin-top: 10px; }
 .pk-sel-bg { position: absolute; top: 80px; left: 0; right: 0; height: 50px; background: rgba(0,0,0,0.05); border-radius: 12px; z-index: 0; pointer-events: none; }
@@ -127,10 +124,10 @@ textarea{resize:none;line-height:1.65;width:100%}
 .dtoggle.open .arr{transform:rotate(90deg)}
 
 /* NOTES, LISTS & CARDS SELECTION LOCK */
-.nc, .hcard { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.nc, .hcard, .tab-item { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 .ng{display:flex;flex-direction:column;gap:9px; padding-bottom:10px;}
 .nc{border-radius:11px;border:.5px solid var(--brd);padding:14px;cursor:pointer;background:var(--card);transition:transform 0.2s, opacity 0.2s, box-shadow 0.2s;}
-.nc.dragging, .hcard.dragging { z-index: 10; position: relative; }
+.nc.dragging, .hcard.dragging, .tab-item.dragging { z-index: 10; position: relative; }
 .nc h3{font-size:14px;font-weight:500;color:var(--txt);margin-bottom:4px}
 .nc p{font-size:12px;color:var(--txt3);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .nf{display:flex;justify-content:space-between;align-items:center}
@@ -175,15 +172,14 @@ textarea{resize:none;line-height:1.65;width:100%}
 .edl{font-size:12px;color:var(--txt3);margin-bottom:8px}
 .holbanner{background:rgba(200,0,50,.07);border:.5px solid rgba(200,0,50,.18);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:12px;color:var(--hol);display:flex;align-items:center;gap:5px}
 
-/* CALENDAR SLIDE ANIMATIONS */
 @keyframes slideCalNext { 0% { transform: translateX(30px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
 @keyframes slideCalPrev { 0% { transform: translateX(-30px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
 .cal-next { animation: slideCalNext 0.25s ease-out; }
 .cal-prev { animation: slideCalPrev 0.25s ease-out; }
 
 .ef{display:flex;flex-direction:column;gap:6px;margin-bottom:.8rem}
-.efr{display:flex;gap:6px;align-items:flex-end}
-.efl{display:flex;flex-direction:column;gap:3px;flex:1}
+.efr{display:flex;gap:6px;align-items:flex-end; flex-wrap:wrap;}
+.efl{display:flex;flex-direction:column;gap:3px;flex:1;min-width:70px;}
 .efl label{font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
 .efr input,.efr select{font-size:12px;padding:7px 8px}
 .efr button{padding:8px 11px;border-radius:8px;border:none;background:var(--ac);color:var(--acfg);font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0}
@@ -195,7 +191,6 @@ textarea{resize:none;line-height:1.65;width:100%}
 .ebdg{display:inline-block;font-size:10px;background:var(--bg3);color:var(--txt3);border-radius:3px;padding:1px 5px;margin-left:4px}
 .etask{background:#fff3e0;color:#b07}.eev{background:#e8f4ff;color:#46a}
 
-/* WEEK/DAY */
 .wstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:.8rem}
 .wd{display:flex;flex-direction:column;align-items:center;padding:6px 2px;border-radius:9px;cursor:pointer;position:relative}
 .wd:hover{background:var(--bg3)}.wd.sel{background:var(--ac)}
@@ -379,8 +374,14 @@ textarea{resize:none;line-height:1.65;width:100%}
             <div id="hol-row" style="display:none" class="holbanner">🎉 <span id="hol-nm"></span></div>
             <div class="ef">
               <input type="text" id="ev-in" placeholder="Nome do evento..."/>
-              <div class="efr">
+              <div class="efr" style="flex-wrap:wrap;">
                 <div class="efl"><label>Hora</label><input type="text" id="ev-time" class="pk-input" readonly onclick="openPicker(this.id, 'time')" placeholder="--:--"/></div>
+                <div class="efl"><label>Repetir</label>
+                  <select id="ev-rep">
+                    <option value="0">Não</option><option value="1">Diário</option>
+                    <option value="7">Semanal</option><option value="30">Mensal</option>
+                  </select>
+                </div>
                 <div class="efl"><label>Notificar</label>
                   <select id="ev-ntf">
                     <option value="none">Sem aviso</option>
@@ -393,7 +394,7 @@ textarea{resize:none;line-height:1.65;width:100%}
                     <option value="120">2h</option>
                   </select>
                 </div>
-                <button onclick="addEvent()" style="margin-bottom:1px">+ Evento</button>
+                <button onclick="addEvent()" style="margin-bottom:1px; flex-shrink:0;">+ Evento</button>
               </div>
             </div>
             <div id="ev-list" style="padding-bottom:20px;"></div>
@@ -527,11 +528,11 @@ textarea{resize:none;line-height:1.65;width:100%}
   </div>
 
   <div class="tabbar">
-    <button id="tb-agenda" class="tb active" onclick="swTab('agenda',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 2v3M12 2v3M2 8h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Agenda</button>
-    <button id="tb-tasks" class="tb" onclick="swTab('tasks',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.3"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Tarefas</button>
-    <button id="tb-notes" class="tb" onclick="swTab('notes',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 6h6M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Notas</button>
-    <button id="tb-habitos" class="tb" onclick="swTab('habitos',this)"><svg viewBox="0 0 18 18" fill="none"><path d="M9 3a6 6 0 1 1 0 12A6 6 0 0 1 9 3zm0 2v4l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Hábitos</button>
-    <button id="tb-fin" class="tb" onclick="swTab('fin',this)"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M16 12h.01M3 10h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Finanças</button>
+    <button id="tb-agenda" class="tb active" onclick="swTab('agenda',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 2v3M12 2v3M2 8h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Agenda</span></button>
+    <button id="tb-tasks" class="tb" onclick="swTab('tasks',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.3"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Tarefas</span></button>
+    <button id="tb-notes" class="tb" onclick="swTab('notes',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 6h6M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Notas</span></button>
+    <button id="tb-habitos" class="tb" onclick="swTab('habitos',this)"><svg viewBox="0 0 18 18" fill="none"><path d="M9 3a6 6 0 1 1 0 12A6 6 0 0 1 9 3zm0 2v4l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Hábitos</span></button>
+    <button id="tb-fin" class="tb" onclick="swTab('fin',this)"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M16 12h.01M3 10h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Finanças</span></button>
   </div>
 </div>
 
@@ -596,7 +597,7 @@ textarea{resize:none;line-height:1.65;width:100%}
     <div class="hff" id="ebill-scope-wrap"><label>Aplicar em</label>
         <select id="ebill-scope">
             <option value="one">Somente neste mês</option>
-            <option value="all">Todos os meses (Recorrência toda)</option>
+            <option value="future">Este e os próximos</option>
         </select>
     </div>
     <div class="hff"><label>Data base / Vencimento</label><input type="text" id="ebill-m-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')"></div>
@@ -650,6 +651,11 @@ textarea{resize:none;line-height:1.65;width:100%}
       <div class="cl">Nome do Usuário</div>
       <div style="display:flex;gap:8px;width:100%"><input type="text" id="cfg-name" placeholder="Seu nome" maxlength="32" style="flex:1"/><button class="bsv" onclick="saveName()">Salvar</button></div>
     </div>
+    <div class="cst">Navegação</div>
+    <div class="cr" style="flex-direction:column;align-items:flex-start;gap:8px;border-bottom:none;padding-bottom:0;">
+      <div class="cl">Ordem das Abas (Arraste)</div>
+      <div id="cfg-tab-list" class="ng" style="width:100%; margin-top:8px;"></div>
+    </div>
     <div class="cst">Notificações</div>
     <div class="cr">
       <div><div class="cl">Permissão Global</div><div style="font-size:12px;color:var(--txt3);margin-top:2px">Para todas as funções</div></div>
@@ -694,7 +700,10 @@ const QUOTES=[
   'Faça hoje o que seu "eu" do futuro agradecerá.', 'A jornada de mil milhas começa com um passo.'
 ];
 const NOW=new Date(),TY=NOW.getFullYear(),TM=NOW.getMonth(),TD=NOW.getDate();
-const TABS=['agenda','tasks','notes','habitos','fin'];
+
+let TABS=['agenda','tasks','notes','habitos','fin'];
+const TAB_NAMES = {agenda:'Agenda', tasks:'Tarefas', notes:'Notas', habitos:'Hábitos', fin:'Finanças'};
+const TAB_ICONS = {agenda: '📅', tasks: '✅', notes: '📝', habitos: '🔄', fin: '💵'};
 
 const EMOJI_CATS=[
   {cat:'💪 Saúde',e:['💧','🏃','🧘','🍎','💊','🛏','🚴','🏋','🥗','🦷','🧴','❤️','🫁','🩺','🥤','🧃']},
@@ -729,7 +738,7 @@ const TUT_STEPS=[
   {ico:'📝',ttl:'Notas e Listas',txt:'Guarde informações importantes, crie textos livres ou listas de checagem (como compras do mercado).',tab:'notes', target:'#tb-notes'},
   {ico:'🏆',ttl:'Hábitos e Foco',txt:'Construa rotinas! Crie hábitos diários ou semanais e use o Timer Pomodoro inteligente para manter o foco.',tab:'habitos', target:'#tb-habitos'},
   {ico:'💵',ttl:'Finanças Inteligentes',txt:'Controle carteiras, adicione contas que se repetem e veja as projeções dos próximos meses!',tab:'fin', target:'#tb-fin'},
-  {ico:'⚙️',ttl:'Personalize tudo!',txt:'Na engrenagem você ativa o modo escuro, altera seu nome e liga as notificações. Pronto para decolar! 🚀',tab:'agenda', target:'.gear-btn'},
+  {ico:'⚙️',ttl:'Personalize tudo!',txt:'Na engrenagem você ativa o modo escuro, edita seu nome e liga as notificações. Pronto para decolar! 🚀',tab:'agenda', target:'.gear-btn'},
 ];
 let tutStep=0;
 
@@ -966,11 +975,10 @@ function save(){
 }
 
 // CONFIG & PRIVACY
-let cfg={dark:false,name:'',nHab:true,hideVals:false};
+let cfg={dark:false,name:'',nHab:true,hideVals:false, tabOrder:['agenda','tasks','notes','habitos','fin']};
 function loadCfg(){try{const c=JSON.parse(localStorage.getItem('o_cfg'));if(c)cfg={...cfg,...c};}catch(e){}}
 function saveCfg(){localStorage.setItem('o_cfg',JSON.stringify(cfg));}
 function applyTheme(){document.documentElement.setAttribute('data-theme',cfg.dark?'dark':'');const t=document.getElementById('tog-dark');if(t)t.checked=cfg.dark;}
-function toggleTheme(on){cfg.dark=on;saveCfg();applyTheme();}
 function applyName(){
   document.getElementById('aname').textContent=cfg.name?`Olá, ${cfg.name}`:'Organizador Premium';
   document.getElementById('dlbl').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
@@ -979,11 +987,37 @@ async function saveName(){
     const v=document.getElementById('cfg-name').value.trim();
     if(v){cfg.name=v;saveCfg();applyName();toast('Nome atualizado ✓');}
 }
+
+function renderTabCfg() {
+    const container = document.getElementById('cfg-tab-list');
+    const order = cfg.tabOrder && cfg.tabOrder.length === 5 ? cfg.tabOrder : ['agenda','tasks','notes','habitos','fin'];
+    container.innerHTML = order.map(t => `
+        <div class="nc tab-item no-swipe" data-id="${t}" style="padding:10px 14px; display:flex; align-items:center; gap:10px; cursor:grab; margin-bottom:0;">
+            <span style="font-size:18px;">${TAB_ICONS[t]}</span> <span style="font-size:14px; font-weight:500;">${TAB_NAMES[t]}</span>
+            <span style="margin-left:auto; color:var(--txt4); font-size:18px;">☰</span>
+        </div>
+    `).join('');
+}
+
+function applyTabOrder() {
+    if(cfg.tabOrder && cfg.tabOrder.length === 5) {
+        TABS = cfg.tabOrder;
+        const slider = document.getElementById('slider');
+        const tabbar = document.querySelector('.tabbar');
+        TABS.forEach(t => {
+            slider.appendChild(document.getElementById('sec-' + t));
+            tabbar.appendChild(document.getElementById('tb-' + t));
+        });
+        swTab(TABS[curTab] || TABS[0]); 
+    }
+}
+
 function openCfg(){
     document.getElementById('cfg-name').value=cfg.name||'';
     document.getElementById('tog-dark').checked=cfg.dark;
     document.getElementById('tog-nhab').checked=cfg.nHab!==false;
     updN();
+    renderTabCfg();
     openM('mo-cfg');
 }
 
@@ -1083,7 +1117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isSwipe = false; isScroll = false;
         
         tsNoSwipe = !!e.target.closest('.mo') || !!e.target.closest('#fin-proj');
-        tsOnCal = !!e.target.closest('#cal-main') && curTab === 0;
+        tsOnCal = !!e.target.closest('#cal-main') && curTab === TABS.indexOf('agenda');
         
         if(!tsNoSwipe && !tsOnCal) slider.style.transition = 'none';
     }, {passive:true});
@@ -1130,7 +1164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // TASKS + EVENTS
-function getEvItems(){const today=getToday(),res=[];Object.keys(events||{}).sort().forEach(k=>{if(k>=today)((events||{})[k]||[]).filter(Boolean).forEach(ev=>res.push({id:ev.id,text:ev.text,done:ev.done||false,dk:k,dt:ev.time,isEv:true,evKey:k}));});return res;}
+function getEvItems(){const today=getToday(),res=[];Object.keys(events||{}).sort().forEach(k=>{if(k>=today)((events||{})[k]||[]).filter(Boolean).forEach(ev=>res.push({id:ev.id,text:ev.text,done:ev.done||false,dk:k,dt:ev.time,isEv:true,evKey:k,rep:ev.rep||0}));});return res;}
 function togTask(id){
     const t = tasks.find(x=>x.id===id);
     if(!t) return;
@@ -1154,7 +1188,32 @@ function togTask(id){
 }
 async function delTask(id){if(!(await showDialog('confirm','Excluir Tarefa','Excluir esta tarefa permanentemente?')))return;tasks=tasks.filter(t=>t.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function reactivate(id){tasks=tasks.map(t=>t.id===id?{...t,done:false}:t);save();renderTasks();}
-function togEvDone(k,id){events[k]=(events[k]||[]).map(e=>e.id===id?{...e,done:!e.done}:e);save();renderTasks();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
+
+function togEvDone(k, id){
+    const evArr = events[k];
+    if(!evArr) return;
+    const ev = evArr.find(e=>e.id===id);
+    if(!ev) return;
+    const wasDone = ev.done;
+    ev.done = !ev.done;
+    
+    if(!wasDone && ev.done && ev.rep > 0) {
+        const [y, m, d] = k.split('-').map(Number);
+        let nextD = new Date(y, m-1, d);
+        if(ev.rep === 30) nextD.setMonth(nextD.getMonth() + 1);
+        else nextD.setDate(nextD.getDate() + ev.rep);
+
+        const nextDk = getDK(nextD);
+        if(!events[nextDk]) events[nextDk] = [];
+        const exists = events[nextDk].some(x => x.text === ev.text);
+        if(!exists) {
+            events[nextDk].push({...ev, id:Date.now(), done:false});
+            toast(`Evento recriado para ${fmtDt(nextDk)}`);
+        }
+    }
+    save(); renderTasks(); if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();
+}
+
 async function delEvGlobal(k,id){if(!(await showDialog('confirm','Excluir Evento','Excluir este evento permanentemente?')))return;events[k]=(events[k]||[]).filter(e=>e.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function addTask(){
     const inp=document.getElementById('task-in'),text=inp.value.trim();if(!text)return;
@@ -1194,7 +1253,7 @@ function tiHTML(item,isDone=false){
   const df=item.isEv?`delEvGlobal('${item.evKey}',${item.id})`:`delTask(${item.id})`;
   const editBtn = (!isDone && !item.isEv) ? `<button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${item.id})">✏️</button>` : '';
   const acts=isDone?`<div class="dtb">${!item.isEv?`<button class="brev no-swipe" onclick="reactivate(${item.id})">↩</button>`:''}<button class="bperm no-swipe" onclick="${df}">🗑</button></div>`:`<div class="dtb">${editBtn}<button class="bd no-swipe" onclick="${df}">×</button></div>`;
-  const repIcon = item.rep > 0 && !item.isEv ? ' 🔁' : '';
+  const repIcon = item.rep > 0 ? ' 🔁' : '';
   return`<div class="ti ${item.done?'done-item':''}"><div class="tck no-swipe ${item.done?'done':''}" onclick="${tf}">${item.done?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="tb2"><div class="tt">${esc(item.text)}${repIcon}${badge}</div>${item.obs?`<div style="font-size:12px;color:var(--txt3);margin-top:2px;line-height:1.3">${esc(item.obs)}</div>`:''}${meta?`<div class="tm ${ov?'ov':''}">${ov?'⚠ ':'📅 '}${esc(meta)}</div>`:''}</div>${acts}</div>`;
 }
 
@@ -1478,8 +1537,10 @@ function addEvent(){
     const time=document.getElementById('ev-time').value||null;
     const ntfVal=document.getElementById('ev-ntf').value;
     const nb=ntfVal==='none'?'none':parseInt(ntfVal);
-    const k=ckSel();if(!events[k])events[k]=[];events[k].push({id:Date.now(),text,time,nb,done:false});
-    document.getElementById('ev-in').value='';document.getElementById('ev-time').value='';save();schedAll();renderEvList();renderCal();renderTasks();
+    const rep=parseInt(document.getElementById('ev-rep').value)||0;
+    const k=ckSel();if(!events[k])events[k]=[];events[k].push({id:Date.now(),text,time,nb,done:false,rep});
+    document.getElementById('ev-in').value='';document.getElementById('ev-time').value='';document.getElementById('ev-rep').value='0';
+    save();schedAll();renderEvList();renderCal();renderTasks();
 }
 
 function renderEvList(){
@@ -1523,7 +1584,7 @@ function renderEvList(){
       
       const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck no-swipe ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}${t.rep?' 🔁':''}<span class="ebdg etask">tarefa</span></div>${t.obs?`<div style="font-size:11px;color:var(--txt3);margin-top:2px;line-height:1.2">${esc(t.obs)}</div>`:''}${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd no-swipe" onclick="delTask(${t.id})">×</button></div>`).join('');
       
-      const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck no-swipe ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}</div></div><button class="bd no-swipe" onclick="delEvGlobal('${k}',${ev.id})">×</button></div>`).join('');
+      const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck no-swipe ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}${ev.rep?' 🔁':''}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}</div></div><button class="bd no-swipe" onclick="delEvGlobal('${k}',${ev.id})">×</button></div>`).join('');
       
       if(dBills.length) html += `<p class="lbl" style="margin-top:${html?10:0}px;margin-bottom:5px">Finanças</p>`+bh;
       if(dT.length) html += `<p class="lbl" style="margin-top:${html?10:0}px;margin-bottom:5px">Tarefas</p>`+th;
@@ -2110,6 +2171,30 @@ function saveEditBill(){
       b.valMap[mk] = val;
       b.descMap[mk] = desc;
       if(ndate && ndate !== b.date) { toast("A data base não muda no modo de edição individual."); }
+  } else if (b.rep !== 0 && document.getElementById('ebill-scope').value === 'future') {
+      b.endMk = mk;
+      
+      let oldDay = b.date.substring(8,10);
+      let newDate = `${mk}-${oldDay}`; 
+      if (ndate) newDate = ndate;
+      
+      let newB = JSON.parse(JSON.stringify(b));
+      newB.id = Date.now();
+      newB.date = newDate;
+      newB.desc = desc;
+      newB.val = val;
+      newB.paidMap = {}; newB.valMap = {}; newB.descMap = {}; newB.delMap = {};
+      newB.endMk = null;
+      
+      if (b.paidMap && b.paidMap[mk]) { 
+          newB.paidMap[mk] = true; 
+          delete b.paidMap[mk]; 
+      }
+      if (b.valMap) delete b.valMap[mk];
+      if (b.descMap) delete b.descMap[mk];
+      if (b.delMap) delete b.delMap[mk];
+      
+      bills.push(newB);
   } else {
       if(ndate) b.date = ndate;
       b.desc = desc; b.val = val;
@@ -2282,14 +2367,8 @@ function toast(msg) {
 function initApp() {
     try {
         load(); loadCfg(); loadHabits();
-        applyTheme(); applyName(); applyHideVals();
+        applyTabOrder(); applyTheme(); applyName(); applyHideVals();
         if(typeof chgBillType === 'function') chgBillType(); 
-        
-        // Define aba ativa silenciosamente
-        document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
-        document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
-        document.getElementById('sec-agenda').classList.add('active');
-        document.getElementById('tb-agenda').classList.add('active');
         
         calView = 'month'; cY = TY; cM = TM; selD = null;
 
@@ -2304,6 +2383,10 @@ function initApp() {
         try {
             bindDrag('ngrid', '.nc', () => { const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id)))); notes=arr.filter(Boolean); save(); });
             bindDrag('hab-list', '.hcard', () => { const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id)))); habits=arr.filter(Boolean); saveHabits(); });
+            bindDrag('cfg-tab-list', '.tab-item', () => { 
+                const arr=[]; document.querySelectorAll('#cfg-tab-list .tab-item').forEach(el=>arr.push(el.dataset.id)); 
+                cfg.tabOrder=arr; saveCfg(); applyTabOrder(); 
+            });
         } catch(e) {}
         
         document.getElementById('task-in').addEventListener('keydown', e => { if(e.key==='Enter') addTask(); });
@@ -2314,7 +2397,7 @@ function initApp() {
             if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}
         } catch(e) {}
         
-        if(window._shared){swTab('notes',document.getElementById('tb-notes'));toast('✓ Texto salvo nas notas!');}
+        if(window._shared){swTab('notes',document.getElementById(`tb-${TABS.includes('notes')?'notes':TABS[0]}`));toast('✓ Texto salvo nas notas!');}
         
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         
