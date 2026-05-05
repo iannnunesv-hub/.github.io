@@ -11,7 +11,8 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#fafafa;--bg2:#fff;--bg3:#f5f5f5;--bg4:#e8e8e8;--brd:#eee;--brd2:#ddd;--txt:#222;--txt2:#666;--txt3:#aaa;--txt4:#ccc;--ac:#222;--acfg:#fff;--card:#fff;--inp:#fff;--hol:#e05;}
-:root[data-theme="dark"], body[data-theme="dark"], [data-theme="dark"] {
+
+[data-theme="dark"] {
     --bg:#111; --bg2:#1a1a1a; --bg3:#252525; --bg4:#0d0d0d;
     --brd:#2a2a2a; --brd2:#383838; --txt:#eee; --txt2:#aaa;
     --txt3:#666; --txt4:#444; --ac:#e0e0e0; --acfg:#111;
@@ -650,7 +651,10 @@ textarea{resize:none;line-height:1.65;width:100%}
   <div class="mh"><h2>Configurações</h2><button class="mc" onclick="closeM('mo-cfg')">×</button></div>
   <div class="mb">
     <div class="cst">Aparência</div>
-    <div class="cr"><div class="cl">Tema escuro</div><label class="tog"><input type="checkbox" id="tog-dark" onchange="toggleTheme(this.checked)"/><span class="tog-s"></span></label></div>
+    <div class="cr">
+      <div class="cl">Tema escuro</div>
+      <label class="tog"><input type="checkbox" id="tog-dark" onchange="toggleTheme(this.checked)"/><span class="tog-s"></span></label>
+    </div>
     <div class="cst">Identidade</div>
     <div class="cr" style="flex-direction:column;align-items:flex-start;gap:8px;border-bottom:none">
       <div class="cl">Nome do Usuário</div>
@@ -984,18 +988,17 @@ let cfg={dark:false,name:'',nHab:true,hideVals:false, tabOrder:['agenda','tasks'
 function loadCfg(){try{const c=JSON.parse(localStorage.getItem('o_cfg'));if(c)cfg={...cfg,...c};}catch(e){}}
 function saveCfg(){localStorage.setItem('o_cfg',JSON.stringify(cfg));}
 function applyTheme(){
-    const isDark = !!cfg.dark;
-    if(isDark) {
+    if(cfg.dark) {
         document.documentElement.setAttribute('data-theme', 'dark');
-        document.body.setAttribute('data-theme', 'dark');
     } else {
         document.documentElement.removeAttribute('data-theme');
-        document.body.removeAttribute('data-theme');
     }
-    const t = document.getElementById('tog-dark');
-    if (t) t.checked = isDark;
 }
-function toggleTheme(on){cfg.dark=on;saveCfg();applyTheme();}
+function toggleTheme(on){
+    cfg.dark = on;
+    saveCfg();
+    applyTheme();
+}
 function applyName(){
   document.getElementById('aname').textContent=cfg.name?`Olá, ${cfg.name}`:'Organizador Premium';
   document.getElementById('dlbl').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
@@ -1031,6 +1034,7 @@ function applyTabOrder() {
 
 function openCfg(){
     document.getElementById('cfg-name').value=cfg.name||'';
+    document.getElementById('tog-dark').checked = !!cfg.dark;
     document.getElementById('tog-nhab').checked=cfg.nHab!==false;
     updN();
     renderTabCfg();
@@ -1181,25 +1185,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // TASKS + EVENTS
 function getEvItems(){const today=getToday(),res=[];Object.keys(events||{}).sort().forEach(k=>{if(k>=today)((events||{})[k]||[]).filter(Boolean).forEach(ev=>res.push({id:ev.id,text:ev.text,done:ev.done||false,dk:k,dt:ev.time,isEv:true,evKey:k,rep:ev.rep||0}));});return res;}
+
 function togTask(id){
     const t = tasks.find(x=>x.id===id);
     if(!t) return;
-    const wasDone = t.done;
     t.done = !t.done;
-    
-    if(!wasDone && t.done && t.rep > 0 && t.dk) {
-        const [y, m, d] = t.dk.split('-').map(Number);
-        let nextD = new Date(y, m-1, d);
-        if(t.rep === 30) nextD.setMonth(nextD.getMonth() + 1);
-        else nextD.setDate(nextD.getDate() + t.rep);
-
-        const nextDk = getDK(nextD);
-        const exists = tasks.some(x => x.text === t.text && x.dk === nextDk);
-        if(!exists) {
-            tasks.push({...t, id:Date.now(), dk:nextDk, done:false});
-            toast(`Tarefa recriada para ${fmtDt(nextDk)}`);
-        }
-    }
     save(); renderTasks(); if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();
 }
 async function delTask(id){if(!(await showDialog('confirm','Excluir Tarefa','Excluir esta tarefa permanentemente?')))return;tasks=tasks.filter(t=>t.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
@@ -1215,6 +1205,7 @@ function togEvDone(k, id){
 }
 
 async function delEvGlobal(k,id){if(!(await showDialog('confirm','Excluir Evento','Excluir este evento permanentemente?')))return;events[k]=(events[k]||[]).filter(e=>e.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
+
 function addTask(){
     const inp=document.getElementById('task-in'),text=inp.value.trim();if(!text)return;
     const obs=document.getElementById('task-obs').value.trim();
@@ -1222,7 +1213,23 @@ function addTask(){
     const ntfVal=document.getElementById('task-ntf').value;
     const nb=ntfVal==='none'?'none':parseInt(ntfVal);
     const rep=parseInt(document.getElementById('task-rep').value)||0;
-    tasks.unshift({id:Date.now(),text,obs,done:false,dk,dt,nb,rep});
+    
+    const baseId = Date.now();
+
+    if (rep > 0 && dk) {
+        let [y, m, d] = dk.split('-').map(Number);
+        let curDate = new Date(y, m-1, d);
+        let maxOccurrences = rep === 1 ? 730 : (rep === 7 ? 104 : 24);
+        for(let i=0; i < maxOccurrences; i++) {
+            const iterK = getDK(curDate);
+            tasks.unshift({id: baseId + i, text, obs, done: false, dk: iterK, dt, nb, rep, groupId: baseId});
+            if(rep === 30) curDate.setMonth(curDate.getMonth() + 1);
+            else curDate.setDate(curDate.getDate() + rep);
+        }
+    } else {
+        tasks.unshift({id: baseId, text, obs, done: false, dk, dt, nb, rep});
+    }
+
     inp.value='';document.getElementById('task-obs').value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';save();schedAll();renderTasks();renderCal();
 }
 
