@@ -114,6 +114,9 @@ textarea{resize:none;line-height:1.65;width:100%}
 .tff label{font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .tff input,.tff select{font-size:13px;padding:7px;height:34px;}
 
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+
 .ti{display:flex;align-items:flex-start;gap:9px;padding:11px 13px;border-radius:10px;border:.5px solid var(--brd);margin-bottom:6px;background:var(--card)}
 .ti.done-item .tt{text-decoration:line-through;color:var(--txt4)}
 .tck{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--txt4);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .15s}
@@ -222,6 +225,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 .hcard{display:flex;align-items:center;padding:14px;gap:14px;border-radius:18px;background:var(--card);border:.5px solid var(--brd);margin-bottom:12px;transition:all .3s ease;position:relative;flex-shrink:0;}
 .hcard.done{opacity:0.55;background:var(--bg3);}
 .hcard.huns{opacity:0.4; filter: grayscale(0.8);}
+.hcard.hpaus{opacity:0.5; filter: grayscale(1); border-style:dashed;}
 .h-ico-wrap{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
 .h-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;}
 .h-nm{font-size:15px;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -419,6 +423,13 @@ textarea{resize:none;line-height:1.65;width:100%}
             <div class="tf2">
               <div class="tff"><label>Dia</label><input type="text" id="task-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')" placeholder="Sem data"/></div>
               <div class="tff"><label>Hora</label><input type="text" id="task-time" class="pk-input" readonly onclick="openPicker(this.id, 'time')" placeholder="--:--"/></div>
+              <div class="tff"><label>Prioridade</label>
+                <select id="task-pri">
+                  <option value="1">Normal</option>
+                  <option value="2">Alta 🔴</option>
+                  <option value="0">Baixa 🟢</option>
+                </select>
+              </div>
               <div class="tff"><label>Repetir</label>
                 <select id="task-rep">
                   <option value="0">Não</option><option value="1">Diário</option>
@@ -630,13 +641,32 @@ textarea{resize:none;line-height:1.65;width:100%}
     <input type="hidden" id="etask-m-id">
     <div class="hff"><label>Nome da Tarefa</label><input type="text" id="etask-m-name" placeholder="Nome..."></div>
     <div class="hff"><label>Observação</label><input type="text" id="etask-m-obs" placeholder="Observação..."></div>
-    <div class="hff"><label>Nova Data</label><input type="text" id="etask-m-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')"></div>
-    <div class="hff"><label>Nova Hora</label><input type="text" id="etask-m-time" class="pk-input" readonly onclick="openPicker(this.id, 'time')"></div>
-    <div class="hff"><label>Repetir</label>
-        <select id="etask-m-rep">
-            <option value="0">Não</option><option value="1">Diário</option>
-            <option value="7">Semanal</option><option value="30">Mensal</option>
-        </select>
+    
+    <div style="display:flex; gap:8px;">
+      <div class="hff" style="flex:1;"><label>Nova Data</label><input type="text" id="etask-m-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')"></div>
+      <div class="hff" style="flex:1;"><label>Nova Hora</label><input type="text" id="etask-m-time" class="pk-input" readonly onclick="openPicker(this.id, 'time')"></div>
+    </div>
+    
+    <div style="display:flex; gap:8px;">
+      <div class="hff" style="flex:1;"><label>Prioridade</label>
+         <select id="etask-m-pri">
+             <option value="1">Normal</option>
+             <option value="2">Alta 🔴</option>
+             <option value="0">Baixa 🟢</option>
+         </select>
+      </div>
+      <div class="hff" style="flex:1;"><label>Repetir</label>
+          <select id="etask-m-rep">
+              <option value="0">Não</option><option value="1">Diário</option>
+              <option value="7">Semanal</option><option value="30">Mensal</option>
+          </select>
+      </div>
+    </div>
+
+    <div class="hff">
+       <label>Subtarefas (Checklist)</label>
+       <div id="etask-m-subs" style="display:flex; flex-direction:column; gap:5px; margin-bottom:8px;"></div>
+       <button class="bnn" style="border-style:dashed; padding:8px; margin-bottom:0;" onclick="addEtaskSub()">+ Adicionar subtarefa</button>
     </div>
   </div>
   <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditTask()">Salvar Alterações</button></div>
@@ -673,6 +703,11 @@ textarea{resize:none;line-height:1.65;width:100%}
     <div class="cr" style="border-bottom:none">
       <div><div class="cl">Alertas de Hábitos</div><div style="font-size:12px;color:var(--txt3);margin-top:2px">Avisar no horário do hábito</div></div>
       <label class="tog"><input type="checkbox" id="tog-nhab" onchange="cfg.nHab=this.checked;saveCfg();schedAll()"/><span class="tog-s"></span></label>
+    </div>
+    <div class="cst">Segurança</div>
+    <div class="cr" style="border-bottom:none">
+      <div class="cl">Exportar Backup</div>
+      <button class="bncfg" style="background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2);" onclick="exportBackup()">Baixar .json</button>
     </div>
   </div>
 </div></div>
@@ -983,16 +1018,32 @@ function save(){
   localStorage.setItem('o_bills', JSON.stringify(bills));
 }
 
+// BACKUP
+function exportBackup() {
+    const data = { tasks, notes, events, accounts, bills, habits, cfg, exportDate: new Date().toISOString() };
+    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `organizador_backup_${getToday()}.json`;
+    a.click(); URL.revokeObjectURL(url);
+    toast('Backup baixado com sucesso!');
+}
+
 // CONFIG & PRIVACY
 let cfg={dark:false,name:'',nHab:true,hideVals:false, tabOrder:['agenda','tasks','notes','habitos','fin']};
 function loadCfg(){try{const c=JSON.parse(localStorage.getItem('o_cfg'));if(c)cfg={...cfg,...c};}catch(e){}}
 function saveCfg(){localStorage.setItem('o_cfg',JSON.stringify(cfg));}
 function applyTheme(){
-    if(cfg.dark) {
+    const isDark = !!cfg.dark;
+    if(isDark) {
         document.documentElement.setAttribute('data-theme', 'dark');
+        document.body.setAttribute('data-theme', 'dark');
     } else {
         document.documentElement.removeAttribute('data-theme');
+        document.body.removeAttribute('data-theme');
     }
+    const t = document.getElementById('tog-dark');
+    if (t) t.checked = isDark;
 }
 function toggleTheme(on){
     cfg.dark = on;
@@ -1120,7 +1171,7 @@ let curTab = 0;
 function swTab(name,btn){
   curTab = TABS.indexOf(name);
   document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active'); else document.getElementById('tb-'+name).classList.add('active');
+  if(btn) btn.classList.add('active'); else document.getElementById(`tb-${name}`).classList.add('active');
   const slider = document.getElementById('slider');
   slider.style.transition = 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
   slider.style.transform = `translateX(-${curTab * 20}%)`;
@@ -1195,6 +1246,14 @@ function togTask(id){
 async function delTask(id){if(!(await showDialog('confirm','Excluir Tarefa','Excluir esta tarefa permanentemente?')))return;tasks=tasks.filter(t=>t.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 function reactivate(id){tasks=tasks.map(t=>t.id===id?{...t,done:false}:t);save();renderTasks();}
 
+function togTaskSub(taskId, subIdx) {
+    const t = tasks.find(x => x.id === taskId); if(!t) return;
+    if(t.sub && t.sub[subIdx]) {
+        t.sub[subIdx].d = !t.sub[subIdx].d;
+        save(); renderTasks(); if(selD !== null) renderEvList();
+    }
+}
+
 function togEvDone(k, id){
     const evArr = events[k];
     if(!evArr) return;
@@ -1213,6 +1272,7 @@ function addTask(){
     const ntfVal=document.getElementById('task-ntf').value;
     const nb=ntfVal==='none'?'none':parseInt(ntfVal);
     const rep=parseInt(document.getElementById('task-rep').value)||0;
+    const pri=parseInt(document.getElementById('task-pri').value)||1;
     
     const baseId = Date.now();
 
@@ -1222,17 +1282,18 @@ function addTask(){
         let maxOccurrences = rep === 1 ? 730 : (rep === 7 ? 104 : 24);
         for(let i=0; i < maxOccurrences; i++) {
             const iterK = getDK(curDate);
-            tasks.unshift({id: baseId + i, text, obs, done: false, dk: iterK, dt, nb, rep, groupId: baseId});
+            tasks.unshift({id: baseId + i, text, obs, done: false, dk: iterK, dt, nb, rep, pri, sub: [], groupId: baseId});
             if(rep === 30) curDate.setMonth(curDate.getMonth() + 1);
             else curDate.setDate(curDate.getDate() + rep);
         }
     } else {
-        tasks.unshift({id: baseId, text, obs, done: false, dk, dt, nb, rep});
+        tasks.unshift({id: baseId, text, obs, done: false, dk, dt, nb, rep, pri, sub: []});
     }
 
-    inp.value='';document.getElementById('task-obs').value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';save();schedAll();renderTasks();renderCal();
+    inp.value='';document.getElementById('task-obs').value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';document.getElementById('task-pri').value='1';save();schedAll();renderTasks();renderCal();
 }
 
+let curEtaskSubs = [];
 function editTask(id) {
     const t = tasks.find(x => x.id === id); if(!t) return;
     document.getElementById('etask-m-id').value = id;
@@ -1241,8 +1302,23 @@ function editTask(id) {
     document.getElementById('etask-m-date').value = t.dk || getToday();
     document.getElementById('etask-m-time').value = t.dt || '';
     document.getElementById('etask-m-rep').value = t.rep || '0';
+    document.getElementById('etask-m-pri').value = t.pri !== undefined ? t.pri : '1';
+    curEtaskSubs = JSON.parse(JSON.stringify(t.sub || []));
+    renderEtaskSubs();
     openM('mo-etask');
 }
+function renderEtaskSubs() {
+    const wrp = document.getElementById('etask-m-subs');
+    wrp.innerHTML = curEtaskSubs.map((s, i) => `
+        <div style="display:flex; gap:5px;">
+            <input type="text" value="${esc(s.t)}" oninput="curEtaskSubs[${i}].t=this.value" placeholder="Subtarefa..." style="flex:1; padding:6px 10px; font-size:13px;"/>
+            <button class="bd no-swipe" style="color:var(--txt4); padding:0 8px;" onclick="delEtaskSub(${i})">×</button>
+        </div>
+    `).join('');
+}
+function addEtaskSub() { curEtaskSubs.push({t:'', d:false}); renderEtaskSubs(); }
+function delEtaskSub(i) { curEtaskSubs.splice(i, 1); renderEtaskSubs(); }
+
 function saveEditTask(){
     const id = Number(document.getElementById('etask-m-id').value);
     const t = tasks.find(x => x.id === id); if(!t) return;
@@ -1251,6 +1327,8 @@ function saveEditTask(){
     t.dk = document.getElementById('etask-m-date').value;
     t.dt = document.getElementById('etask-m-time').value;
     t.rep = parseInt(document.getElementById('etask-m-rep').value) || 0;
+    t.pri = parseInt(document.getElementById('etask-m-pri').value) || 1;
+    t.sub = curEtaskSubs.filter(s => s.t.trim() !== '');
     save(); renderTasks(); renderCal(); if(selD !== null) renderEvList(); schedAll(); closeM('mo-etask');
 }
 
@@ -1261,13 +1339,43 @@ function tiHTML(item,isDone=false){
   const editBtn = (!isDone && !item.isEv) ? `<button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${item.id})">✏️</button>` : '';
   const acts=isDone?`<div class="dtb">${!item.isEv?`<button class="brev no-swipe" onclick="reactivate(${item.id})">↩</button>`:''}<button class="bperm no-swipe" onclick="${df}">🗑</button></div>`:`<div class="dtb">${editBtn}<button class="bd no-swipe" onclick="${df}">×</button></div>`;
   const repIcon = item.rep > 0 ? ' 🔁' : '';
-  return`<div class="ti ${item.done?'done-item':''}"><div class="tck no-swipe ${item.done?'done':''}" onclick="${tf}">${item.done?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="tb2"><div class="tt">${esc(item.text)}${repIcon}${badge}</div>${item.obs?`<div style="font-size:12px;color:var(--txt3);margin-top:2px;line-height:1.3">${esc(item.obs)}</div>`:''}${meta?`<div class="tm ${ov?'ov':''}">${ov?'⚠ ':'📅 '}${esc(meta)}</div>`:''}</div>${acts}</div>`;
+  
+  let priIcon = '';
+  if(item.pri === 2) priIcon = '<span style="color:#e44; font-size:11px; font-weight:bold; margin-right:5px;">🔴 Alta</span>';
+  if(item.pri === 0) priIcon = '<span style="color:#1DD1A1; font-size:11px; font-weight:bold; margin-right:5px;">🟢 Baixa</span>';
+
+  let subHtml = '';
+  if(item.sub && item.sub.length > 0) {
+      const dn = item.sub.filter(s => s.d).length;
+      const tot = item.sub.length;
+      subHtml = `
+      <details class="no-swipe" style="margin-top:4px;">
+          <summary style="outline:none; font-size:11px; color:var(--txt3); cursor:pointer; list-style:none; display:flex; align-items:center; gap:4px;">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              ${dn}/${tot} subtarefas
+          </summary>
+          <div style="padding-left:14px; margin-top:5px; display:flex; flex-direction:column; gap:4px;">
+              ${item.sub.map((s, i) => `
+                  <div style="display:flex; align-items:center; gap:6px; font-size:12px; color: ${s.d ? 'var(--txt4)' : 'var(--txt2)'}; text-decoration: ${s.d ? 'line-through' : 'none'}; cursor:pointer;" onclick="togTaskSub(${item.id}, ${i})">
+                      <div style="width:12px; height:12px; border-radius:3px; border:1px solid var(--txt4); display:flex; align-items:center; justify-content:center; background:${s.d ? 'var(--txt4)' : 'transparent'};">
+                          ${s.d ? '<svg width="8" height="8" viewBox="0 0 24 24" stroke="#fff" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}
+                      </div>
+                      ${esc(s.t)}
+                  </div>
+              `).join('')}
+          </div>
+      </details>`;
+  }
+
+  return`<div class="ti ${item.done?'done-item':''}"><div class="tck no-swipe ${item.done?'done':''}" onclick="${tf}">${item.done?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="tb2"><div class="tt">${priIcon}${esc(item.text)}${repIcon}${badge}</div>${item.obs?`<div style="font-size:12px;color:var(--txt3);margin-top:2px;line-height:1.3">${esc(item.obs)}</div>`:''}${subHtml}${meta?`<div class="tm ${ov?'ov':''}">${ov?'⚠ ':'📅 '}${esc(meta)}</div>`:''}</div>${acts}</div>`;
 }
 
 function renderTasks(){
   try {
       const evI=getEvItems();
       const pend=[...(tasks||[])].filter(Boolean).filter(t=>!t.done).map(t=>({...t,isEv:false})).concat(evI.filter(e=>!e.done)).sort((a,b)=>{
+          const priCmp = (b.pri !== undefined ? b.pri : 1) - (a.pri !== undefined ? a.pri : 1);
+          if (priCmp !== 0) return priCmp;
           if(!a.dk&&!b.dk)return 0;if(!a.dk)return 1;if(!b.dk)return -1;
           const dkCmp = a.dk.localeCompare(b.dk);
           if(dkCmp !== 0) return dkCmp;
@@ -1582,7 +1690,11 @@ function renderEvList(){
       
       let rawE = (events||{})[k];
       let evs = Array.isArray(rawE) ? rawE.slice().sort((a,b)=>(a.time||'23:59').localeCompare(b.time||'23:59')) : [];
-      let dT = Array.isArray(tasks) ? tasks.filter(Boolean).filter(t=>t.dk===k).sort((a,b)=>(a.dt||'23:59').localeCompare(b.dt||'23:59')) : [];
+      let dT = Array.isArray(tasks) ? tasks.filter(Boolean).filter(t=>t.dk===k).sort((a,b)=>{
+          const priCmp = (b.pri !== undefined ? b.pri : 1) - (a.pri !== undefined ? a.pri : 1);
+          if (priCmp !== 0) return priCmp;
+          return (a.dt||'23:59').localeCompare(b.dt||'23:59');
+      }) : [];
       let dBills = Array.isArray(bills) ? bills.filter(Boolean).filter(b=>isBillInDay(b,k)) : [];
       
       const el=document.getElementById('ev-list');
@@ -1591,7 +1703,7 @@ function renderEvList(){
       
       if(k === getToday()) {
           const dObj = new Date(cY, cM, selD);
-          const dh = (habits||[]).filter(Boolean).filter(h => isSchedOn(h, dObj));
+          const dh = (habits||[]).filter(Boolean).filter(h => !h.paused && isSchedOn(h, dObj));
           if(dh.length > 0) {
               html += `<div class="lbl" style="margin-top:0px;margin-bottom:5px">Hábitos de Hoje</div>`;
               html += dh.map(h => {
@@ -1613,7 +1725,12 @@ function renderEvList(){
           return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck no-swipe ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' 🔁':''}</span></div><div class="em2 v-hide">${fmtC(bVal)}</div></div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">✏️</button><button class="bd no-swipe" onclick="delBill(${b.id}, '${mK}')">×</button></div>`
       }).join('');
       
-      const th=dT.map(t=>`<div class="evi ${t.done?'done-ev':''}"><div class="tck no-swipe ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(t.text)}${t.rep?' 🔁':''}<span class="ebdg etask">tarefa</span></div>${t.obs?`<div style="font-size:11px;color:var(--txt3);margin-top:2px;line-height:1.2">${esc(t.obs)}</div>`:''}${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd no-swipe" onclick="delTask(${t.id})">×</button></div>`).join('');
+      const th=dT.map(t=>{
+          let priIcon = '';
+          if(t.pri === 2) priIcon = '<span style="color:#e44; font-size:11px; font-weight:bold; margin-right:5px;">🔴 Alta</span>';
+          if(t.pri === 0) priIcon = '<span style="color:#1DD1A1; font-size:11px; font-weight:bold; margin-right:5px;">🟢 Baixa</span>';
+          return `<div class="evi ${t.done?'done-ev':''}"><div class="tck no-swipe ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${priIcon}${esc(t.text)}${t.rep?' 🔁':''}<span class="ebdg etask">tarefa</span></div>${t.obs?`<div style="font-size:11px;color:var(--txt3);margin-top:2px;line-height:1.2">${esc(t.obs)}</div>`:''}${t.dt?`<div class="em2">🕐 ${t.dt}</div>`:''}</div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">✏️</button><button class="bd no-swipe" onclick="delTask(${t.id})">×</button></div>`
+      }).join('');
       
       const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck no-swipe ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}${ev.rep?' 🔁':''}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`🕐 ${ev.time}`:'Sem horário'}</div></div><button class="bd no-swipe" onclick="delEvGlobal('${k}',${ev.id})">×</button></div>`).join('');
       
@@ -1689,13 +1806,31 @@ function jumpDK(dk){if(!dk)return;const[y,m,d]=dk.split('-').map(Number);cY=y;cM
 function renderCal(){if(calView==='month')renderMonth();else if(calView==='week')renderWeek();else renderDay();}
 
 // HABITS
-let habits=[],hfd={id:null,icon:'⭐',name:'',color:'#54A0FF',target:1,times:[],frequency:'daily',customDays:[],reminderTime:''},focusH=null,focTmr=null;
+let habits=[],hfd={id:null,icon:'⭐',name:'',color:'#54A0FF',target:1,times:[],frequency:'daily',customDays:[],reminderTime:'',paused:false},focusH=null,focTmr=null;
 function loadHabits(){try{habits=JSON.parse(localStorage.getItem('o_habits2')); if(!Array.isArray(habits)) habits=[];}catch(e){habits=[];}}
 function saveHabits(){localStorage.setItem('o_habits2',JSON.stringify(habits));}
-function isSchedOn(h,date){const w=date.getDay();if(h.frequency==='daily')return true;if(h.frequency==='weekdays')return w>=1&&w<=5;if(h.frequency==='custom')return(h.customDays||[]).includes(w);return true;}
+function isSchedOn(h,date){
+    if(h.paused) return false;
+    const w=date.getDay();if(h.frequency==='daily')return true;if(h.frequency==='weekdays')return w>=1&&w<=5;if(h.frequency==='custom')return(h.customDays||[]).includes(w);return true;
+}
 function getHabCnt(h){return(h.history||{})[getToday()]||0;}
 function isHabDone(h){return getHabCnt(h)>=h.target;}
-function compStreak(h){const hist=h.history||{};let s=0,d=new Date();d.setHours(0,0,0,0);if(!isHabDone(h))d.setDate(d.getDate()-1);for(let i=0;i<366;i++){if(!isSchedOn(h,d)){d.setDate(d.getDate()-1);continue;}const k=getDK(d);if((hist[k]||0)>=h.target){s++;d.setDate(d.getDate()-1);}else break;}return s;}
+function compStreak(h){
+    const hist=h.history||{};let s=0,d=new Date();d.setHours(0,0,0,0);
+    if(!isHabDone(h)) d.setDate(d.getDate()-1);
+    for(let i=0;i<366;i++){
+        if(h.paused) { d.setDate(d.getDate()-1); continue; } 
+        const w=d.getDay();
+        let isSched = true;
+        if(h.frequency==='weekdays' && (w<1||w>5)) isSched = false;
+        if(h.frequency==='custom' && !(h.customDays||[]).includes(w)) isSched = false;
+        
+        if(!isSched){d.setDate(d.getDate()-1);continue;}
+        const k=getDK(d);
+        if((hist[k]||0)>=h.target){s++;d.setDate(d.getDate()-1);}else break;
+    }
+    return s;
+}
 function getBadge(s){return s>=100?'💎':s>=30?'🥇':s>=14?'🥈':s>=7?'🥉':'';}
 
 function getHabDots(h) {
@@ -1719,7 +1854,7 @@ function getHabDots(h) {
 }
 
 function incHabit(id) {
-    const h = habits.find(x=>x.id===id); if(!h) return;
+    const h = habits.find(x=>x.id===id); if(!h || h.paused) return;
     const today = getToday();
     if(!h.history) h.history = {};
     let cnt = h.history[today] || 0;
@@ -1739,7 +1874,7 @@ function incHabit(id) {
 }
 
 function undoHabit(id) {
-    const h = habits.find(x=>x.id===id); if(!h) return;
+    const h = habits.find(x=>x.id===id); if(!h || h.paused) return;
     const today = getToday();
     let cnt = (h.history||{})[today] || 0;
     if(cnt > 0) {
@@ -1757,12 +1892,19 @@ function togHabOpt(id) {
     if(el) el.classList.toggle('open');
 }
 
+function togHabPause(id) {
+    const h = habits.find(x=>x.id===id); if(!h) return;
+    h.paused = !h.paused;
+    saveHabits(); renderHabits();
+    toast(h.paused ? 'Hábito pausado.' : 'Hábito retomado!');
+}
+
 function habCardHTML(h){
     const cnt = getHabCnt(h);
     const str = compStreak(h);
     const bdg = getBadge(str);
     const done = cnt >= h.target;
-    const sched = isSchedOn(h, new Date());
+    const sched = !h.paused && isSchedOn(h, new Date());
     
     const r = 21; const circ = 2 * Math.PI * r;
     const pct = Math.min(cnt / h.target, 1);
@@ -1778,7 +1920,7 @@ function habCardHTML(h){
     }
 
     return `
-    <div class="hcard no-swipe ${done?'done':''} ${!sched?'huns':''}" data-id="${h.id}" onclick="openFocus(${h.id})">
+    <div class="hcard no-swipe ${done?'done':''} ${!sched && !h.paused ?'huns':''} ${h.paused ? 'hpaus' : ''}" data-id="${h.id}" onclick="${h.paused ? '' : `openFocus(${h.id})`}">
         <div class="h-ico-wrap" style="background:${h.color}22; color:${h.color};">
             ${h.icon}
         </div>
@@ -1801,6 +1943,7 @@ function habCardHTML(h){
         </div>
         <button class="h-menu-btn no-swipe" onclick="event.stopPropagation(); togHabOpt(${h.id})">⋮</button>
         <div class="h-opts no-swipe" id="h-opt-${h.id}">
+            <button class="h-opt-btn" onclick="event.stopPropagation(); togHabPause(${h.id}); togHabOpt(${h.id})">${h.paused ? '▶ Retomar Hábito' : '⏸ Pausar Hábito'}</button>
             <button class="h-opt-btn" onclick="event.stopPropagation(); openHF(${h.id}); togHabOpt(${h.id})">✏ Editar</button>
             ${cnt > 0 ? `<button class="h-opt-btn" onclick="event.stopPropagation(); undoHabit(${h.id}); togHabOpt(${h.id})">↩ Desfazer</button>` : ''}
             <button class="h-opt-btn del" onclick="event.stopPropagation(); delHabit(${h.id}); togHabOpt(${h.id})">🗑 Excluir</button>
@@ -1810,10 +1953,10 @@ function habCardHTML(h){
 
 function renderHabits(){
   try {
-      let tod=(habits||[]).filter(Boolean).filter(h=>isSchedOn(h,new Date()));
-      let unsched=(habits||[]).filter(Boolean).filter(h=>!isSchedOn(h,new Date()));
+      let tod=(habits||[]).filter(Boolean).filter(h=> !h.paused && isSchedOn(h,new Date()));
+      let unsched=(habits||[]).filter(Boolean).filter(h=> !h.paused && !isSchedOn(h,new Date()));
+      let pausedH=(habits||[]).filter(Boolean).filter(h=> h.paused);
       
-      // Organiza para os concluídos irem automaticamente para o fim da lista
       tod.sort((a, b) => {
           const doneA = isHabDone(a);
           const doneB = isHabDone(b);
@@ -1833,11 +1976,12 @@ function renderHabits(){
         </div>
         ${tod.length ? tod.map(habCardHTML).join('') : '<p class="empty" style="margin-bottom:15px;">Nenhum hábito para hoje.</p>'}
         ${unsched.length ? `<div class="lbl" style="margin-top:15px; margin-bottom:10px;">Não programados para hoje</div>` + unsched.map(habCardHTML).join('') : ''}
+        ${pausedH.length ? `<div class="lbl" style="margin-top:20px; margin-bottom:10px;">Pausados (Férias)</div>` + pausedH.map(habCardHTML).join('') : ''}
       `;
   } catch(e){}
 }
 
-function openHF(id){if(id){const h=habits.find(h=>h.id===id);if(h)hfd={...h,customDays:[...(h.customDays||[])],times:[...(h.times||[])]};document.getElementById('hf-ttl').textContent='Editar hábito';}else{hfd={id:null,icon:'⭐',name:'',color:COLORS[5],target:1,times:[],frequency:'daily',customDays:[],reminderTime:''};document.getElementById('hf-ttl').textContent='Novo hábito';}renderHF();openM('mo-hf');}
+function openHF(id){if(id){const h=habits.find(h=>h.id===id);if(h)hfd={...h,customDays:[...(h.customDays||[])],times:[...(h.times||[])]};document.getElementById('hf-ttl').textContent='Editar hábito';}else{hfd={id:null,icon:'⭐',name:'',color:COLORS[5],target:1,times:[],frequency:'daily',customDays:[],reminderTime:'',paused:false};document.getElementById('hf-ttl').textContent='Novo hábito';}renderHF();openM('mo-hf');}
 function closeHF(){closeM('mo-hf');}
 function setHabTime(i,v){if(!hfd.times)hfd.times=[];hfd.times[i]=v;}
 function renderHF(){
@@ -1865,7 +2009,6 @@ function openFocus(id){const h=habits.find(h=>h.id===id);if(!h)return;focusH=h;i
 function closeFocus(){closeM('mo-focus');if(focTmr){clearInterval(focTmr.intv);focTmr=null;}focusH=null;}
 function editFromFocus(){if(focusH){const id=focusH.id;closeFocus();openHF(id);}}
 
-// Helper antigo de focus mantido
 function setBubble(id,idx){const h=habits.find(h=>h.id===id);if(!h)return;const today=getToday();if(!h.history)h.history={};const cur=h.history[today]||0;h.history[today]=cur===h.target&&idx===h.target-1?0:idx+1;saveHabits();renderHabits();if(focusH&&focusH.id===id){focusH=habits.find(x=>x.id===id);renderFocusBody();}}
 
 function renderFocusBody(){
@@ -1950,6 +2093,30 @@ function expandMonth(k, name) {
   const pctIn = total > 0 ? (totalIn / total) * 100 : 50;
   const pctOut = total > 0 ? (totalOut / total) * 100 : 50;
   
+  const catColors = ['#FF6B6B','#1DD1A1','#54A0FF','#FECA57','#A29BFE','#FF9F43','#48DBFB','#FF9FF3','#00d2d3','#f368e0','#ff9f43','#10ac84'];
+  let chartGradient = [];
+  let accDeg = 0;
+  let legendHtml = '';
+  Object.keys(catsOut).sort((a,b) => catsOut[b].total - catsOut[a].total).forEach((c, i) => {
+      const cc = catsOut[c];
+      const pct = (cc.total / totalOut) * 100;
+      const deg = (pct / 100) * 360;
+      const color = catColors[i % catColors.length];
+      chartGradient.push(`${color} ${accDeg}deg ${accDeg + deg}deg`);
+      accDeg += deg;
+      legendHtml += `<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt2);"><div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0;"></div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c} (${pct.toFixed(1)}%)</span></div>`;
+  });
+  
+  let pieHtml = totalOut > 0 ? `
+      <div style="display:flex; gap:15px; align-items:center; margin:15px 0; background:var(--bg3); padding:15px; border-radius:12px;">
+          <div style="width:90px; height:90px; border-radius:50%; background:conic-gradient(${chartGradient.join(',')}); flex-shrink:0;"></div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:4px; min-width:0;">
+              <div style="font-size:11px; font-weight:600; color:var(--txt3); text-transform:uppercase; margin-bottom:4px;">Despesas por Categoria</div>
+              ${legendHtml}
+          </div>
+      </div>
+  ` : '';
+
   let html = `
     <div style="margin-bottom:15px; background:var(--bg3); padding:14px; border-radius:12px;">
         <div style="display:flex; justify-content:space-between; margin-bottom: 12px;">
@@ -1966,7 +2133,8 @@ function expandMonth(k, name) {
             <div style="width:${pctIn}%; background:#2e7d32; transition:width 0.3s;"></div>
             <div style="width:${pctOut}%; background:#e44; transition:width 0.3s;"></div>
         </div>
-    </div>`;
+    </div>
+    ${pieHtml}`;
 
   if(!b.length) {
       html += `<p class="empty" style="margin-top:0">Nenhum lançamento previsto.</p>`;
@@ -2335,7 +2503,7 @@ function showStep(){
     let d='';TUT_STEPS.forEach((_,i)=>d+=`<div class="tut-dot ${i===tutStep?'active':''}"></div>`);
     document.getElementById('tut-dots').innerHTML=d;
     document.getElementById('tut-next').textContent=tutStep===TUT_STEPS.length-1?'Começar!':'Próximo →';
-    if(s.tab)swTab(s.tab,document.getElementById('tb-'+s.tab));
+    if(s.tab)swTab(s.tab,document.getElementById(`tb-${s.tab}`));
     
     setTimeout(() => {
         const wrap = document.getElementById('spotlight-wrap');
