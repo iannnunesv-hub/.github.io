@@ -34,7 +34,7 @@ body { font-family: system-ui, sans-serif; background: var(--bg4); display: flex
 .sp-prem { font-weight: 700; color: #d4af37; font-style: italic; letter-spacing: 0; }
 
 #login-screen { position: absolute; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 2rem; text-align: center; border-radius: 18px; }
-.login-btn { background: #fff; border: 1px solid #ddd; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 25px; font-family: inherit; color: #222; font-size:15px; transition: transform 0.1s; }
+.login-btn { background: #fff; border: 1px solid #ddd; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 25px; font-family: inherit; color: #222; font-size:15px; transition: transform 0.1s; width: 220px; }
 .login-btn:active { transform: scale(0.96); }
 
 .hdr{background:var(--bg2);border-bottom:.5px solid var(--brd);padding:14px 17px 11px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;gap:10px;}
@@ -353,22 +353,21 @@ details > summary::-webkit-details-marker { display: none; }
 </head>
 <body>
 
+<div id="splash">
+    <div class="sp-ico">👑</div>
+    <div class="sp-title">Organizador <span class="sp-prem">Premium</span></div>
+</div>
+
+<div id="login-screen" style="display:none;">
+    <div style="font-size: 50px; margin-bottom: 10px;">☁️</div>
+    <h2 style="color:var(--txt); font-size: 22px;">Sincronize sua vida</h2>
+    <p style="color:var(--txt2); font-size: 14px; margin-top: 8px; line-height:1.5; padding: 0 20px;">Acesse seus dados de qualquer lugar em tempo real com segurança.</p>
+    <button class="login-btn" id="btn-login-google">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Entrar com Google
+    </button>
+</div>
+
 <div id="app">
-
-    <div id="splash">
-        <div class="sp-ico">👑</div>
-        <div class="sp-title">Organizador <span class="sp-prem">Premium</span></div>
-    </div>
-
-    <div id="login-screen" style="display:none;">
-        <div style="font-size: 50px; margin-bottom: 10px;">☁️</div>
-        <h2 style="color:var(--txt); font-size: 22px;">Sincronize sua vida</h2>
-        <p style="color:var(--txt2); font-size: 14px; margin-top: 8px; line-height:1.5;">Acesse seus dados de qualquer lugar em tempo real com segurança.</p>
-        <button class="login-btn" id="btn-login-google">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" width="20" alt="G"> Entrar com Google
-        </button>
-    </div>
-
   <div class="hdr">
     <div><h1 id="aname">Meu Organizador</h1><p id="dlbl">Carregando...</p></div>
     <div class="hdr-r">
@@ -778,6 +777,8 @@ onAuthStateChanged(auth, (user) => {
         window.currentUser = user;
         login.style.display = 'none';
         if(splash) { splash.style.opacity = 0; setTimeout(() => splash.style.display = 'none', 400); }
+        
+        window.loadLocal(); // Puxa dados do localStorage antes (migração)
         window.initAppCore(); 
         startSync();
     } else {
@@ -1082,7 +1083,7 @@ function confirmPicker() {
 }
 
 // STORAGE CARREGAMENTO LOCAL (Fallback inicial antes da nuvem)
-function load(){
+window.loadLocal = function() {
   try{tasks=JSON.parse(localStorage.getItem('o_tasks')); if(!Array.isArray(tasks)) tasks=[];}catch(e){tasks=[];}
   try{notes=JSON.parse(localStorage.getItem('o_notes')); if(!Array.isArray(notes)) notes=[];}catch(e){notes=[];}
   try{events=JSON.parse(localStorage.getItem('o_events'))||{};}catch(e){events={};}
@@ -1103,14 +1104,21 @@ function load(){
       });
   } catch(e){bills=[];}
 
-  const oldB = parseFloat(localStorage.getItem('o_balance'));
-  if(accounts.length===0&&!isNaN(oldB)&&oldB>0){accounts.push({id:Date.now(),name:'Carteira Principal',val:oldB});}
-  
   try{habits=JSON.parse(localStorage.getItem('o_habits2')); if(!Array.isArray(habits)) habits=[];}catch(e){habits=[];}
   try{const c=JSON.parse(localStorage.getItem('o_cfg'));if(c)cfg={...cfg,...c};}catch(e){}
 }
 
-// OS SAVES LOCAIS ANTIGOS FORAM DESATIVADOS NA FUNÇÃO GLOBAL
+window.save = () => {
+    if(window.saveToCloud) {
+        window.saveToCloud('tasks', tasks);
+        window.saveToCloud('notes', notes);
+        window.saveToCloud('events', events);
+        window.saveToCloud('accounts', accounts);
+        window.saveToCloud('bills', bills);
+    }
+};
+window.saveHabits = () => { if(window.saveToCloud) window.saveToCloud('habits', habits); };
+window.saveCfg = () => { if(window.saveToCloud) window.saveToCloud('cfg', cfg); };
 
 // RENDERIZADOR GLOBAL
 window.renderData = function(col) {
@@ -1125,18 +1133,13 @@ window.renderData = function(col) {
 
 window.toggleTheme = function(on){
     cfg.dark = on;
-    if(window.saveToCloud) window.saveToCloud('cfg', cfg);
+    window.saveCfg();
     window.applyTheme();
 }
 
 window.saveName = async function(){
     const v=document.getElementById('cfg-name').value.trim();
-    if(v){
-        cfg.name=v; 
-        if(window.saveToCloud) window.saveToCloud('cfg', cfg); 
-        window.applyName(); 
-        toast('Nome atualizado ✓');
-    }
+    if(v){cfg.name=v;window.saveCfg();window.applyName();toast('Nome atualizado ✓');}
 }
 
 window.applyTheme = function(){
@@ -1194,7 +1197,7 @@ function openCfg(){
 
 function toggleHideVals() {
     cfg.hideVals = !cfg.hideVals;
-    if(window.saveToCloud) window.saveToCloud('cfg', cfg);
+    window.saveCfg();
     window.applyHideVals();
 }
 window.applyHideVals = function() {
@@ -2641,27 +2644,55 @@ function endTutorial(){
     setTimeout(() => { if(typeof Notification !== 'undefined' && Notification.permission === 'default') { if(confirm("Deseja ativar as notificações para ser lembrado das suas tarefas e hábitos?")) { reqN(); } } }, 400);
 }
 
-// UI HELPERS (Toast)
-window.toast = function(msg) {
-    let t = document.getElementById('toast');
-    if(!t) {
-        t = document.createElement('div');
-        t.id = 'toast';
-        t.style.cssText = 'position:fixed;bottom:env(safe-area-inset-bottom, 20px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--txt);color:var(--bg);padding:10px 20px;border-radius:20px;font-size:13px;z-index:10005;opacity:0;transition:opacity 0.3s, transform 0.3s;pointer-events:none;font-weight:500;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.15);white-space:nowrap;';
-        document.body.appendChild(t);
-    }
-    t.textContent = msg;
-    void t.offsetWidth; // force reflow
-    t.style.opacity = 1;
-    t.style.transform = 'translateX(-50%) translateY(-20px)';
-    clearTimeout(t.to);
-    t.to = setTimeout(() => { t.style.opacity = 0; t.style.transform = 'translateX(-50%) translateY(20px)'; }, 3000);
+// ── INIT BLINDADO (CHAMADO PELO FIREBASE APÓS CARREGAR DADOS OU QUANDO CACHE PRONTO) ──
+window.initAppCore = function() {
+    if(window._appInitialized) return;
+    window._appInitialized = true;
+
+    try {
+        if(accounts.length===0){accounts.push({id:Date.now(),name:'Carteira Principal',val:0}); window.save();}
+        
+        window.applyTabOrder(); window.applyTheme(); window.applyName(); window.applyHideVals();
+        if(typeof chgBillType === 'function') chgBillType(); 
+        
+        setView('month');
+
+        try{ renderTasks(); } catch(e){}
+        try{ renderNotes(); } catch(e){}
+        try{ renderHabits(); } catch(e){}
+        try{ if(typeof renderFin==='function') renderFin(); } catch(e){}
+        try{ selDay(TD); } catch(e){}
+
+        try {
+            bindDrag('ngrid', '.nc', () => { const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id)))); notes=arr.filter(Boolean); window.save(); });
+            bindDrag('hab-list', '.hcard', () => { const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id)))); habits=arr.filter(Boolean); window.saveHabits(); });
+            bindDrag('cfg-tab-list', '.tab-item', () => { 
+                const arr=[]; document.querySelectorAll('#cfg-tab-list .tab-item').forEach(el=>arr.push(el.dataset.id)); 
+                cfg.tabOrder=arr; window.saveCfg(); window.applyTabOrder(); 
+            });
+        } catch(e) {}
+        
+        document.getElementById('task-in').addEventListener('keydown', e => { if(e.key==='Enter') addTask(); });
+        document.getElementById('ev-in').addEventListener('keydown', e => { if(e.key==='Enter') addEvent(); });
+        
+        try {
+            const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();
+            if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});window.save();history.replaceState(null,'',location.pathname);window._shared=true;}
+        } catch(e) {}
+        
+        if(window._shared){swTab('notes',document.getElementById(`tb-${TABS.includes('notes')?'notes':TABS[0]}`));toast('✓ Texto salvo nas notas!');}
+        
+        document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
+        
+        setTimeout(() => { startTutorial(); }, 500);
+        schedAll();
+    } catch (err) { console.error("Erro na inicialização:", err); }
 }
 
 // Fallback de inicialização (Usado caso o Firebase demore a responder ou o aparelho esteja 100% offline no primeiro uso)
 setTimeout(() => {
     if(!window.currentUser && !window._appInitialized && window.location.hostname === "localhost") {
-        load();
+        window.loadLocal();
         window.initAppCore();
         const splash = document.getElementById('splash');
         if(splash) splash.remove();
