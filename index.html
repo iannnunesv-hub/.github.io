@@ -27,14 +27,12 @@ body.hide-vals .v-hide { filter: blur(6px); opacity: 0.6; user-select: none; poi
 body { font-family: system-ui, sans-serif; background: var(--bg4); display: flex; justify-content: center; align-items: center; height: 100vh; height: 100dvh; overflow: hidden; padding: 0.5rem; transition: background .2s; }
 #app { width: 100%; height: 100%; max-width: 490px; background: var(--bg); border-radius: 18px; border: .5px solid var(--brd); overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
 
-/* SPLASH SCREEN & LOGIN */
-#splash { position: absolute; inset: 0; background: var(--bg); z-index: 10001; display: flex; align-items: center; justify-content: center; flex-direction: column; border-radius: 18px; pointer-events: none; }
+/* SPLASH SCREEN */
+#splash { position: absolute; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; border-radius: 18px; animation: fadeOutSplash 0.6s ease-in-out forwards; animation-delay: 1.4s; pointer-events: none; }
 .sp-ico { font-size: 54px; margin-bottom: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
 .sp-title { font-size: 24px; font-weight: 300; color: var(--txt); letter-spacing: 1px; }
 .sp-prem { font-weight: 700; color: #d4af37; font-style: italic; letter-spacing: 0; }
-
-#login-screen { position: absolute; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 2rem; text-align: center; border-radius: 18px; }
-.login-btn { background: #fff; border: 1px solid #ddd; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 20px; font-family: inherit; color: #222; font-size:15px; }
+@keyframes fadeOutSplash { 0% { opacity: 1; visibility: visible; } 100% { opacity: 0; visibility: hidden; z-index: -1; display: none; } }
 
 .hdr{background:var(--bg2);border-bottom:.5px solid var(--brd);padding:14px 17px 11px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;gap:10px;}
 .hdr > div { flex: 1; min-width: 0; }
@@ -357,18 +355,9 @@ details > summary::-webkit-details-marker { display: none; }
     <div class="sp-title">Organizador <span class="sp-prem">Premium</span></div>
 </div>
 
-<div id="login-screen" style="display:none">
-    <div style="font-size: 40px; margin-bottom: 15px;">☁️</div>
-    <h2 style="color:var(--txt)">Sincronize sua vida</h2>
-    <p style="color:var(--txt2); margin-top: 8px;">Acesse seus dados de qualquer lugar em tempo real.</p>
-    <button class="login-btn" id="btn-login-google">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" width="18" alt="G"> Entrar com Google
-    </button>
-</div>
-
 <div id="app">
   <div class="hdr">
-    <div><h1 id="aname">Meu Organizador</h1><p id="dlbl">Carregando...</p></div>
+    <div><h1 id="aname">Meu Organizador</h1><p id="dlbl"></p></div>
     <div class="hdr-r">
       <button class="ibt" onclick="openAch()" title="Conquistas">🏆</button>
       <button class="gear-btn" onclick="openCfg()" title="Configurações">
@@ -555,8 +544,13 @@ details > summary::-webkit-details-marker { display: none; }
     </div>
   </div>
 
-  <div class="tabbar" id="tabbar-container">
-    </div>
+  <div class="tabbar">
+    <button id="tb-agenda" class="tb active" onclick="swTab('agenda',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 2v3M12 2v3M2 8h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Agenda</span></button>
+    <button id="tb-tasks" class="tb" onclick="swTab('tasks',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.3"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Tarefas</span></button>
+    <button id="tb-notes" class="tb" onclick="swTab('notes',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 6h6M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Notas</span></button>
+    <button id="tb-habitos" class="tb" onclick="swTab('habitos',this)"><svg viewBox="0 0 18 18" fill="none"><path d="M9 3a6 6 0 1 1 0 12A6 6 0 0 1 9 3zm0 2v4l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Hábitos</span></button>
+    <button id="tb-fin" class="tb" onclick="swTab('fin',this)"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M16 12h.01M3 10h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Finanças</span></button>
+  </div>
 </div>
 
 <div id="spotlight-wrap">
@@ -686,16 +680,15 @@ details > summary::-webkit-details-marker { display: none; }
 <div class="mo" id="mo-cfg" onclick="bgC(event,'mo-cfg')"><div class="md">
   <div class="mh"><h2>Configurações</h2><button class="mc" onclick="closeM('mo-cfg')">×</button></div>
   <div class="mb">
-    <button class="bsv" onclick="window.logout()" style="background:#e44; width:100%; margin-bottom:15px; font-weight:600;">Sair da Conta (Logout)</button>
     <div class="cst">Aparência</div>
     <div class="cr">
       <div class="cl">Tema escuro</div>
-      <label class="tog"><input type="checkbox" id="tog-dark" onchange="window.toggleTheme(this.checked)"/><span class="tog-s"></span></label>
+      <label class="tog"><input type="checkbox" id="tog-dark" onchange="toggleTheme(this.checked)"/><span class="tog-s"></span></label>
     </div>
     <div class="cst">Identidade</div>
     <div class="cr" style="flex-direction:column;align-items:flex-start;gap:8px;border-bottom:none">
       <div class="cl">Nome do Usuário</div>
-      <div style="display:flex;gap:8px;width:100%"><input type="text" id="cfg-name" placeholder="Seu nome" maxlength="32" style="flex:1"/><button class="bsv" onclick="window.saveName()">Salvar</button></div>
+      <div style="display:flex;gap:8px;width:100%"><input type="text" id="cfg-name" placeholder="Seu nome" maxlength="32" style="flex:1"/><button class="bsv" onclick="saveName()">Salvar</button></div>
     </div>
     <div class="cst">Navegação</div>
     <div class="cr" style="flex-direction:column;align-items:flex-start;gap:8px;border-bottom:none;padding-bottom:0;">
@@ -709,12 +702,12 @@ details > summary::-webkit-details-marker { display: none; }
     </div>
     <div class="cr" style="border-bottom:none">
       <div><div class="cl">Alertas de Hábitos</div><div style="font-size:12px;color:var(--txt3);margin-top:2px">Avisar no horário do hábito</div></div>
-      <label class="tog"><input type="checkbox" id="tog-nhab" onchange="window.cfg.nHab=this.checked;window.saveCfg();schedAll()"/><span class="tog-s"></span></label>
+      <label class="tog"><input type="checkbox" id="tog-nhab" onchange="cfg.nHab=this.checked;saveCfg();schedAll()"/><span class="tog-s"></span></label>
     </div>
     <div class="cst">Segurança</div>
     <div class="cr" style="border-bottom:none">
       <div class="cl">Exportar Backup</div>
-      <button class="bncfg" style="background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2);" onclick="window.exportBackup()">Baixar .json</button>
+      <button class="bncfg" style="background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2);" onclick="exportBackup()">Baixar .json</button>
     </div>
   </div>
 </div></div>
@@ -740,102 +733,7 @@ details > summary::-webkit-details-marker { display: none; }
   <div class="mb" id="sug-body"></div>
 </div></div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, onSnapshot, setDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAjlCeP7goWIGPZAuwIEVBgHSMhRIt-dZs",
-  authDomain: "meu-organizador-d5476.firebaseapp.com",
-  projectId: "meu-organizador-d5476",
-  storageBucket: "meu-organizador-d5476.firebasestorage.app",
-  messagingSenderId: "106220883734",
-  appId: "1:106220883734:web:41d46c87f1d8329d5a4a37",
-  measurementId: "G-5SPT8C6BF0"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Ativa cache local para uso offline e carregamento ultra-rápido
-enableIndexedDbPersistence(db).catch((err) => {
-    console.warn("Persistência offline falhou:", err);
-});
-
-window.currentUser = null;
-let dataListeners = [];
-
-window.logout = () => { signOut(auth).then(() => location.reload()); };
-document.getElementById('btn-login-google').onclick = () => {
-    signInWithPopup(auth, new GoogleAuthProvider()).catch(e => window.toast("Erro no login: " + e.message));
-};
-
-onAuthStateChanged(auth, (user) => {
-    const splash = document.getElementById('splash');
-    const login = document.getElementById('login-screen');
-    if (user) {
-        window.currentUser = user;
-        login.style.display = 'none';
-        if(splash) splash.remove();
-        startSync();
-    } else {
-        window.currentUser = null;
-        if(splash) splash.remove();
-        login.style.display = 'flex';
-        stopSync();
-    }
-});
-
-function startSync() {
-    let loadedCols = 0;
-    const cols = ['tasks', 'notes', 'events', 'accounts', 'bills', 'habits', 'cfg'];
-    cols.forEach(col => {
-        const unsub = onSnapshot(doc(db, "users", window.currentUser.uid, "data", col), (snap) => {
-            let val = snap.data()?.items;
-            
-            // Valores default caso a nuvem esteja vazia para este usuário novo
-            if (!val && col === 'cfg') val = {dark:false,name:'',nHab:true,hideVals:false, tabOrder:['agenda','tasks','notes','habitos','fin']};
-            if (!val && col === 'events') val = {};
-            if (!val && col !== 'cfg' && col !== 'events') val = [];
-            
-            if(col === 'tasks') window.tasks = val;
-            if(col === 'notes') window.notes = val;
-            if(col === 'events') window.events = val;
-            if(col === 'accounts') window.accounts = val;
-            if(col === 'bills') window.bills = val;
-            if(col === 'habits') window.habits = val;
-            if(col === 'cfg') window.cfg = {...window.cfg, ...val};
-            
-            if (loadedCols < cols.length) {
-                loadedCols++;
-                // Quando terminar de baixar todos os dados iniciais do cache/nuvem, liga a tela principal
-                if (loadedCols === cols.length) window.initAppCore();
-            } else {
-                // Para alterações que acontecem em tempo real depois de já carregado
-                window.renderData(col);
-            }
-        });
-        dataListeners.push(unsub);
-    });
-}
-
-function stopSync() { dataListeners.forEach(u => u()); dataListeners = []; }
-
-window.saveToCloud = async (col, data) => {
-    if (!window.currentUser) return;
-    try {
-        await setDoc(doc(db, "users", window.currentUser.uid, "data", col), { items: data, lastUpdate: new Date().getTime() });
-    } catch (e) { console.error("Erro ao sincronizar:", e); }
-};
-</script>
-
-
 <script>
-// VARIAVEIS GLOBAIS LIGADAS A NUVEM
-var tasks=[], notes=[], events={}, accounts=[], bills=[], habits=[], cfg={dark:false,name:'',nHab:true,hideVals:false, tabOrder:['agenda','tasks','notes','habitos','fin']};
-
 const MO=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const DL=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 const COLORS=['#FF6B6B','#FF9F43','#FECA57','#1DD1A1','#48DBFB','#54A0FF','#A29BFE','#FF9FF3'];
@@ -1084,21 +982,44 @@ function confirmPicker() {
     closeM('mo-picker');
 }
 
-// SAVES SUBSTITUIDOS PARA FIREBASE
-window.save = () => {
-    if(window.saveToCloud) {
-        window.saveToCloud('tasks', tasks);
-        window.saveToCloud('notes', notes);
-        window.saveToCloud('events', events);
-        window.saveToCloud('accounts', accounts);
-        window.saveToCloud('bills', bills);
-    }
-};
-window.saveHabits = () => { if(window.saveToCloud) window.saveToCloud('habits', habits); };
-window.saveCfg = () => { if(window.saveToCloud) window.saveToCloud('cfg', cfg); };
+// STORAGE
+let tasks=[],notes=[],events={},accounts=[],bills=[];
+function load(){
+  try{tasks=JSON.parse(localStorage.getItem('o_tasks')); if(!Array.isArray(tasks)) tasks=[];}catch(e){tasks=[];}
+  try{notes=JSON.parse(localStorage.getItem('o_notes')); if(!Array.isArray(notes)) notes=[];}catch(e){notes=[];}
+  try{events=JSON.parse(localStorage.getItem('o_events'))||{};}catch(e){events={};}
+  try{accounts=JSON.parse(localStorage.getItem('o_accs')); if(!Array.isArray(accounts)) accounts=[];}catch(e){accounts=[];}
+  
+  try {
+      let bData = JSON.parse(localStorage.getItem('o_bills')); 
+      if(!Array.isArray(bData)) bData=[];
+      bills = bData.map(b => {
+          if(typeof b.paid === 'boolean') {
+              const mk = b.date ? b.date.substring(0,7) : getToday().substring(0,7);
+              const pm = {}; if(b.paid) pm[mk] = true;
+              return {...b, rep: 0, paidMap: pm, paid: undefined};
+          }
+          if(b.rep === true) b.rep = -1;
+          if(b.rep === false) b.rep = 0;
+          if(!b.paidMap) b.paidMap = {};
+          return b;
+      });
+  } catch(e){bills=[];}
+
+  const oldB = parseFloat(localStorage.getItem('o_balance'));
+  if(accounts.length===0&&!isNaN(oldB)&&oldB>0){accounts.push({id:Date.now(),name:'Carteira Principal',val:oldB});}
+  else if(accounts.length===0) {accounts.push({id:Date.now(),name:'Carteira Principal',val:0});}
+}
+function save(){
+  localStorage.setItem('o_tasks',JSON.stringify(tasks));
+  localStorage.setItem('o_notes',JSON.stringify(notes));
+  localStorage.setItem('o_events',JSON.stringify(events));
+  localStorage.setItem('o_accs', JSON.stringify(accounts));
+  localStorage.setItem('o_bills', JSON.stringify(bills));
+}
 
 // BACKUP
-window.exportBackup = function() {
+function exportBackup() {
     const data = { tasks, notes, events, accounts, bills, habits, cfg, exportDate: new Date().toISOString() };
     const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -1108,26 +1029,83 @@ window.exportBackup = function() {
     toast('Backup baixado com sucesso!');
 }
 
-// RENDERIZADOR GLOBAL CHAMADO PELO FIREBASE QUANDO DADO MUDA
-window.renderData = function(col) {
-    if(!window._appInitialized) return;
-    if(col === 'tasks') renderTasks();
-    if(col === 'notes') renderNotes();
-    if(col === 'habits') renderHabits();
-    if(col === 'accounts' || col === 'bills') { renderFin(); renderCal(); }
-    if(col === 'cfg') { applyTheme(); applyName(); applyTabOrder(); }
-    if(col === 'events') renderCal();
+// CONFIG & PRIVACY
+let cfg={dark:false,name:'',nHab:true,hideVals:false, tabOrder:['agenda','tasks','notes','habitos','fin']};
+function loadCfg(){try{const c=JSON.parse(localStorage.getItem('o_cfg'));if(c)cfg={...cfg,...c};}catch(e){}}
+function saveCfg(){localStorage.setItem('o_cfg',JSON.stringify(cfg));}
+function applyTheme(){
+    const isDark = !!cfg.dark;
+    if(isDark) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.body.setAttribute('data-theme', 'dark');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        document.body.removeAttribute('data-theme');
+    }
+    const t = document.getElementById('tog-dark');
+    if (t) t.checked = isDark;
 }
-
-window.toggleTheme = function(on){
+function toggleTheme(on){
     cfg.dark = on;
-    window.saveCfg();
-    window.applyTheme();
+    saveCfg();
+    applyTheme();
+}
+function applyName(){
+  document.getElementById('aname').textContent=cfg.name?`Olá, ${cfg.name}`:'Organizador Premium';
+  document.getElementById('dlbl').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+}
+async function saveName(){
+    const v=document.getElementById('cfg-name').value.trim();
+    if(v){cfg.name=v;saveCfg();applyName();toast('Nome atualizado ✓');}
 }
 
-window.saveName = async function(){
-    const v=document.getElementById('cfg-name').value.trim();
-    if(v){cfg.name=v;window.saveCfg();window.applyName();toast('Nome atualizado ✓');}
+function renderTabCfg() {
+    const container = document.getElementById('cfg-tab-list');
+    const order = cfg.tabOrder && cfg.tabOrder.length === 5 ? cfg.tabOrder : ['agenda','tasks','notes','habitos','fin'];
+    container.innerHTML = order.map(t => `
+        <div class="nc tab-item no-swipe" data-id="${t}" style="padding:10px 14px; display:flex; align-items:center; gap:10px; cursor:grab; margin-bottom:0;">
+            <span style="font-size:18px;">${TAB_ICONS[t]}</span> <span style="font-size:14px; font-weight:500;">${TAB_NAMES[t]}</span>
+            <span style="margin-left:auto; color:var(--txt4); font-size:18px;">☰</span>
+        </div>
+    `).join('');
+}
+
+function applyTabOrder() {
+    if(cfg.tabOrder && cfg.tabOrder.length === 5) {
+        TABS = cfg.tabOrder;
+        const slider = document.getElementById('slider');
+        const tabbar = document.querySelector('.tabbar');
+        TABS.forEach(t => {
+            slider.appendChild(document.getElementById('sec-' + t));
+            tabbar.appendChild(document.getElementById('tb-' + t));
+        });
+        swTab(TABS[curTab] || TABS[0]); 
+    }
+}
+
+function openCfg(){
+    document.getElementById('cfg-name').value=cfg.name||'';
+    document.getElementById('tog-dark').checked = !!cfg.dark;
+    document.getElementById('tog-nhab').checked=cfg.nHab!==false;
+    updN();
+    renderTabCfg();
+    openM('mo-cfg');
+}
+
+function toggleHideVals() {
+    cfg.hideVals = !cfg.hideVals;
+    saveCfg();
+    applyHideVals();
+}
+function applyHideVals() {
+    const btn = document.getElementById('btn-hide-vals');
+    if(cfg.hideVals) {
+        document.body.classList.add('hide-vals');
+        if(btn) btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+    } else {
+        document.body.classList.remove('hide-vals');
+        if(btn) btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+    }
 }
 
 // SW + NOTIF
@@ -1193,15 +1171,14 @@ let curTab = 0;
 function swTab(name,btn){
   curTab = TABS.indexOf(name);
   document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active'); else {
-      const tb = document.getElementById(`tb-${name}`);
-      if(tb) tb.classList.add('active');
-  }
+  if(btn) btn.classList.add('active'); else document.getElementById(`tb-${name}`).classList.add('active');
   const slider = document.getElementById('slider');
   slider.style.transition = 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
   slider.style.transform = `translateX(-${curTab * 20}%)`;
 }
 
+// Eventos Touch aprimorados
+let tsX=0, tsY=0, isSwipe=false, isScroll=false, tsNoSwipe=false, tsOnCal=false;
 document.addEventListener('DOMContentLoaded', () => {
     const cnt = document.getElementById('cnt');
     const slider = document.getElementById('slider');
@@ -1264,16 +1241,16 @@ function togTask(id){
     const t = tasks.find(x=>x.id===id);
     if(!t) return;
     t.done = !t.done;
-    window.save(); renderTasks(); if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();
+    save(); renderTasks(); if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();
 }
-async function delTask(id){if(!(await showDialog('confirm','Excluir Tarefa','Excluir esta tarefa permanentemente?')))return;tasks=tasks.filter(t=>t.id!==id);window.save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
-function reactivate(id){tasks=tasks.map(t=>t.id===id?{...t,done:false}:t);window.save();renderTasks();}
+async function delTask(id){if(!(await showDialog('confirm','Excluir Tarefa','Excluir esta tarefa permanentemente?')))return;tasks=tasks.filter(t=>t.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
+function reactivate(id){tasks=tasks.map(t=>t.id===id?{...t,done:false}:t);save();renderTasks();}
 
 function togTaskSub(taskId, subIdx) {
     const t = tasks.find(x => x.id === taskId); if(!t) return;
     if(t.sub && t.sub[subIdx]) {
         t.sub[subIdx].d = !t.sub[subIdx].d;
-        window.save(); renderTasks(); if(selD !== null) renderEvList();
+        save(); renderTasks(); if(selD !== null) renderEvList();
     }
 }
 
@@ -1283,10 +1260,10 @@ function togEvDone(k, id){
     const ev = evArr.find(e=>e.id===id);
     if(!ev) return;
     ev.done = !ev.done;
-    window.save(); renderTasks(); if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();
+    save(); renderTasks(); if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();
 }
 
-async function delEvGlobal(k,id){if(!(await showDialog('confirm','Excluir Evento','Excluir este evento permanentemente?')))return;events[k]=(events[k]||[]).filter(e=>e.id!==id);window.save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
+async function delEvGlobal(k,id){if(!(await showDialog('confirm','Excluir Evento','Excluir este evento permanentemente?')))return;events[k]=(events[k]||[]).filter(e=>e.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 
 function addTask(){
     const inp=document.getElementById('task-in'),text=inp.value.trim();if(!text)return;
@@ -1313,7 +1290,7 @@ function addTask(){
         tasks.unshift({id: baseId, text, obs, done: false, dk, dt, nb, rep, pri, sub: []});
     }
 
-    inp.value='';document.getElementById('task-obs').value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';document.getElementById('task-pri').value='1';window.save();schedAll();renderTasks();renderCal();
+    inp.value='';document.getElementById('task-obs').value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';document.getElementById('task-pri').value='1';save();schedAll();renderTasks();renderCal();
 }
 
 let curEtaskSubs = [];
@@ -1352,7 +1329,7 @@ function saveEditTask(){
     t.rep = parseInt(document.getElementById('etask-m-rep').value) || 0;
     t.pri = parseInt(document.getElementById('etask-m-pri').value) || 1;
     t.sub = curEtaskSubs.filter(s => s.t.trim() !== '');
-    window.save(); renderTasks(); renderCal(); if(selD !== null) renderEvList(); schedAll(); closeM('mo-etask');
+    save(); renderTasks(); renderCal(); if(selD !== null) renderEvList(); schedAll(); closeM('mo-etask');
 }
 
 function tiHTML(item,isDone=false){
@@ -1486,13 +1463,13 @@ function saveNote(){
     if(enid==='new') { notes.unshift({id:Date.now(), title, type:origNType, body, list:listToSave, date:NOW.toLocaleDateString('pt-BR')}); } 
     else { notes = notes.map(n => n.id===enid ? {...n, title, type:origNType, body, list:listToSave} : n); }
     
-    window.save(); renderNotes();
+    save(); renderNotes();
     document.getElementById('nlv').style.display='flex'; 
     document.getElementById('nev').classList.remove('open'); 
     enid=null;
     if(history.state && history.state.note) history.back();
 }
-async function delNote(id){if(!(await showDialog('confirm','Excluir Anotação','Excluir esta nota permanentemente?')))return;notes=notes.filter(n=>n.id!==id);window.save();renderNotes();}
+async function delNote(id){if(!(await showDialog('confirm','Excluir Anotação','Excluir esta nota permanentemente?')))return;notes=notes.filter(n=>n.id!==id);save();renderNotes();}
 function renderNotes(){
   try {
       const g=document.getElementById('ngrid');
@@ -1702,7 +1679,7 @@ function addEvent(){
     }
     
     document.getElementById('ev-in').value='';document.getElementById('ev-time').value='';document.getElementById('ev-rep').value='0';
-    window.save();schedAll();renderEvList();renderCal();renderTasks();
+    save();schedAll();renderEvList();renderCal();renderTasks();
 }
 
 function renderEvList(){
@@ -1884,13 +1861,13 @@ function incHabit(id) {
     
     if(cnt < h.target) {
         h.history[today] = cnt + 1;
-        window.saveHabits(); renderHabits();
+        saveHabits(); renderHabits();
         if(h.history[today] >= h.target) {
             toast(`🎉 "${h.name}" concluído!`);
             if(navigator.vibrate) navigator.vibrate(50);
         }
     } else {
-        if(h.target === 1) { h.history[today] = 0; window.saveHabits(); renderHabits(); }
+        if(h.target === 1) { h.history[today] = 0; saveHabits(); renderHabits(); }
         else toast('Hábito já concluído! (Use o menu ⋮ para desfazer)');
     }
     if(focusH && focusH.id === id) { focusH = habits.find(x=>x.id===id); renderFocusBody(); }
@@ -1902,7 +1879,7 @@ function undoHabit(id) {
     let cnt = (h.history||{})[today] || 0;
     if(cnt > 0) {
         h.history[today] = cnt - 1;
-        window.saveHabits(); renderHabits();
+        saveHabits(); renderHabits();
         if(focusH && focusH.id === id) { focusH = habits.find(x=>x.id===id); renderFocusBody(); }
     }
 }
@@ -1918,7 +1895,7 @@ function togHabOpt(id) {
 function togHabPause(id) {
     const h = habits.find(x=>x.id===id); if(!h) return;
     h.paused = !h.paused;
-    window.saveHabits(); renderHabits();
+    saveHabits(); renderHabits();
     toast(h.paused ? 'Hábito pausado.' : 'Hábito retomado!');
 }
 
@@ -2023,16 +2000,16 @@ async function saveHabit(){
     if(!hfd.times)hfd.times=[];
     if(document.getElementById('hf-rem-time')) hfd.reminderTime = document.getElementById('hf-rem-time').value;
     if(hfd.id)habits=habits.map(h=>h.id===hfd.id?{...h,...hfd}:h);else habits.push({...hfd,id:Date.now(),history:{}});
-    window.saveHabits();renderHabits();schedAll();closeHF();toast(hfd.id?'Hábito atualizado ✓':'Hábito criado ✓');
+    saveHabits();renderHabits();schedAll();closeHF();toast(hfd.id?'Hábito atualizado ✓':'Hábito criado ✓');
 }
-async function delHabit(id){if(!(await showDialog('confirm','Excluir Hábito','Excluir este hábito e todo o histórico permanentemente?')))return;habits=habits.filter(h=>h.id!==id);window.saveHabits();renderHabits();if(focusH&&focusH.id===id)closeFocus();}
+async function delHabit(id){if(!(await showDialog('confirm','Excluir Hábito','Excluir este hábito e todo o histórico permanentemente?')))return;habits=habits.filter(h=>h.id!==id);saveHabits();renderHabits();if(focusH&&focusH.id===id)closeFocus();}
 
 // FOCUS & BACKGROUND TIMER
 function openFocus(id){const h=habits.find(h=>h.id===id);if(!h)return;focusH=h;if(focTmr){clearInterval(focTmr.intv);focTmr=null;}document.getElementById('fc-ttl').textContent=`${h.icon} ${h.name}`;renderFocusBody();openM('mo-focus');}
 function closeFocus(){closeM('mo-focus');if(focTmr){clearInterval(focTmr.intv);focTmr=null;}focusH=null;}
 function editFromFocus(){if(focusH){const id=focusH.id;closeFocus();openHF(id);}}
 
-function setBubble(id,idx){const h=habits.find(h=>h.id===id);if(!h)return;const today=getToday();if(!h.history)h.history={};const cur=h.history[today]||0;h.history[today]=cur===h.target&&idx===h.target-1?0:idx+1;window.saveHabits();renderHabits();if(focusH&&focusH.id===id){focusH=habits.find(x=>x.id===id);renderFocusBody();}}
+function setBubble(id,idx){const h=habits.find(h=>h.id===id);if(!h)return;const today=getToday();if(!h.history)h.history={};const cur=h.history[today]||0;h.history[today]=cur===h.target&&idx===h.target-1?0:idx+1;saveHabits();renderHabits();if(focusH&&focusH.id===id){focusH=habits.find(x=>x.id===id);renderFocusBody();}}
 
 function renderFocusBody(){
     if(!focusH)return;
@@ -2297,7 +2274,7 @@ function saveTransfer(){
     if(accF && accT) {
         accF.val -= v;
         accT.val += v;
-        window.save(); renderFin(); closeM('mo-transfer'); toast('Transferência realizada ✓');
+        save(); renderFin(); closeM('mo-transfer'); toast('Transferência realizada ✓');
     }
 }
 
@@ -2305,7 +2282,7 @@ async function addAccount(){
   const nm = await showDialog('prompt', 'Nova Carteira', 'Nome da Carteira/Banco:');
   if(!nm || !nm.trim()) return;
   const vl = await showDialog('prompt', 'Saldo Inicial', `Saldo inicial para '${nm}' (use ponto para centavos):`, "0.00");
-  if(vl !== false && vl !== null && !isNaN(parseFloat(vl.replace(',','.')))) { accounts.push({id:Date.now(), name:nm.trim(), val:parseFloat(vl.replace(',','.'))}); window.save(); renderFin(); }
+  if(vl !== false && vl !== null && !isNaN(parseFloat(vl.replace(',','.')))) { accounts.push({id:Date.now(), name:nm.trim(), val:parseFloat(vl.replace(',','.'))}); save(); renderFin(); }
 }
 function editAccount(id){
   const acc = accounts.find(a=>a.id===id); if(!acc) return;
@@ -2319,9 +2296,9 @@ function saveEditAcc(){
   const acc = accounts.find(a=>a.id===id); if(!acc) return;
   acc.name = document.getElementById('eacc-name').value.trim() || acc.name;
   acc.val = parseFloat(document.getElementById('eacc-val').value) || 0;
-  window.save(); renderFin(); closeM('mo-eacc'); toast('Carteira atualizada!');
+  save(); renderFin(); closeM('mo-eacc'); toast('Carteira atualizada!');
 }
-async function delAccount(id){ if(await showDialog('confirm','Remover Carteira','Remover esta carteira permanentemente?')) { accounts = accounts.filter(a => a.id !== id); window.save(); renderFin(); } }
+async function delAccount(id){ if(await showDialog('confirm','Remover Carteira','Remover esta carteira permanentemente?')) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
 
 async function chgRep(el) {
     if(el.value === 'custom') {
@@ -2357,7 +2334,7 @@ function addBill(){
   
   bills.push({id: Date.now(), type, cat, desc, date, val, rep, paidMap: {}, valMap: {}, descMap: {}, delMap: {}});
   document.getElementById('bill-desc').value=''; document.getElementById('bill-date').value=''; document.getElementById('bill-val').value=''; document.getElementById('bill-rep').value='0';
-  window.save(); renderFin(); renderCal();
+  save(); renderFin(); renderCal();
 }
 
 // MODAL EDITAR CONTA
@@ -2423,7 +2400,7 @@ function saveEditBill(){
       b.valMap = {}; b.descMap = {};
   }
   
-  window.save(); renderFin(); renderEvList(); renderCal(); closeM('mo-ebill'); toast('Lançamento atualizado!');
+  save(); renderFin(); renderEvList(); renderCal(); closeM('mo-ebill'); toast('Lançamento atualizado!');
 }
 
 function togBill(id, mk){ 
@@ -2448,7 +2425,7 @@ function togBill(id, mk){
       }
       return b;
   }); 
-  window.save(); renderFin(); renderEvList(); renderCal(); 
+  save(); renderFin(); renderEvList(); renderCal(); 
   if(msg) toast(msg);
 }
 
@@ -2456,7 +2433,7 @@ function delBill(id, mk){
   const b = bills.find(x => x.id === id); if(!b) return;
   if(b.rep === 0) {
       showDialog('confirm','Excluir Conta','Excluir este lançamento permanentemente?').then(ans => {
-          if(ans) { bills = bills.filter(x => x.id !== id); window.save(); renderFin(); renderEvList(); renderCal(); }
+          if(ans) { bills = bills.filter(x => x.id !== id); save(); renderFin(); renderEvList(); renderCal(); }
       });
   } else {
       document.getElementById('dbill-id').value = id;
@@ -2480,7 +2457,7 @@ function execDelBill(scope) {
         bills = bills.filter(x => x.id !== id);
         toast('Todos os lançamentos foram excluídos.');
     }
-    window.save(); renderFin(); renderEvList(); renderCal(); closeM('mo-dbill');
+    save(); renderFin(); renderEvList(); renderCal(); closeM('mo-dbill');
 }
 
 // ACHIEVEMENTS
@@ -2509,7 +2486,7 @@ function openSug(){
 function addSug(i){
   const s=HABIT_SUGS[i];
   habits.push({id:Date.now(), icon:s.icon, name:s.name, target:s.target, frequency:s.frequency, color:s.color, customDays:s.customDays||[], times:[], history:{}});
-  window.saveHabits(); renderHabits(); closeM('mo-sug'); toast('Hábito adicionado!');
+  saveHabits(); renderHabits(); closeM('mo-sug'); toast('Hábito adicionado!');
 }
 
 // TUTORIAL
@@ -2558,7 +2535,7 @@ function showStep(){
     }, 300);
 }
 function nextTut(){
-    if(tutStep===0){ const n = document.getElementById('tut-name'); if(n && n.value.trim()){ cfg.name = n.value.trim(); window.saveCfg(); window.applyName(); } }
+    if(tutStep===0){ const n = document.getElementById('tut-name'); if(n && n.value.trim()){ cfg.name = n.value.trim(); saveCfg(); applyName(); } }
     if(tutStep<TUT_STEPS.length-1){tutStep++;showStep();}else endTutorial();
 }
 function endTutorial(){
@@ -2585,14 +2562,10 @@ function toast(msg) {
     t.to = setTimeout(() => { t.style.opacity = 0; t.style.transform = 'translateX(-50%) translateY(20px)'; }, 3000);
 }
 
-// ── INIT BLINDADO (CHAMADO PELO FIREBASE APÓS CARREGAR DADOS OU QUANDO CACHE PRONTO) ──
-window.initAppCore = function() {
-    if(window._appInitialized) return;
-    window._appInitialized = true;
-
+// ── INIT BLINDADO ABSOLUTO ──
+function initApp() {
     try {
-        if(accounts.length===0){accounts.push({id:Date.now(),name:'Carteira Principal',val:0}); window.save();}
-        
+        load(); loadCfg(); loadHabits();
         applyTabOrder(); applyTheme(); applyName(); applyHideVals();
         if(typeof chgBillType === 'function') chgBillType(); 
         
@@ -2602,14 +2575,16 @@ window.initAppCore = function() {
         try{ renderNotes(); } catch(e){}
         try{ renderHabits(); } catch(e){}
         try{ if(typeof renderFin==='function') renderFin(); } catch(e){}
+        
+        // Renderiza o calendário, focando no dia de hoje automaticamente
         try{ selDay(TD); } catch(e){}
 
         try {
-            bindDrag('ngrid', '.nc', () => { const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id)))); notes=arr.filter(Boolean); window.save(); });
-            bindDrag('hab-list', '.hcard', () => { const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id)))); habits=arr.filter(Boolean); window.saveHabits(); });
+            bindDrag('ngrid', '.nc', () => { const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id)))); notes=arr.filter(Boolean); save(); });
+            bindDrag('hab-list', '.hcard', () => { const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id)))); habits=arr.filter(Boolean); saveHabits(); });
             bindDrag('cfg-tab-list', '.tab-item', () => { 
                 const arr=[]; document.querySelectorAll('#cfg-tab-list .tab-item').forEach(el=>arr.push(el.dataset.id)); 
-                cfg.tabOrder=arr; window.saveCfg(); applyTabOrder(); 
+                cfg.tabOrder=arr; saveCfg(); applyTabOrder(); 
             });
         } catch(e) {}
         
@@ -2618,29 +2593,25 @@ window.initAppCore = function() {
         
         try {
             const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();
-            if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});window.save();history.replaceState(null,'',location.pathname);window._shared=true;}
+            if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}
         } catch(e) {}
         
         if(window._shared){swTab('notes',document.getElementById(`tb-${TABS.includes('notes')?'notes':TABS[0]}`));toast('✓ Texto salvo nas notas!');}
         
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         
-        setTimeout(() => { startTutorial(); }, 500);
+        // Remove Splash 
+        setTimeout(() => {
+            const sp = document.getElementById('splash');
+            if(sp) sp.remove(); 
+            startTutorial();
+        }, 2200);
+
         schedAll();
     } catch (err) { console.error("Erro na inicialização:", err); }
 }
 
-// Fallback de inicialização se Firebase falhar/demorar e app estiver offline absoluto sem cache
-setTimeout(() => {
-    if(!window.currentUser && !window._appInitialized && window.location.hostname === "localhost") {
-        // Mock init para ambiente sem servidor (caso queira rodar offline sem firebase config ativo)
-        load();
-        window.initAppCore();
-        const splash = document.getElementById('splash');
-        if(splash) splash.remove();
-        document.getElementById('login-screen').style.display = 'none';
-    }
-}, 3000);
+initApp();
 </script>
 </body>
 </html>
