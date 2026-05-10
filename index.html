@@ -2711,4 +2711,30 @@ window.initAppCore = function() {
         document.getElementById('ev-in').addEventListener('keydown', e => { if(e.key==='Enter') addEvent(); });
         
         try {
-            const p=new URLSearchParams(location
+            .search),txt=(p.get('text')||p.get('url')||'').trim();
+            if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});window.save();history.replaceState(null,'',location.pathname);window._shared=true;}
+        } catch(e) {}
+        
+        if(window._shared){swTab('notes',document.getElementById(`tb-${TABS.includes('notes')?'notes':TABS[0]}`));toast('✓ Texto salvo nas notas!');}
+        
+        document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
+        
+        setTimeout(() => { startTutorial(); }, 500);
+        schedAll();
+    } catch (err) { console.error("Erro na inicialização:", err); }
+}
+
+// Fallback de inicialização (Usado caso o Firebase demore a responder ou o aparelho esteja 100% offline no primeiro uso)
+setTimeout(() => {
+    if(!window.currentUser && !window._appInitialized && window.location.hostname === "localhost") {
+        window.loadLocal();
+        window.initAppCore();
+        const splash = document.getElementById('splash');
+        if(splash) splash.remove();
+        document.getElementById('login-screen').style.display = 'none';
+    }
+}, 3000);
+</script>
+</body>
+</html>
+
