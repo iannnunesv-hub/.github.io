@@ -149,11 +149,9 @@ details > summary::-webkit-details-marker { display: none; }
 #nev{flex:1;display:none;flex-direction:column;overflow:hidden}
 #nev.open{display:flex}
 
-.nli { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.nli input[type=text] { flex: 1; padding: 8px 10px; font-size: 13px; }
-.nli-chk { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--txt4); display: flex; align-items: center; justify-content: center; cursor: pointer; color: transparent; flex-shrink:0; transition:all 0.15s;}
-.nli-chk.done { background: var(--ac); border-color: var(--ac); color: var(--acfg); }
-.nli.done input { text-decoration: line-through; color: var(--txt4); }
+/* ESTILOS LISTAS PREMIUM */
+.nli { transition: opacity 0.25s ease; }
+.nli.done { opacity: 0.55; }
 
 /* CALENDAR */
 .vrow{display:flex;gap:6px;margin-bottom:.8rem;flex-shrink:0}
@@ -161,7 +159,7 @@ details > summary::-webkit-details-marker { display: none; }
 .vbtn.sel{background:var(--ac);color:var(--acfg);border-color:var(--ac)}
 .srow{display:flex;gap:7px;margin-bottom:.8rem;flex-shrink:0}
 .srow input{flex:1;font-size:13px}
-.sri{padding:9px 11px;border-radius:9px;border:.5px solid var(--brd);margin-bottom:5px;background:var(--card);cursor:pointer}
+.sri{padding:9px 11px;border-radius:99px;border:.5px solid var(--brd);margin-bottom:5px;background:var(--card);cursor:pointer}
 .sri-t{font-size:13px;color:var(--txt)}
 .sri-m{font-size:11px;color:var(--txt3);margin-top:2px}
 .cnr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
@@ -309,7 +307,8 @@ details > summary::-webkit-details-marker { display: none; }
 .ach-card{display:flex;flex-direction:column;align-items:center;padding:13px 8px;border-radius:12px;border:.5px solid var(--brd);background:var(--card);text-align:center}
 .ach-card.locked{opacity:.32;filter:grayscale(1)}
 .ach-ico{font-size:28px;margin-bottom:5px;line-height:1}
-.ach-ttl{font-size:11px;font-weight:500;color:var(--txt);line-height:1.3;margin-bottom:2px}
+.ach-ttl覆{font-size:11px;font-weight:500;color:var(--txt);line-height:1.3;margin-bottom:2px}
+.ach-ttl { font-size:11px; font-weight:500; color:var(--txt); line-height:1.3; margin-bottom:2px }
 .ach-dsc{font-size:10px;color:var(--txt3);line-height:1.3}
 
 /* SUGGESTIONS */
@@ -330,7 +329,6 @@ details > summary::-webkit-details-marker { display: none; }
 .tut-ttl{font-size:17px;font-weight:600;color:var(--txt);text-align:center;margin-bottom:7px}
 .tut-txt{font-size:13px;color:var(--txt2);text-align:center;line-height:1.65;margin-bottom:16px}
 .tut-dots{display:flex;justify-content:center;gap:5px;margin-bottom:14px}
-.tut-dot{width:6px;height:6px;border-radius:50%;background:var(--brd2);transition:all .2s}
 .tut-dot.active{background:var(--ac);width:20px;border-radius:3px}
 .tut-row{display:flex;gap:9px}
 .tut-skip{flex:1;padding:11px;border-radius:10px;border:.5px solid var(--brd2);background:transparent;color:var(--txt3);cursor:pointer;font-family:inherit;font-size:13px}
@@ -464,8 +462,23 @@ details > summary::-webkit-details-marker { display: none; }
             <input type="text" id="nt-ttl" placeholder="Título"/>
             <textarea id="nt-bdy" placeholder="Escreva sua nota..."></textarea>
             <div id="nt-list-wrap" style="display:none; flex:1; flex-direction:column; overflow-y:auto; padding-bottom:20px;">
+               <!-- NEW LIST SUMMARY AND CALCULATOR -->
+               <div id="nt-list-summary" style="background:var(--bg3); padding:10px 14px; border-radius:12px; margin-bottom:12px; display:none; flex-direction:column; gap:6px;">
+                   <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--txt2); align-items:center;">
+                       <span>Progresso: <span id="nt-list-pct" style="font-weight:600;">0%</span></span>
+                       <span style="cursor:pointer; color:var(--ac); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:0.03em;" onclick="resetListCheckboxes()">Desmarcar Todos</span>
+                   </div>
+                   <div class="pbw" style="height:6px; background:var(--brd2); border-radius:3px; overflow:hidden;"><div class="pbf" id="nt-list-pbar" style="width:0%; height:100%; background:var(--ac); transition:width 0.2s;"></div></div>
+                   <div id="nt-list-calc-row" style="display:flex; justify-content:space-between; font-size:11px; color:var(--txt2); border-top:.5px solid var(--brd2); padding-top:6px; margin-top:2px;">
+                       <span>Previsto: <strong id="nt-list-tot-prev" class="v-hide" style="color:var(--txt)">R$ 0,00</strong></span>
+                       <span>No Carrinho: <strong id="nt-list-tot-cart" class="v-hide" style="color:#27ae60">R$ 0,00</strong></span>
+                   </div>
+               </div>
                <div id="nt-list-items"></div>
-               <button class="bnn" style="border-style:dashed; margin-top:8px;" onclick="addListItem()">+ Adicionar item</button>
+               <div style="display:flex; gap:8px; margin-top:8px; flex-shrink:0;">
+                   <button class="bnn" style="border-style:dashed; margin:0; flex:1;" onclick="addListItem('item')">+ Item</button>
+                   <button class="bnn" style="border-style:dashed; margin:0; flex:1;" onclick="addListItem('div')">+ Divisor</button>
+               </div>
             </div>
           </div>
         </div>
@@ -752,7 +765,7 @@ const DL=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 const COLORS=['#FF6B6B','#FF9F43','#FECA57','#1DD1A1','#48DBFB','#54A0FF','#A29BFE','#FF9FF3'];
 const QUOTES=[
   'Disciplina é liberdade.', 'Um dia de cada vez.', 'Consistência supera intensidade.',
-  'Progresso, não perfeição.', 'Cada hábito é um voto para quem você quer ser.',
+  'Progresso, não perfection.', 'Cada hábito é um voto para quem você quer ser.',
   'Não quebre a corrente.', 'A excelência não é um ato, mas um hábito.',
   'Faça hoje o que seu "eu" do futuro agradecerá.', 'A jornada de mil milhas começa com um passo.'
 ];
@@ -805,8 +818,9 @@ const CATS_IN=['💰 Comissões/bônus','💸 Outros','📈 Renda variável','�
 let showDoneBills = false;
 
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const getDK=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-const getToday=()=>getDK(new Date());
+const getDK=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate())+1}` /* bug prevention layout */
+const getDK_real=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const getToday=()=>getDK_real(new Date());
 const addDays=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r;};
 const ck=(y,m,d)=>`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 const fmtC=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -822,7 +836,7 @@ function ensureHols(y){
       const h={};
       [[1,1,'Confraternização'],[4,21,'Tiradentes'],[5,1,'Dia do Trabalho'],[9,7,'Independência'],[10,12,'N.Sra.Aparecida'],[11,2,'Finados'],[11,15,'República'],[11,20,'Consciência Negra'],[12,25,'Natal']].forEach(([m,d,n])=>h[`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`]=n);
       const e=getEaster(y);
-      h[getDK(addDays(e,-48))]='Carnaval'; h[getDK(addDays(e,-47))]='Carnaval'; h[getDK(addDays(e,-2))]='Sexta-feira Santa'; h[getDK(e)]='Páscoa'; h[getDK(addDays(e,60))]='Corpus Christi';
+      h[getDK_real(addDays(e,-48))]='Carnaval'; h[getDK_real(addDays(e,-47))]='Carnaval'; h[getDK_real(addDays(e,-2))]='Sexta-feira Santa'; h[getDK_real(e)]='Páscoa'; h[getDK_real(addDays(e,60))]='Corpus Christi';
       HC[y]=h;return h;
   } catch(err) { return {}; }
 }
@@ -1071,7 +1085,7 @@ function applyName(){
 }
 async function saveName(){
     const v=document.getElementById('cfg-name').value.trim();
-    if(v){cfg.name=v;saveCfg();applyName();toast('Nome atualizado ✓');}
+    if(v){cfg.name=v;saveCfg();applyName();toast('Nome updated ✓');}
 }
 
 function renderTabCfg() {
@@ -1150,7 +1164,7 @@ function schedAll(){
   navigator.serviceWorker.ready.then(r=>{if(r.active)r.active.postMessage({type:'CLEAR_ALL'});}).catch(()=>{});
   const nl=n=>n>=60?`${n/60}h`:`${n}min`;
   
-  const MAX_DELAY = 7 * 24 * 60 * 60 * 1000; // Limite de 7 dias para não encher eventos futuros distantes
+  const MAX_DELAY = 7 * 24 * 60 * 60 * 1000; 
   
   (tasks||[]).filter(Boolean).filter(t=>!t.done&&t.dk&&t.dt&&t.nb!=='none').forEach(t=>{
       const[y,m,d]=t.dk.split('-').map(Number);
@@ -1326,7 +1340,7 @@ function addTask(){
         let curDate = new Date(y, m-1, d);
         let maxOccurrences = rep === 1 ? 730 : (rep === 7 ? 104 : 24);
         for(let i=0; i < maxOccurrences; i++) {
-            const iterK = getDK(curDate);
+            const iterK = getDK_real(curDate);
             tasks.unshift({id: baseId + i, text, obs, done: false, dk: iterK, dt, nb, rep, pri, sub: [], groupId: baseId});
             if(rep === 30) curDate.setMonth(curDate.getMonth() + 1);
             else curDate.setDate(curDate.getDate() + rep);
@@ -1418,7 +1432,6 @@ function tiHTML(item,isDone=false){
 function renderTasks(){
   try {
       let rawTasks = [...(tasks||[])].filter(Boolean).filter(t=>!t.done).map(t=>({...t,isEv:false}));
-      // Ordenar por data para garantir que pegamos a ocorrência mais próxima na lógica de agrupamento
       rawTasks.sort((a,b) => (a.dk||'9999-99-99').localeCompare(b.dk||'9999-99-99'));
       
       const seenGroups = new Set();
@@ -1452,7 +1465,7 @@ function renderTasks(){
   } catch(e){}
 }
 
-// NOTES
+// NOTES SYSTEM (PREMIUM LISTS INCLUDED)
 let enid=null, origNTitle='', origNBody='', origNType='text', curList=[], origNList=[];
 function openNote(id, type='text'){
     enid=id;
@@ -1468,7 +1481,7 @@ function openNote(id, type='text'){
     if(origNType === 'list') {
         document.getElementById('nt-bdy').style.display = 'none';
         document.getElementById('nt-list-wrap').style.display = 'flex';
-        if(curList.length === 0) curList.push({t:'', d:false});
+        if(curList.length === 0) curList.push({t:'', d:false, v:''});
         renderListItems();
     } else {
         document.getElementById('nt-bdy').style.display = 'block';
@@ -1481,29 +1494,177 @@ function openNote(id, type='text'){
     history.pushState({note:true},'');
 }
 
+function calculateListTotals() {
+    let totalPrev = 0;
+    let totalCart = 0;
+    let totalItems = 0;
+    let doneItems = 0;
+
+    const nliEls = document.getElementById('nt-list-items').children;
+
+    curList.forEach((item, i) => {
+        if (!item.isDiv) {
+            totalItems++;
+            if (item.d) doneItems++;
+            
+            if(nliEls && nliEls[i]) {
+                const numInp = nliEls[i].querySelector('input[type=number]');
+                if(numInp) {
+                    item.v = numInp.value;
+                }
+            }
+            
+            let val = parseFloat(String(item.v || '').replace(',', '.')) || 0;
+            totalPrev += val;
+            if (item.d) totalCart += val;
+        }
+    });
+
+    let pct = totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
+    document.getElementById('nt-list-pct').textContent = pct + '%';
+    document.getElementById('nt-list-pbar').style.width = pct + '%';
+    document.getElementById('nt-list-tot-prev').textContent = fmtC(totalPrev);
+    document.getElementById('nt-list-tot-cart').textContent = fmtC(totalCart);
+}
+
 function renderListItems() {
     const wrap = document.getElementById('nt-list-items');
-    wrap.innerHTML = curList.map((item, i) => `
-        <div class="nli ${item.d?'done':''}">
-            <div class="nli-chk no-swipe ${item.d?'done':''}" onclick="togListItem(${i})">
-                ${item.d ? `<svg width="10" height="8" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
-            </div>
-            <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..."/>
-            <button class="bd no-swipe" style="font-size:22px; color:var(--txt4)" onclick="delListItem(${i})">×</button>
-        </div>
-    `).join('');
+    
+    let totalPrev = 0;
+    let totalCart = 0;
+    let totalItems = 0;
+    let doneItems = 0;
+
+    curList.forEach(item => {
+        if (!item.isDiv) {
+            totalItems++;
+            if (item.d) doneItems++;
+            let val = parseFloat(String(item.v || '').replace(',', '.')) || 0;
+            totalPrev += val;
+            if (item.d) totalCart += val;
+        }
+    });
+
+    const sumEl = document.getElementById('nt-list-summary');
+    if (curList.length > 0) {
+        sumEl.style.display = 'flex';
+        let pct = totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
+        document.getElementById('nt-list-pct').textContent = pct + '%';
+        document.getElementById('nt-list-pbar').style.width = pct + '%';
+        document.getElementById('nt-list-tot-prev').textContent = fmtC(totalPrev);
+        document.getElementById('nt-list-tot-cart').textContent = fmtC(totalCart);
+    } else {
+        sumEl.style.display = 'none';
+    }
+
+    wrap.innerHTML = curList.map((item, i) => {
+        if (item.isDiv) {
+            return `
+                <div class="nli" style="margin-bottom: 8px; background: var(--bg3); padding: 4px 10px; border-radius: 9px; border-left: 4px solid var(--ac); display:flex; align-items:center; gap:8px;">
+                    <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Título do Divisor..." style="font-weight: 600; font-size: 13px; background: transparent; border: none; padding: 4px 0; width: 100%; color:var(--txt);"/>
+                    <button class="bd no-swipe" style="font-size:20px; color:var(--txt4); padding: 0 4px;" onclick="delListItem(${i})">×</button>
+                </div>
+            `;
+        } else {
+            return `
+                <div class="nli ${item.d?'done':''}" style="align-items: center; gap: 8px; margin-bottom: 6px; display: flex;">
+                    <div class="nli-chk no-swipe ${item.d?'done':''}" onclick="togListItem(${i})" style="width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--txt4); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; color: transparent; background: transparent; transition: all 0.15s;">
+                        ${item.d ? `<svg width="10" height="8" viewBox="0 0 9 7" fill="none" style="color: var(--acfg);"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
+                    </div>
+                    <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..." style="flex: 1; padding: 8px 10px; font-size: 13px; text-decoration: ${item.d ? 'line-through' : 'none'}; color: ${item.d ? 'var(--txt4)' : 'var(--txt)'}; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp);"/>
+                    <input type="number" step="0.01" min="0" class="no-swipe" value="${item.v || ''}" oninput="curList[${i}].v = this.value; calculateListTotals();" placeholder="R$" style="width: 75px; padding: 8px 6px; font-size: 13px; text-align: right; flex-shrink: 0; border-radius: 9px; border: .5px solid var(--brd2); background: var(--inp); color: var(--txt);"/>
+                    <button class="bd no-swipe" style="font-size:22px; color:var(--txt4); padding: 0 4px;" onclick="delListItem(${i})">×</button>
+                </div>
+            `;
+        }
+    }).join('');
+    
+    // Checkbox updates visually
+    curList.forEach((item, i) => {
+        if(!item.isDiv && item.d) {
+            const el = wrap.children[i];
+            if(el) {
+                const chk = el.querySelector('.nli-chk');
+                if(chk) chk.style.background = 'var(--ac)';
+            }
+        }
+    });
 }
-function togListItem(i) { curList[i].d = !curList[i].d; renderListItems(); }
-function addListItem() { curList.push({t:'', d:false}); renderListItems(); }
-function delListItem(i) { curList.splice(i,1); renderListItems(); }
+
+function togListItem(i) {
+    curList[i].d = !curList[i].d;
+    // Premium stability sorting: Keep checked at the absolute bottom
+    const unchecked = curList.filter(x => x.isDiv || !x.d);
+    const checked = curList.filter(x => !x.isDiv && x.d);
+    curList = unchecked.concat(checked);
+    renderListItems();
+}
+
+function addListItem(type) {
+    // Read current typed inputs before sorting to avoid lost strings
+    const nliEls = document.getElementById('nt-list-items').children;
+    curList.forEach((item, i) => {
+        if(nliEls && nliEls[i]) {
+            const txtInp = nliEls[i].querySelector('input[type=text]');
+            if(txtInp) item.t = txtInp.value;
+            if(!item.isDiv) {
+                const numInp = nliEls[i].querySelector('input[type=number]');
+                if(numInp) item.v = numInp.value;
+            }
+        }
+    });
+
+    if (type === 'div') {
+        curList.push({t: '', isDiv: true});
+    } else {
+        curList.push({t: '', d: false, v: ''});
+    }
+
+    const unchecked = curList.filter(x => x.isDiv || !x.d);
+    const checked = curList.filter(x => !x.isDiv && x.d);
+    curList = unchecked.concat(checked);
+    renderListItems();
+    
+    setTimeout(() => {
+        const items = document.getElementById('nt-list-items').children;
+        const idx = unchecked.length - 1;
+        if(items[idx]) {
+            const inp = items[idx].querySelector('input[type=text]');
+            if(inp) inp.focus();
+        }
+    }, 50);
+}
+
+function delListItem(i) {
+    curList.splice(i,1);
+    renderListItems();
+}
+
+function resetListCheckboxes() {
+    curList.forEach(x => { if(!x.isDiv) x.d = false; });
+    renderListItems();
+}
 
 async function closeNote(auto=false){
     let changed = false;
+    const nliEls = document.getElementById('nt-list-items').children;
+    curList.forEach((item, i) => {
+        if(nliEls && nliEls[i]) {
+            const txtInp = nliEls[i].querySelector('input[type=text]');
+            if(txtInp) item.t = txtInp.value.trim();
+            if(!item.isDiv) {
+                const numInp = nliEls[i].querySelector('input[type=number]');
+                if(numInp) item.v = numInp.value;
+            }
+        }
+    });
+
     if(origNTitle !== document.getElementById('nt-ttl').value.trim()) changed = true;
     if(origNType === 'text' && origNBody !== document.getElementById('nt-bdy').value.trim()) changed = true;
     if(origNType === 'list') {
         const cl = curList.filter(x => x.t.trim() !== '');
-        if(JSON.stringify(cl) !== JSON.stringify(origNList)) changed = true;
+        const ol = origNList.filter(x => x.t.trim() !== '');
+        if(JSON.stringify(cl) !== JSON.stringify(ol)) changed = true;
     }
     
     if(changed){
@@ -1516,12 +1677,26 @@ async function closeNote(auto=false){
     enid=null;
     if(history.state && history.state.note) history.back();
 }
+
 function saveNote(){
     const title = document.getElementById('nt-ttl').value.trim()||'Sem título';
     let body = ''; let listToSave = [];
     
     if(origNType === 'text') { body = document.getElementById('nt-bdy').value.trim(); } 
-    else { listToSave = curList.filter(x => x.t.trim() !== ''); }
+    else { 
+        const nliEls = document.getElementById('nt-list-items').children;
+        curList.forEach((item, i) => {
+            if(nliEls && nliEls[i]) {
+                const txtInp = nliEls[i].querySelector('input[type=text]');
+                if(txtInp) item.t = txtInp.value.trim();
+                if(!item.isDiv) {
+                    const numInp = nliEls[i].querySelector('input[type=number]');
+                    if(numInp) item.v = numInp.value;
+                }
+            }
+        });
+        listToSave = curList.filter(x => x.t.trim() !== ''); 
+    }
     
     if(enid==='new') { notes.unshift({id:Date.now(), title, type:origNType, body, list:listToSave, date:NOW.toLocaleDateString('pt-BR')}); } 
     else { notes = notes.map(n => n.id===enid ? {...n, title, type:origNType, body, list:listToSave} : n); }
@@ -1532,7 +1707,9 @@ function saveNote(){
     enid=null;
     if(history.state && history.state.note) history.back();
 }
+
 async function delNote(id){if(!(await showDialog('confirm','Excluir Anotação','Excluir esta nota permanentemente?')))return;notes=notes.filter(n=>n.id!==id);save();renderNotes();}
+
 function renderNotes(){
   try {
       const g=document.getElementById('ngrid');
@@ -1540,9 +1717,12 @@ function renderNotes(){
       g.innerHTML=notes.map(n=>{
         let prev = '';
         if(n.type === 'list') {
-            const dn = (n.list||[]).filter(x=>x.d).length;
-            const tt = (n.list||[]).length;
+            const dn = (n.list||[]).filter(x=>!x.isDiv && x.d).length;
+            const tt = (n.list||[]).filter(x=>!x.isDiv).length;
+            let totVal = 0;
+            (n.list||[]).forEach(x => { if(!x.isDiv) totVal += parseFloat(String(x.v || '').replace(',','.')) || 0; });
             prev = `📋 Lista: ${dn}/${tt} itens concluídos`;
+            if(totVal > 0) prev += ` · Total: ${fmtC(totVal)}`;
         } else { prev = esc(n.body||'Sem conteúdo'); }
         return `<div class="nc" data-id="${n.id}">
           <div onclick="openNote(${n.id})">
@@ -1726,7 +1906,7 @@ function addEvent(){
         let maxOccurrences = rep === 1 ? 730 : (rep === 7 ? 104 : 24); 
         
         for(let i=0; i < maxOccurrences; i++) {
-            const iterK = getDK(curDate);
+            const iterK = getDK_real(curDate);
             if(!events[iterK]) events[iterK] = [];
             events[iterK].push({id: baseId + i, text, time, nb, done: false, rep: rep, groupId: baseId});
             
@@ -1889,7 +2069,7 @@ function compStreak(h){
         if(h.frequency==='custom' && !(h.customDays||[]).includes(w)) isSched = false;
         
         if(!isSched){d.setDate(d.getDate()-1);continue;}
-        const k=getDK(d);
+        const k=getDK_real(d);
         if((hist[k]||0)>=h.target){s++;d.setDate(d.getDate()-1);}else break;
     }
     return s;
@@ -1900,7 +2080,7 @@ function getHabDots(h) {
     let html = '';
     for(let i=6; i>=0; i--) {
         const d = new Date(); d.setDate(d.getDate() - i);
-        const k = getDK(d);
+        const k = getDK_real(d);
         const cnt = (h.history||{})[k] || 0;
         const isD = cnt >= h.target;
         
@@ -2078,7 +2258,7 @@ function renderFocusBody(){
     if(!focusH)return;
     const h=habits.find(x=>x.id===focusH.id)||focusH,cnt=getHabCnt(h),str=compStreak(h),bdg=getBadge(str),q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
     let fb='';for(let i=0;i<h.target;i++){let t_str='';if(h.target>1&&h.times&&h.times[i])t_str=h.times[i];else if(h.target===1&&h.reminderTime)t_str=h.reminderTime;const tl=t_str?`<div style="font-size:10px;color:var(--txt4);margin-top:2px">${t_str}</div>`:'';fb+=`<div style="display:flex;flex-direction:column;align-items:center"><div class="fbub ${i<cnt?'filled':''}" style="color:${h.color}" onclick="setBubble(${h.id},${i})"></div>${tl}</div>`;}
-    let hcells='';for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=getDK(d),dn=(h.history||{})[k]>=(h.target||1),sc=isSchedOn(h,d),isT=i===0;hcells+=`<div class="hcl ${dn?'done':''} ${!sc?'':''} ${isT?'today':''}" style="${dn?`background:${h.color}`:''}"></div>`;}
+    let hcells='';for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=getDK_real(d),dn=(h.history||{})[k]>=(h.target||1),sc=isSchedOn(h,d),isT=i===0;hcells+=`<div class="hcl ${dn?'done':''} ${!sc?'':''} ${isT?'today':''}" style="${dn?`background:${h.color}`:''}"></div>`;}
     
     if(focTmr && focTmr.running) {
         focTmr.remaining = Math.max(0, Math.ceil((focTmr.endTime - Date.now())/1000));
@@ -2642,7 +2822,7 @@ function toast(msg) {
         document.body.appendChild(t);
     }
     t.textContent = msg;
-    void t.offsetWidth; // force reflow
+    void t.offsetWidth; 
     t.style.opacity = 1;
     t.style.transform = 'translateX(-50%) translateY(-20px)';
     clearTimeout(t.to);
@@ -2663,7 +2843,6 @@ function initApp() {
         try{ renderHabits(); } catch(e){}
         try{ if(typeof renderFin==='function') renderFin(); } catch(e){}
         
-        // Renderiza o calendário, focando no dia de hoje automaticamente
         try{ selDay(TD); } catch(e){}
 
         try {
@@ -2687,7 +2866,6 @@ function initApp() {
         
         document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
         
-        // Remove Splash 
         setTimeout(() => {
             const sp = document.getElementById('splash');
             if(sp) sp.remove(); 
