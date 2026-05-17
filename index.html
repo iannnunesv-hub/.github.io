@@ -1643,14 +1643,16 @@ function renderListItems() {
     wrap.innerHTML = curList.map((item, i) => {
         if (item.isDiv) {
             return `
-                <div class="nli" style="margin-bottom: 8px; background: var(--bg3); padding: 4px 10px; border-radius: 9px; border-left: 4px solid var(--ac); display:flex; align-items:center; gap:8px;">
-                    <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Título do Divisor..." style="font-weight: 600; font-size: 13px; background: transparent; border: none; padding: 4px 0; width: 100%; color:var(--txt);"/>
+                <div class="nli list-drag-item" data-idx="${i}" style="margin-bottom: 8px; background: var(--bg3); padding: 4px 10px; border-radius: 9px; border-left: 4px solid var(--ac); display:flex; align-items:center; gap:8px;">
+                    <span class="list-drag-handle no-swipe" style="cursor:grab; font-size:18px; color:var(--txt4); padding:0 4px; touch-action:none;">☰</span>
+                    <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Título do Grupo..." style="font-weight: 600; font-size: 13px; background: transparent; border: none; padding: 4px 0; width: 100%; color:var(--txt);"/>
                     <button class="bd no-swipe" style="font-size:20px; color:var(--txt4); padding: 0 4px;" onclick="delListItem(${i})">×</button>
                 </div>
             `;
         } else {
             return `
-                <div class="nli ${item.d?'done':''}" style="align-items: center; gap: 8px; margin-bottom: 6px; display: flex;">
+                <div class="nli list-drag-item ${item.d?'done':''}" data-idx="${i}" style="align-items: center; gap: 8px; margin-bottom: 6px; display: flex;">
+                    <span class="list-drag-handle no-swipe" style="cursor:grab; font-size:18px; color:var(--txt4); padding:0 2px; touch-action:none;">☰</span>
                     <div class="nli-chk no-swipe ${item.d?'done':''}" onclick="togListItem(${i})" style="width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--txt4); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; color: transparent; background: transparent; transition: all 0.15s;">
                         ${item.d ? `<svg width="10" height="8" viewBox="0 0 9 7" fill="none" style="color: var(--acfg);"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
                     </div>
@@ -1676,15 +1678,10 @@ function renderListItems() {
 
 function togListItem(i) {
     curList[i].d = !curList[i].d;
-    // Premium stability sorting: Keep checked at the absolute bottom
-    const unchecked = curList.filter(x => x.isDiv || !x.d);
-    const checked = curList.filter(x => !x.isDiv && x.d);
-    curList = unchecked.concat(checked);
     renderListItems();
 }
 
 function addListItem(type) {
-    // Read current typed inputs before sorting to avoid lost strings
     const nliEls = document.getElementById('nt-list-items').children;
     curList.forEach((item, i) => {
         if(nliEls && nliEls[i]) {
@@ -1702,15 +1699,11 @@ function addListItem(type) {
     } else {
         curList.push({t: '', d: false, v: ''});
     }
-
-    const unchecked = curList.filter(x => x.isDiv || !x.d);
-    const checked = curList.filter(x => !x.isDiv && x.d);
-    curList = unchecked.concat(checked);
     renderListItems();
     
     setTimeout(() => {
         const items = document.getElementById('nt-list-items').children;
-        const idx = unchecked.length - 1;
+        const idx = curList.length - 1;
         if(items[idx]) {
             const inp = items[idx].querySelector('input[type=text]');
             if(inp) inp.focus();
@@ -2935,6 +2928,21 @@ function initApp() {
             bindDrag('cfg-tab-list', '.tab-item', () => { 
                 const arr=[]; document.querySelectorAll('#cfg-tab-list .tab-item').forEach(el=>arr.push(el.dataset.id)); 
                 cfg.tabOrder=arr; saveCfg(); applyTabOrder(); 
+            });
+            bindDrag('nt-list-items', '.list-drag-item', () => { 
+                const newArr = [];
+                document.querySelectorAll('#nt-list-items .list-drag-item').forEach(el => {
+                    const idx = Number(el.dataset.idx);
+                    const txtInp = el.querySelector('input[type=text]');
+                    if(txtInp) curList[idx].t = txtInp.value;
+                    if(!curList[idx].isDiv) {
+                        const numInp = el.querySelector('input[type=number]');
+                        if(numInp) curList[idx].v = numInp.value;
+                    }
+                    newArr.push(curList[idx]);
+                });
+                curList = newArr;
+                renderListItems(); 
             });
         } catch(e) {}
         
