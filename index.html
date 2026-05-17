@@ -443,6 +443,10 @@ details > summary::-webkit-details-marker { display: none; }
                   <option value="60">1 hora antes</option>
                 </select>
               </div>
+            </div> <div class="hff" style="margin-top: 10px;">
+               <label>Subtarefas (Checklist)</label>
+               <div id="new-task-subs" style="display:flex; flex-direction:column; gap:5px; margin-bottom:8px;"></div>
+               <button class="bnn" style="border-style:dashed; padding:8px; margin-bottom:0;" onclick="addNewTaskSub()">+ Adicionar subtarefa</button>
             </div>
           </div>
           <div id="t-pend" style="padding-bottom:10px;"></div>
@@ -1333,6 +1337,9 @@ function addTask(){
     const rep=parseInt(document.getElementById('task-rep').value)||0;
     const pri=parseInt(document.getElementById('task-pri').value)||1;
     
+    // Captura apenas as subtarefas que não estão vazias
+    const validSubs = curNewTaskSubs.filter(s => s.t.trim() !== '');
+    
     const baseId = Date.now();
 
     if (rep > 0 && dk) {
@@ -1341,18 +1348,36 @@ function addTask(){
         let maxOccurrences = rep === 1 ? 730 : (rep === 7 ? 104 : 24);
         for(let i=0; i < maxOccurrences; i++) {
             const iterK = getDK_real(curDate);
-            tasks.unshift({id: baseId + i, text, obs, done: false, dk: iterK, dt, nb, rep, pri, sub: [], groupId: baseId});
+            tasks.unshift({id: baseId + i, text, obs, done: false, dk: iterK, dt, nb, rep, pri, sub: JSON.parse(JSON.stringify(validSubs)), groupId: baseId});
             if(rep === 30) curDate.setMonth(curDate.getMonth() + 1);
             else curDate.setDate(curDate.getDate() + rep);
         }
     } else {
-        tasks.unshift({id: baseId, text, obs, done: false, dk, dt, nb, rep, pri, sub: []});
+        tasks.unshift({id: baseId, text, obs, done: false, dk, dt, nb, rep, pri, sub: JSON.parse(JSON.stringify(validSubs))});
     }
 
-    inp.value='';document.getElementById('task-obs').value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';document.getElementById('task-pri').value='1';save();schedAll();renderTasks();renderCal();
+    inp.value='';document.getElementById('task-obs').value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';document.getElementById('task-pri').value='1';
+    
+    // Limpa as subtarefas da tela após salvar
+    curNewTaskSubs = [];
+    renderNewTaskSubs();
+    
+    save();schedAll();renderTasks();renderCal();
 }
 
-let curEtaskSubs = [];
+let curNewTaskSubs = [];
+function renderNewTaskSubs() {
+    const wrp = document.getElementById('new-task-subs');
+    wrp.innerHTML = curNewTaskSubs.map((s, i) => `
+        <div style="display:flex; gap:5px;">
+            <input type="text" value="${esc(s.t)}" oninput="curNewTaskSubs[${i}].t=this.value" placeholder="Subtarefa..." style="flex:1; padding:6px 10px; font-size:13px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt);"/>
+            <button class="bd no-swipe" style="color:var(--txt4); padding:0 8px;" onclick="delNewTaskSub(${i})">×</button>
+        </div>
+    `).join('');
+}
+function addNewTaskSub() { curNewTaskSubs.push({t:'', d:false}); renderNewTaskSubs(); }
+function delNewTaskSub(i) { curNewTaskSubs.splice(i, 1); renderNewTaskSubs(); 
+}
 function editTask(id) {
     const t = tasks.find(x => x.id === id); if(!t) return;
     document.getElementById('etask-m-id').value = id;
