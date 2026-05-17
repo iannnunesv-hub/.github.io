@@ -443,6 +443,11 @@ details > summary::-webkit-details-marker { display: none; }
                   <option value="60">1 hora antes</option>
                 </select>
               </div>
+              <div class="tff" style="flex-basis: 100%; margin-top: 5px;">
+                 <label>Subtarefas (Checklist)</label>
+                 <div id="task-subs-wrap" style="display:flex; flex-direction:column; gap:5px; margin-bottom:5px;"></div>
+                 <button class="bnn no-swipe" style="border-style:dashed; padding:8px; margin-bottom:0;" onclick="addTaskSubForm()">+ Adicionar subtarefa</button>
+              </div>
             </div>
           </div>
           <div id="t-pend" style="padding-bottom:10px;"></div>
@@ -453,7 +458,7 @@ details > summary::-webkit-details-marker { display: none; }
           <div id="nlv">
             <div style="display:flex; gap:8px; margin-bottom:1rem; flex-shrink:0;">
                 <button class="bnn" style="margin:0;flex:1;" onclick="openNote('new','text')">+ Texto</button>
-                <button class="bnn" style="margin:0;flex:1;" onclick="openNote('new','list')">+ Lista</button>
+                <button class="bnn" style="margin:0;flex:1;" onclick="openM('mo-new-list')">+ Lista</button>
             </div>
             <div id="ngrid" class="ng"></div>
           </div>
@@ -477,7 +482,7 @@ details > summary::-webkit-details-marker { display: none; }
                <div id="nt-list-items"></div>
                <div style="display:flex; gap:8px; margin-top:8px; flex-shrink:0;">
                    <button class="bnn" style="border-style:dashed; margin:0; flex:1;" onclick="addListItem('item')">+ Item</button>
-                   <button class="bnn" style="border-style:dashed; margin:0; flex:1;" onclick="addListItem('div')">+ Divisor</button>
+                   <button class="bnn" style="border-style:dashed; margin:0; flex:1;" onclick="addListItem('div')">+ Grupo</button>
                </div>
             </div>
           </div>
@@ -757,6 +762,18 @@ details > summary::-webkit-details-marker { display: none; }
 <div class="mo" id="mo-sug" onclick="bgC(event,'mo-sug')"><div class="md">
   <div class="mh"><h2>💡 Sugestões de hábitos</h2><button class="mc" onclick="closeM('mo-sug')">×</button></div>
   <div class="mb" id="sug-body"></div>
+</div></div>
+
+<div class="mo" id="mo-new-list" onclick="bgC(event,'mo-new-list')"><div class="md">
+  <div class="mh"><h2>Nova Lista</h2><button class="mc" onclick="closeM('mo-new-list')">×</button></div>
+  <div class="mb" style="padding-bottom:20px;">
+     <button class="bnn" onclick="createNewList('standard')">📝 Lista Simples (Sem Valores)</button>
+     <button class="bnn" onclick="createNewList('shopping')">🛒 Lista de Compras (Com Valores)</button>
+     <div class="lbl" style="margin-top:15px; margin-bottom:10px;">Modelos Rápidos</div>
+     <button class="bnn" style="border-style:solid; margin-bottom:8px;" onclick="createNewList('shopping', 'mercado')">🛒 Supermercado</button>
+     <button class="bnn" style="border-style:solid; margin-bottom:8px;" onclick="createNewList('standard', 'viagem')">✈️ Bagagem de Viagem</button>
+     <button class="bnn" style="border-style:solid; margin-bottom:0;" onclick="createNewList('standard', 'tarefas')">🧹 Tarefas Domésticas</button>
+  </div>
 </div></div>
 
 <script>
@@ -1328,6 +1345,18 @@ function togEvDone(k, id){
 
 async function delEvGlobal(k,id){if(!(await showDialog('confirm','Excluir Evento','Excluir este evento permanentemente?')))return;events[k]=(events[k]||[]).filter(e=>e.id!==id);save();renderTasks();renderCal();if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();}
 
+let curTaskSubsForm = [];
+function renderTaskSubsForm() {
+    document.getElementById('task-subs-wrap').innerHTML = curTaskSubsForm.map((s, i) => `
+        <div style="display:flex; gap:5px;">
+            <input type="text" value="${esc(s.t)}" oninput="curTaskSubsForm[${i}].t=this.value" placeholder="Subtarefa..." style="flex:1; padding:6px 10px; font-size:13px; height:32px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp); outline:none;"/>
+            <button class="bd no-swipe" style="color:var(--txt4); padding:0 8px;" onclick="delTaskSubForm(${i})">×</button>
+        </div>
+    `).join('');
+}
+function addTaskSubForm() { curTaskSubsForm.push({t:'', d:false}); renderTaskSubsForm(); }
+function delTaskSubForm(i) { curTaskSubsForm.splice(i, 1); renderTaskSubsForm(); }
+
 function addTask(){
     const inp=document.getElementById('task-in'),text=inp.value.trim();if(!text)return;
     const obs=document.getElementById('task-obs').value.trim();
@@ -1338,6 +1367,7 @@ function addTask(){
     const pri=parseInt(document.getElementById('task-pri').value)||1;
     
     const baseId = Date.now();
+    const subToSave = curTaskSubsForm.filter(s => s.t.trim() !== '');
 
     if (rep > 0 && dk) {
         let [y, m, d] = dk.split('-').map(Number);
@@ -1345,15 +1375,16 @@ function addTask(){
         let maxOccurrences = rep === 1 ? 730 : (rep === 7 ? 104 : 24);
         for(let i=0; i < maxOccurrences; i++) {
             const iterK = getDK_real(curDate);
-            tasks.unshift({id: baseId + i, text, obs, done: false, dk: iterK, dt, nb, rep, pri, sub: [], groupId: baseId});
+            tasks.unshift({id: baseId + i, text, obs, done: false, dk: iterK, dt, nb, rep, pri, sub: JSON.parse(JSON.stringify(subToSave)), groupId: baseId});
             if(rep === 30) curDate.setMonth(curDate.getMonth() + 1);
             else curDate.setDate(curDate.getDate() + rep);
         }
     } else {
-        tasks.unshift({id: baseId, text, obs, done: false, dk, dt, nb, rep, pri, sub: []});
+        tasks.unshift({id: baseId, text, obs, done: false, dk, dt, nb, rep, pri, sub: JSON.parse(JSON.stringify(subToSave))});
     }
 
     inp.value='';document.getElementById('task-obs').value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';document.getElementById('task-pri').value='1';save();schedAll();renderTasks();renderCal();
+    curTaskSubsForm = []; renderTaskSubsForm();
 }
 
 let curEtaskSubs = [];
@@ -1470,14 +1501,35 @@ function renderTasks(){
 }
 
 // NOTES SYSTEM (PREMIUM LISTS INCLUDED)
-let enid=null, origNTitle='', origNBody='', origNType='text', curList=[], origNList=[];
-function openNote(id, type='text'){
+let enid=null, origNTitle='', origNBody='', origNType='text', curList=[], origNList=[], curListType='standard';
+
+function createNewList(type, template) {
+    closeM('mo-new-list');
+    curListType = type;
+    let initialList = [];
+    let title = '';
+    if(template === 'mercado') {
+        title = 'Compras do Mês';
+        initialList = [{t:'Hortifruti', isDiv:true}, {t:'', d:false, v:''}, {t:'Mercearia', isDiv:true}, {t:'', d:false, v:''}, {t:'Limpeza', isDiv:true}, {t:'', d:false, v:''}];
+    } else if(template === 'viagem') {
+        title = 'Mala de Viagem';
+        initialList = [{t:'Roupas', isDiv:true}, {t:'', d:false, v:''}, {t:'Higiene', isDiv:true}, {t:'', d:false, v:''}, {t:'Eletrônicos', isDiv:true}, {t:'', d:false, v:''}];
+    } else if(template === 'tarefas') {
+        title = 'Faxina';
+        initialList = [{t:'Quartos', isDiv:true}, {t:'', d:false, v:''}, {t:'Cozinha', isDiv:true}, {t:'', d:false, v:''}, {t:'Banheiros', isDiv:true}, {t:'', d:false, v:''}];
+    } else {
+        initialList = [{t:'', d:false, v:''}];
+    }
+    openNote('new', 'list', initialList, title);
+}
+function openNote(id, type='text', initList=null, initTitle='') {
     enid=id;
     const n = id==='new'?null:(notes||[]).find(x=>x.id===id);
-    origNTitle = n?n.title:'';
+    origNTitle = n?n.title:(initTitle||'');
     origNType = n?(n.type||'text'):type;
     origNBody = n?(n.body||''):'';
-    curList = n?JSON.parse(JSON.stringify(n.list||[])):[];
+    curListType = n?(n.listType||'standard'):curListType;
+    curList = n?JSON.parse(JSON.stringify(n.list||[])):(initList ? JSON.parse(JSON.stringify(initList)) : []);
     origNList = JSON.parse(JSON.stringify(curList)); 
     
     document.getElementById('nt-ttl').value=origNTitle;
@@ -1552,6 +1604,7 @@ function renderListItems() {
     const sumEl = document.getElementById('nt-list-summary');
     if (curList.length > 0) {
         sumEl.style.display = 'flex';
+        document.getElementById('nt-list-calc-row').style.display = curListType === 'shopping' ? 'flex' : 'none';
         let pct = totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
         document.getElementById('nt-list-pct').textContent = pct + '%';
         document.getElementById('nt-list-pbar').style.width = pct + '%';
@@ -1565,19 +1618,22 @@ function renderListItems() {
         if (item.isDiv) {
             return `
                 <div class="nli" style="margin-bottom: 8px; background: var(--bg3); padding: 4px 10px; border-radius: 9px; border-left: 4px solid var(--ac); display:flex; align-items:center; gap:8px;">
-                    <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Título do Divisor..." style="font-weight: 600; font-size: 13px; background: transparent; border: none; padding: 4px 0; width: 100%; color:var(--txt);"/>
-                    <button class="bd no-swipe" style="font-size:20px; color:var(--txt4); padding: 0 4px;" onclick="delListItem(${i})">×</button>
+                    <div class="drag-handle no-swipe" style="padding:4px 8px; color:var(--txt4); cursor:grab; flex-shrink:0;">☰</div>
+                    <input type="text" class="no-swipe div-inp" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Nome do Grupo..." style="font-weight: 600; font-size: 13px; background: transparent; border: none; padding: 4px 0; width: 100%; color:var(--txt); outline:none;"/>
+                    <button class="bd no-swipe" style="font-size:20px; color:var(--txt4); padding: 0 4px; flex-shrink:0;" onclick="delListItem(${i})">×</button>
                 </div>
             `;
         } else {
+            const valInput = curListType === 'shopping' ? `<input type="number" step="0.01" min="0" class="no-swipe" value="${item.v || ''}" oninput="curList[${i}].v = this.value; calculateListTotals();" placeholder="R$" style="width: 75px; padding: 8px 6px; font-size: 13px; text-align: right; flex-shrink: 0; border-radius: 9px; border: .5px solid var(--brd2); background: var(--inp); color: var(--txt);"/>` : '';
             return `
                 <div class="nli ${item.d?'done':''}" style="align-items: center; gap: 8px; margin-bottom: 6px; display: flex;">
+                    <div class="drag-handle no-swipe" style="padding:4px 4px; color:var(--txt4); cursor:grab; font-size:16px; flex-shrink:0;">☰</div>
                     <div class="nli-chk no-swipe ${item.d?'done':''}" onclick="togListItem(${i})" style="width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--txt4); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; color: transparent; background: transparent; transition: all 0.15s;">
                         ${item.d ? `<svg width="10" height="8" viewBox="0 0 9 7" fill="none" style="color: var(--acfg);"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
                     </div>
-                    <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..." style="flex: 1; padding: 8px 10px; font-size: 13px; text-decoration: ${item.d ? 'line-through' : 'none'}; color: ${item.d ? 'var(--txt4)' : 'var(--txt)'}; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp);"/>
-                    <input type="number" step="0.01" min="0" class="no-swipe" value="${item.v || ''}" oninput="curList[${i}].v = this.value; calculateListTotals();" placeholder="R$" style="width: 75px; padding: 8px 6px; font-size: 13px; text-align: right; flex-shrink: 0; border-radius: 9px; border: .5px solid var(--brd2); background: var(--inp); color: var(--txt);"/>
-                    <button class="bd no-swipe" style="font-size:22px; color:var(--txt4); padding: 0 4px;" onclick="delListItem(${i})">×</button>
+                    <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..." style="flex: 1; min-width:0; padding: 8px 10px; font-size: 13px; text-decoration: ${item.d ? 'line-through' : 'none'}; color: ${item.d ? 'var(--txt4)' : 'var(--txt)'}; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp); outline:none;"/>
+                    ${valInput}
+                    <button class="bd no-swipe" style="font-size:22px; color:var(--txt4); padding: 0 4px; flex-shrink:0;" onclick="delListItem(${i})">×</button>
                 </div>
             `;
         }
@@ -1702,8 +1758,8 @@ function saveNote(){
         listToSave = curList.filter(x => x.t.trim() !== ''); 
     }
     
-    if(enid==='new') { notes.unshift({id:Date.now(), title, type:origNType, body, list:listToSave, date:NOW.toLocaleDateString('pt-BR')}); } 
-    else { notes = notes.map(n => n.id===enid ? {...n, title, type:origNType, body, list:listToSave} : n); }
+    if(enid==='new') { notes.unshift({id:Date.now(), title, type:origNType, body, list:listToSave, listType:curListType, date:NOW.toLocaleDateString('pt-BR')}); } 
+    else { notes = notes.map(n => n.id===enid ? {...n, title, type:origNType, body, list:listToSave, listType:curListType} : n); }
     
     save(); renderNotes();
     document.getElementById('nlv').style.display='flex'; 
@@ -1762,15 +1818,17 @@ window.addEventListener('popstate', (e) => {
 });
 
 // TOUCH DRAG FOR ALL
-function bindDrag(containerId, itemClass, onReorder) {
+function bindDrag(containerId, itemClass, onReorder, handleClass=null) {
     const g = document.getElementById(containerId);
     if(!g) return;
     let dTimer=null, dEl=null, sx=0, sy=0;
 
     g.addEventListener('touchstart', e => {
+        if(handleClass && !e.target.closest(handleClass)) return;
         const t = e.target.closest(itemClass);
-        if(!t || e.target.closest('button') || e.target.closest('.bub') || e.target.closest('.h-act') || e.target.closest('.h-opts')) return;
+        if(!t || (!handleClass && (e.target.closest('button') || e.target.closest('.bub') || e.target.closest('.h-act') || e.target.closest('.h-opts')))) return;
         sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+        const delay = handleClass ? 80 : 500;
         dTimer = setTimeout(() => {
             dEl = t; dEl.classList.add('dragging');
             dEl.style.opacity = '0.5'; dEl.style.transform = 'scale(0.95)'; dEl.style.transition = 'none';
@@ -1908,6 +1966,7 @@ function addEvent(){
     
     const k=ckSel();
     const baseId = Date.now();
+    const subToSave = curTaskSubsForm.filter(s => s.t.trim() !== '');
     
     if (rep > 0) {
         let [y, m, d] = k.split('-').map(Number);
@@ -2848,6 +2907,28 @@ function initApp() {
         try{ selDay(TD); } catch(e){}
 
         try {
+function onReorderListItems() {
+    const els = document.getElementById('nt-list-items').children;
+    const newList = [];
+    for(let i=0; i<els.length; i++) {
+        const el = els[i];
+        const isDiv = el.querySelector('.div-inp') !== null;
+        const txtInp = el.querySelector('input[type=text]');
+        const t = txtInp ? txtInp.value : '';
+        if(isDiv) {
+            newList.push({t, isDiv: true});
+        } else {
+            const numInp = el.querySelector('input[type=number]');
+            const v = numInp ? numInp.value : '';
+            const chk = el.querySelector('.nli-chk');
+            const isDone = chk ? chk.classList.contains('done') : false;
+            newList.push({t, d: isDone, v});
+        }
+    }
+    curList = newList;
+    renderListItems();
+}
+            bindDrag('nt-list-items', '.nli', onReorderListItems, '.drag-handle');
             bindDrag('ngrid', '.nc', () => { const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id)))); notes=arr.filter(Boolean); save(); });
             bindDrag('hab-list', '.hcard', () => { const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id)))); habits=arr.filter(Boolean); saveHabits(); });
             bindDrag('cfg-tab-list', '.tab-item', () => { 
