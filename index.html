@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -69,8 +70,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 .mh{display:flex;justify-content:space-between;align-items:center;padding:16px 19px 13px;border-bottom:.5px solid var(--brd);flex-shrink:0}
 .mh h2{font-size:15px;font-weight:500;color:var(--txt)}
 .mc{background:none;border:none;font-size:23px;cursor:pointer;color:var(--txt3);line-height:1}
-.mo-scroll { overflow-y:auto; flex:1; padding:14px 19px }
-.mb{overflow-y:auto; flex:1; padding:14px 19px}
+.mb{overflow-y:auto;flex:1;padding:14px 19px}
 .mf{padding:12px 19px 20px;flex-shrink:0;border-top:.5px solid var(--brd)}
 
 #mo-dialog { z-index: 150; align-items: center; padding: 1rem; }
@@ -103,7 +103,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 .tog-s::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s}
 .tog input:checked+.tog-s{background:#555}
 .tog input:checked+.tog-s::before{transform:translateX(20px)}
-.ns{font-size:12px;font-weight:500}.ns.on{color:#3a3}.ns.off覆{color:var(--txt3)}.ns.off{color:var(--txt3)}
+.ns{font-size:12px;font-weight:500}.ns.on{color:#3a3}.ns.off{color:var(--txt3)}
 .bncfg{background:var(--ac);color:var(--acfg);border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit}
 
 /* TASKS & BILLS */
@@ -118,7 +118,7 @@ textarea{resize:none;line-height:1.65;width:100%}
 details > summary { list-style: none; }
 details > summary::-webkit-details-marker { display: none; }
 
-.ti{display:flex;align-items:flex-start;gap:9px;padding:11px 13px;border-radius:10px;border:.5px solid var(--brd);margin-bottom:6px;background:var(--card);position:relative;}
+.ti{display:flex;align-items:flex-start;gap:9px;padding:11px 13px;border-radius:10px;border:.5px solid var(--brd);margin-bottom:6px;background:var(--card)}
 .ti.done-item .tt{text-decoration:line-through;color:var(--txt4)}
 .tck{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--txt4);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .15s}
 .tck.done{background:var(--ac);border-color:var(--ac)}
@@ -134,10 +134,10 @@ details > summary::-webkit-details-marker { display: none; }
 .dtoggle.open .arr{transform:rotate(90deg)}
 
 /* NOTES, LISTS & CARDS SELECTION LOCK */
-.nc, .hcard, .tab-item, .nli { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.nc, .hcard, .tab-item { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 .ng{display:flex;flex-direction:column;gap:9px; padding-bottom:10px;}
 .nc{border-radius:11px;border:.5px solid var(--brd);padding:14px;cursor:pointer;background:var(--card);transition:transform 0.2s, opacity 0.2s, box-shadow 0.2s;}
-.nc.dragging, .hcard.dragging, .tab-item.dragging, .nli.dragging { z-index: 10; position: relative; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+.nc.dragging, .hcard.dragging, .tab-item.dragging { z-index: 10; position: relative; }
 .nc h3{font-size:14px;font-weight:500;color:var(--txt);margin-bottom:4px}
 .nc p{font-size:12px;color:var(--txt3);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .nf{display:flex;justify-content:space-between;align-items:center}
@@ -150,11 +150,9 @@ details > summary::-webkit-details-marker { display: none; }
 #nev{flex:1;display:none;flex-direction:column;overflow:hidden}
 #nev.open{display:flex}
 
-/* ESTILOS LISTAS PREMIUM DRAGGABLE */
-.nli { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; background: var(--bg2); padding: 4px; border-radius: 9px; transition: opacity 0.2s ease, transform 0.15s ease; }
+/* ESTILOS LISTAS PREMIUM */
+.nli { transition: opacity 0.25s ease; }
 .nli.done { opacity: 0.55; }
-.drag-handle { cursor: grab; color: var(--txt3); font-size: 16px; padding: 0 4px; user-select: none; -webkit-user-select: none; }
-.drag-handle:active { cursor: grabbing; }
 
 /* CALENDAR */
 .vrow{display:flex;gap:6px;margin-bottom:.8rem;flex-shrink:0}
@@ -162,7 +160,7 @@ details > summary::-webkit-details-marker { display: none; }
 .vbtn.sel{background:var(--ac);color:var(--acfg);border-color:var(--ac)}
 .srow{display:flex;gap:7px;margin-bottom:.8rem;flex-shrink:0}
 .srow input{flex:1;font-size:13px}
-.sri{padding:9px 11px;border-radius:9px;border:.5px solid var(--brd);margin-bottom:5px;background:var(--card);cursor:pointer}
+.sri{padding:9px 11px;border-radius:99px;border:.5px solid var(--brd);margin-bottom:5px;background:var(--card);cursor:pointer}
 .sri-t{font-size:13px;color:var(--txt)}
 .sri-m{font-size:11px;color:var(--txt3);margin-top:2px}
 .cnr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
@@ -310,6 +308,7 @@ details > summary::-webkit-details-marker { display: none; }
 .ach-card{display:flex;flex-direction:column;align-items:center;padding:13px 8px;border-radius:12px;border:.5px solid var(--brd);background:var(--card);text-align:center}
 .ach-card.locked{opacity:.32;filter:grayscale(1)}
 .ach-ico{font-size:28px;margin-bottom:5px;line-height:1}
+.ach-ttlè¦†{font-size:11px;font-weight:500;color:var(--txt);line-height:1.3;margin-bottom:2px}
 .ach-ttl { font-size:11px; font-weight:500; color:var(--txt); line-height:1.3; margin-bottom:2px }
 .ach-dsc{font-size:10px;color:var(--txt3);line-height:1.3}
 
@@ -351,7 +350,7 @@ details > summary::-webkit-details-marker { display: none; }
 <body>
 
 <div id="splash">
-    <div class="sp-ico">👑</div>
+    <div class="sp-ico">ðŸ‘‘</div>
     <div class="sp-title">Organizador <span class="sp-prem">Premium</span></div>
 </div>
 
@@ -359,8 +358,8 @@ details > summary::-webkit-details-marker { display: none; }
   <div class="hdr">
     <div class="hdr-l"><h1 id="aname">Meu Organizador</h1><p id="dlbl"></p></div>
     <div class="hdr-r">
-      <button class="ibt" onclick="openAch()" title="Conquistas">🏆</button>
-      <button class="gear-btn" onclick="openCfg()" title="Configurações">
+      <button class="ibt" onclick="openAch()" title="Conquistas">ðŸ†</button>
+      <button class="gear-btn" onclick="openCfg()" title="ConfiguraÃ§Ãµes">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
         </svg>
@@ -372,23 +371,23 @@ details > summary::-webkit-details-marker { display: none; }
     <div id="slider">
         <div id="sec-agenda" class="sec active">
           <div class="vrow">
-            <button class="vbtn sel" id="vbtn-month" onclick="setView('month')">Mês</button>
+            <button class="vbtn sel" id="vbtn-month" onclick="setView('month')">MÃªs</button>
             <button class="vbtn" id="vbtn-week" onclick="setView('week')">Semana</button>
             <button class="vbtn" id="vbtn-day" onclick="setView('day')">Dia</button>
           </div>
-          <div class="srow"><input type="text" id="cal-srch" placeholder="🔍 Buscar tarefas e eventos..." oninput="renderSearch()"/></div>
+          <div class="srow"><input type="text" id="cal-srch" placeholder="ðŸ” Buscar tarefas e eventos..." oninput="renderSearch()"/></div>
           <div id="srch-res" style="display:none"></div>
           <div id="cal-main" style="flex-shrink:0" class="no-swipe"></div>
           <div id="ev-sec" class="evs" style="display:none">
             <p class="edl" id="ev-dlbl"></p>
-            <div id="hol-row" style="display:none" class="holbanner">🎉 <span id="hol-nm"></span></div>
+            <div id="hol-row" style="display:none" class="holbanner">ðŸŽ‰ <span id="hol-nm"></span></div>
             <div class="ef">
               <input type="text" id="ev-in" placeholder="Nome do evento..."/>
               <div class="efr" style="flex-wrap:wrap;">
                 <div class="efl"><label>Hora</label><input type="text" id="ev-time" class="pk-input" readonly onclick="openPicker(this.id, 'time')" placeholder="--:--"/></div>
                 <div class="efl"><label>Repetir</label>
                   <select id="ev-rep">
-                    <option value="0">Não</option><option value="1">Diário</option>
+                    <option value="0">NÃ£o</option><option value="1">DiÃ¡rio</option>
                     <option value="7">Semanal</option><option value="30">Mensal</option>
                   </select>
                 </div>
@@ -418,7 +417,7 @@ details > summary::-webkit-details-marker { display: none; }
                <button class="ib" onclick="addTask()">+</button>
             </div>
             <div style="margin-bottom:10px;">
-               <input type="text" id="task-obs" placeholder="Observação (opcional)..." style="font-size:13px; padding:7px 11px; height:34px;"/>
+               <input type="text" id="task-obs" placeholder="ObservaÃ§Ã£o (opcional)..." style="font-size:13px; padding:7px 11px; height:34px;"/>
             </div>
             <div class="tf2">
               <div class="tff"><label>Dia</label><input type="text" id="task-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')" placeholder="Sem data"/></div>
@@ -426,13 +425,13 @@ details > summary::-webkit-details-marker { display: none; }
               <div class="tff"><label>Prioridade</label>
                 <select id="task-pri">
                   <option value="1">Normal</option>
-                  <option value="2">Alta 🔴</option>
-                  <option value="0">Baixa 🟢</option>
+                  <option value="2">Alta ðŸ”´</option>
+                  <option value="0">Baixa ðŸŸ¢</option>
                 </select>
               </div>
               <div class="tff"><label>Repetir</label>
                 <select id="task-rep">
-                  <option value="0">Não</option><option value="1">Diário</option>
+                  <option value="0">NÃ£o</option><option value="1">DiÃ¡rio</option>
                   <option value="7">Semanal</option><option value="30">Mensal</option>
                 </select>
               </div>
@@ -445,12 +444,6 @@ details > summary::-webkit-details-marker { display: none; }
                   <option value="60">1 hora antes</option>
                 </select>
               </div>
-              <!-- SUBTASKS ON CREATION -->
-              <div class="hff" style="flex-basis: 100%; margin-top: 8px; border-top: .5px dashed var(--brd2); padding-top: 8px;">
-                   <label>Subtarefas (Checklist)</label>
-                   <div id="task-create-subs" style="display:flex; flex-direction:column; gap:5px; margin-bottom:6px;"></div>
-                   <button class="bnn" style="border-style:dashed; padding:6px; margin-bottom:0; font-size:12px" onclick="addTaskCreateSub()">+ Adicionar subtarefa</button>
-              </div>
             </div>
           </div>
           <div id="t-pend" style="padding-bottom:10px;"></div>
@@ -462,25 +455,15 @@ details > summary::-webkit-details-marker { display: none; }
             <div style="display:flex; gap:8px; margin-bottom:1rem; flex-shrink:0;">
                 <button class="bnn" style="margin:0;flex:1;" onclick="openNote('new','text')">+ Texto</button>
                 <button class="bnn" style="margin:0;flex:1;" onclick="openNote('new','list')">+ Lista</button>
-                <button class="bnn" style="margin:0;flex:1;border-style:solid;background:var(--bg2)" onclick="openNListSug()">💡 Sugestões</button>
             </div>
             <div id="ngrid" class="ng"></div>
           </div>
           <div id="nev">
-            <div class="neh"><button class="bbk" onclick="closeNote(true)">← Voltar</button><button class="bsv" onclick="saveNote()">Salvar</button></div>
-            <input type="text" id="nt-ttl" placeholder="Título"/>
+            <div class="neh"><button class="bbk" onclick="closeNote(true)">â† Voltar</button><button class="bsv" onclick="saveNote()">Salvar</button></div>
+            <input type="text" id="nt-ttl" placeholder="TÃ­tulo"/>
             <textarea id="nt-bdy" placeholder="Escreva sua nota..."></textarea>
             <div id="nt-list-wrap" style="display:none; flex:1; flex-direction:column; overflow-y:auto; padding-bottom:20px;">
-               <!-- LIST CONFIG TYPE -->
-               <div class="hff" style="margin-bottom:10px;">
-                   <label>Tipo de Lista</label>
-                   <select id="nt-list-ltype" onchange="chgNListLType()">
-                       <option value="padrao">📋 Checklist Padrão (Sem valores)</option>
-                       <option value="compras">🛒 Lista de Compras / Desejos (Com Somas)</option>
-                   </select>
-               </div>
-               
-               <!-- LIST SUMMARY AND CALCULATOR -->
+               <!-- NEW LIST SUMMARY AND CALCULATOR -->
                <div id="nt-list-summary" style="background:var(--bg3); padding:10px 14px; border-radius:12px; margin-bottom:12px; display:none; flex-direction:column; gap:6px;">
                    <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--txt2); align-items:center;">
                        <span>Progresso: <span id="nt-list-pct" style="font-weight:600;">0%</span></span>
@@ -492,13 +475,10 @@ details > summary::-webkit-details-marker { display: none; }
                        <span>No Carrinho: <strong id="nt-list-tot-cart" class="v-hide" style="color:#27ae60">R$ 0,00</strong></span>
                    </div>
                </div>
-               
-               <!-- DRAGGABLE LIST ITEMS WRAPPER -->
-               <div id="nt-list-items" class="ng"></div>
-               
+               <div id="nt-list-items"></div>
                <div style="display:flex; gap:8px; margin-top:8px; flex-shrink:0;">
                    <button class="bnn" style="border-style:dashed; margin:0; flex:1;" onclick="addListItem('item')">+ Item</button>
-                   <button class="bnn" style="border-style:dashed; margin:0; flex:1;" onclick="addListItem('div')">+ Grupo</button>
+                   <button class="bnn" style="border-style:dashed; margin:0; flex:1;" onclick="addListItem('div')">+ Divisor</button>
                </div>
             </div>
           </div>
@@ -506,8 +486,8 @@ details > summary::-webkit-details-marker { display: none; }
 
         <div id="sec-habitos" class="sec">
           <div style="display:flex;gap:8px;margin-bottom:1rem">
-            <button class="bnn" style="margin-bottom:0;flex:1" onclick="openHF(null)">+ Novo Hábito</button>
-            <button class="bnn" style="margin-bottom:0;flex:1;border-style:solid;background:var(--bg2)" onclick="openSug()">💡 Sugestões</button>
+            <button class="bnn" style="margin-bottom:0;flex:1" onclick="openHF(null)">+ Novo HÃ¡bito</button>
+            <button class="bnn" style="margin-bottom:0;flex:1;border-style:solid;background:var(--bg2)" onclick="openSug()">ðŸ’¡ SugestÃµes</button>
           </div>
           <div id="hab-list" style="padding-bottom:15px"></div>
         </div>
@@ -525,44 +505,44 @@ details > summary::-webkit-details-marker { display: none; }
                   <div class="f-v v-hide" id="fin-total">R$ 0,00</div>
                 </div>
                 <div style="display:flex; gap:6px; flex-shrink:0;">
-                  <button class="ib" style="font-size:13px; padding:6px 12px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="openTransfer()">⇄ Transf.</button>
+                  <button class="ib" style="font-size:13px; padding:6px 12px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="openTransfer()">â‡„ Transf.</button>
                   <button class="ib" style="font-size:13px; padding:6px 12px; background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2)" onclick="addAccount()">+ Cart.</button>
                 </div>
              </div>
              <div id="acc-list" class="acc-list"></div>
           </div>
           <div style="margin-bottom:1rem">
-             <div class="lbl" style="margin-bottom:8px">Projeção Mês a Mês</div>
+             <div class="lbl" style="margin-bottom:8px">ProjeÃ§Ã£o MÃªs a MÃªs</div>
              <div id="fin-proj" class="no-swipe" style="overscroll-behavior-x: contain; touch-action: pan-x pan-y; overflow-x:auto; display:flex; gap:8px; padding-bottom:8px; scroll-behavior:smooth"></div>
           </div>
           
           <div class="cnr" style="margin:1.2rem 0 .5rem">
-            <button class="cnv" onclick="chgFinM(-1)">‹</button>
+            <button class="cnv" onclick="chgFinM(-1)">â€¹</button>
             <span id="fin-mlbl" style="font-size:13px;font-weight:600"></span>
-            <button class="cnv" onclick="chgFinM(1)">›</button>
+            <button class="cnv" onclick="chgFinM(1)">â€º</button>
           </div>
 
           <div class="tf">
             <div class="tftop" style="gap:8px; margin-bottom:8px; align-items:center;">
                <select id="bill-type" onchange="chgBillType()" style="width:35%; flex-shrink:0; padding:9px; font-size:14px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp);">
-                   <option value="-">🔴 Saída</option>
-                   <option value="+">🟢 Entrada</option>
+                   <option value="-">ðŸ”´ SaÃ­da</option>
+                   <option value="+">ðŸŸ¢ Entrada</option>
                </select>
                <select id="bill-cat" style="width:65%; flex-shrink:1; padding:9px; font-size:14px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp);"></select>
             </div>
             <div class="tftop">
-               <input type="text" id="bill-desc" placeholder="Descrição (Opcional)" style="flex:1"/>
+               <input type="text" id="bill-desc" placeholder="DescriÃ§Ã£o (Opcional)" style="flex:1"/>
                <button class="ib" onclick="addBill()">+</button>
             </div>
             <div class="tf2">
               <div class="tff"><label id="lbl-bill-date">Vencimento</label><input type="text" id="bill-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')" placeholder="Dia..."/></div>
               <div class="tff"><label>Valor (R$)</label><input type="number" id="bill-val" step="0.01" placeholder="0.00" min="0"/></div>
               <div class="tff" style="flex-basis: 100%; flex-direction:row; align-items:center; gap:8px; margin-top:4px">
-                 <label style="margin:0; text-transform:none; font-size:12px; font-weight:500; color:var(--txt);">🔁 Repetir:</label>
+                 <label style="margin:0; text-transform:none; font-size:12px; font-weight:500; color:var(--txt);">ðŸ” Repetir:</label>
                  <select id="bill-rep" onchange="chgRep(this)" style="flex:1; font-size:13px; padding:6px 8px; height:32px; min-width:0;">
-                     <option value="0">Não repetir</option>
-                     <option value="-1">Fixo (Todo mês)</option>
-                     <option value="1">Por mais 1 mês</option>
+                     <option value="0">NÃ£o repetir</option>
+                     <option value="-1">Fixo (Todo mÃªs)</option>
+                     <option value="1">Por mais 1 mÃªs</option>
                      <option value="2">Por mais 2 meses</option>
                      <option value="3">Por mais 3 meses</option>
                      <option value="6">Por mais 6 meses</option>
@@ -573,8 +553,8 @@ details > summary::-webkit-details-marker { display: none; }
               </div>
             </div>
           </div>
-          <div class="lbl" style="margin-bottom:8px">Lançamentos do Mês</div>
-          <button class="bnn" id="btn-toggle-done-bills" style="display:none; margin-bottom: 10px; border-style:solid" onclick="toggleDoneBills()">Ver Lançamentos Concluídos</button>
+          <div class="lbl" style="margin-bottom:8px">LanÃ§amentos do MÃªs</div>
+          <button class="bnn" id="btn-toggle-done-bills" style="display:none; margin-bottom: 10px; border-style:solid" onclick="toggleDoneBills()">Ver LanÃ§amentos ConcluÃ­dos</button>
           <div id="bill-list" style="padding-bottom:20px;"></div>
         </div>
     </div>
@@ -584,8 +564,8 @@ details > summary::-webkit-details-marker { display: none; }
     <button id="tb-agenda" class="tb active" onclick="swTab('agenda',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 2v3M12 2v3M2 8h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Agenda</span></button>
     <button id="tb-tasks" class="tb" onclick="swTab('tasks',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.3"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Tarefas</span></button>
     <button id="tb-notes" class="tb" onclick="swTab('notes',this)"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M6 6h6M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Notas</span></button>
-    <button id="tb-habitos" class="tb" onclick="swTab('habitos',this)"><svg viewBox="0 0 18 18" fill="none"><path d="M9 3a6 6 0 1 1 0 12A6 6 0 0 1 9 3zm0 2v4l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Hábitos</span></button>
-    <button id="tb-fin" class="tb" onclick="swTab('fin',this)"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M16 12h.01M3 10h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Finanças</span></button>
+    <button id="tb-habitos" class="tb" onclick="swTab('habitos',this)"><svg viewBox="0 0 18 18" fill="none"><path d="M9 3a6 6 0 1 1 0 12A6 6 0 0 1 9 3zm0 2v4l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>HÃ¡bitos</span></button>
+    <button id="tb-fin" class="tb" onclick="swTab('fin',this)"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M16 12h.01M3 10h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>FinanÃ§as</span></button>
   </div>
 </div>
 
@@ -598,7 +578,7 @@ details > summary::-webkit-details-marker { display: none; }
     <div class="tut-ttl" id="tut-ttl"></div>
     <div class="tut-txt" id="tut-txt"></div>
     <div class="tut-dots" id="tut-dots"></div>
-    <div class="tut-row"><button class="tut-skip" onclick="endTutorial()">Pular</button><button class="tut-next" id="tut-next" onclick="nextTut()">Próximo →</button></div>
+    <div class="tut-row"><button class="tut-skip" onclick="endTutorial()">Pular</button><button class="tut-next" id="tut-next" onclick="nextTut()">PrÃ³ximo â†’</button></div>
   </div>
 </div>
 
@@ -617,67 +597,67 @@ details > summary::-webkit-details-marker { display: none; }
 </div>
 
 <div class="mo" id="mo-picker" onclick="bgC(event,'mo-picker')"><div class="md">
-  <div class="mh"><h2 id="pk-ttl">Selecionar</h2><button class="mc" onclick="closeM('mo-picker')">×</button></div>
+  <div class="mh"><h2 id="pk-ttl">Selecionar</h2><button class="mc" onclick="closeM('mo-picker')">Ã—</button></div>
   <div class="mb" id="pk-body" style="padding:10px 15px; overflow:hidden;"></div>
   <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="confirmPicker()">Confirmar</button></div>
 </div></div>
 
 <div class="mo" id="mo-eacc" onclick="bgC(event,'mo-eacc')"><div class="md">
-  <div class="mh"><h2>Editar Carteira</h2><button class="mc" onclick="closeM('mo-eacc')">×</button></div>
+  <div class="mh"><h2>Editar Carteira</h2><button class="mc" onclick="closeM('mo-eacc')">Ã—</button></div>
   <div class="mb">
     <input type="hidden" id="eacc-id">
     <div class="hff"><label>Nome da Carteira</label><input type="text" id="eacc-name"></div>
     <div class="hff"><label>Saldo Atual (R$)</label><input type="number" id="eacc-val" step="0.01"></div>
   </div>
-  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditAcc()">Salvar Alterações</button></div>
+  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditAcc()">Salvar AlteraÃ§Ãµes</button></div>
 </div></div>
 
 <div class="mo" id="mo-transfer" onclick="bgC(event,'mo-transfer')"><div class="md">
-  <div class="mh"><h2>Transferir Valores</h2><button class="mc" onclick="closeM('mo-transfer')">×</button></div>
+  <div class="mh"><h2>Transferir Valores</h2><button class="mc" onclick="closeM('mo-transfer')">Ã—</button></div>
   <div class="mb">
     <div class="hff"><label>De (Origem)</label><select id="tr-from"></select></div>
     <div class="hff"><label>Para (Destino)</label><select id="tr-to"></select></div>
     <div class="hff"><label>Valor (R$)</label><input type="number" id="tr-val" step="0.01" placeholder="0.00"></div>
   </div>
-  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveTransfer()">Confirmar Transferência</button></div>
+  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveTransfer()">Confirmar TransferÃªncia</button></div>
 </div></div>
 
 <div class="mo" id="mo-ebill" onclick="bgC(event,'mo-ebill')"><div class="md">
-  <div class="mh"><h2>Editar Lançamento</h2><button class="mc" onclick="closeM('mo-ebill')">×</button></div>
+  <div class="mh"><h2>Editar LanÃ§amento</h2><button class="mc" onclick="closeM('mo-ebill')">Ã—</button></div>
   <div class="mb">
     <input type="hidden" id="ebill-m-id">
     <input type="hidden" id="ebill-m-mk">
     <div class="hff" id="ebill-scope-wrap"><label>Aplicar em</label>
         <select id="ebill-scope">
-            <option value="one">Somente neste mês</option>
-            <option value="future">Este e os próximos</option>
+            <option value="one">Somente neste mÃªs</option>
+            <option value="future">Este e os prÃ³ximos</option>
             <option value="all">Atualizar cadastro base</option>
         </select>
     </div>
     <div class="hff"><label>Data base / Vencimento</label><input type="text" id="ebill-m-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')"></div>
-    <div class="hff"><label>Descrição (deixe em branco para usar a categoria)</label><input type="text" id="ebill-m-desc" placeholder="Nova descrição..."></div>
+    <div class="hff"><label>DescriÃ§Ã£o (deixe em branco para usar a categoria)</label><input type="text" id="ebill-m-desc" placeholder="Nova descriÃ§Ã£o..."></div>
     <div class="hff"><label>Valor (R$)</label><input type="number" id="ebill-m-val" step="0.01" placeholder="0.00"></div>
   </div>
-  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditBill()">Salvar Alterações</button></div>
+  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditBill()">Salvar AlteraÃ§Ãµes</button></div>
 </div></div>
 
 <div class="mo" id="mo-dbill" onclick="bgC(event,'mo-dbill')"><div class="md">
-  <div class="mh"><h2>Excluir Recorrência</h2><button class="mc" onclick="closeM('mo-dbill')">×</button></div>
+  <div class="mh"><h2>Excluir RecorrÃªncia</h2><button class="mc" onclick="closeM('mo-dbill')">Ã—</button></div>
   <div class="mb">
-    <p style="font-size:14px;color:var(--txt2);margin-bottom:15px;line-height:1.5;">Este é um lançamento recorrente. O que deseja excluir?</p>
+    <p style="font-size:14px;color:var(--txt2);margin-bottom:15px;line-height:1.5;">Este Ã© um lanÃ§amento recorrente. O que deseja excluir?</p>
     <input type="hidden" id="dbill-id"><input type="hidden" id="dbill-mk">
-    <button class="bnn" onclick="execDelBill('one')">Somente este mês</button>
-    <button class="bnn" onclick="execDelBill('future')">Este e os próximos</button>
-    <button class="bnn" style="color:#e44; border-color:rgba(238,68,68,0.3);" onclick="execDelBill('all')">Todos os lançamentos (passados e futuros)</button>
+    <button class="bnn" onclick="execDelBill('one')">Somente este mÃªs</button>
+    <button class="bnn" onclick="execDelBill('future')">Este e os prÃ³ximos</button>
+    <button class="bnn" style="color:#e44; border-color:rgba(238,68,68,0.3);" onclick="execDelBill('all')">Todos os lanÃ§amentos (passados e futuros)</button>
   </div>
 </div></div>
 
 <div class="mo" id="mo-etask" onclick="bgC(event,'mo-etask')"><div class="md">
-  <div class="mh"><h2>Editar Tarefa</h2><button class="mc" onclick="closeM('mo-etask')">×</button></div>
+  <div class="mh"><h2>Editar Tarefa</h2><button class="mc" onclick="closeM('mo-etask')">Ã—</button></div>
   <div class="mb">
     <input type="hidden" id="etask-m-id">
     <div class="hff"><label>Nome da Tarefa</label><input type="text" id="etask-m-name" placeholder="Nome..."></div>
-    <div class="hff"><label>Observação</label><input type="text" id="etask-m-obs" placeholder="Observação..."></div>
+    <div class="hff"><label>ObservaÃ§Ã£o</label><input type="text" id="etask-m-obs" placeholder="ObservaÃ§Ã£o..."></div>
     
     <div style="display:flex; gap:8px;">
       <div class="hff" style="flex:1;"><label>Nova Data</label><input type="text" id="etask-m-date" class="pk-input" readonly onclick="openPicker(this.id, 'date')"></div>
@@ -688,13 +668,13 @@ details > summary::-webkit-details-marker { display: none; }
       <div class="hff" style="flex:1;"><label>Prioridade</label>
          <select id="etask-m-pri">
              <option value="1">Normal</option>
-             <option value="2">Alta 🔴</option>
-             <option value="0">Baixa 🟢</option>
+             <option value="2">Alta ðŸ”´</option>
+             <option value="0">Baixa ðŸŸ¢</option>
          </select>
       </div>
       <div class="hff" style="flex:1;"><label>Repetir</label>
           <select id="etask-m-rep">
-              <option value="0">Não</option><option value="1">Diário</option>
+              <option value="0">NÃ£o</option><option value="1">DiÃ¡rio</option>
               <option value="7">Semanal</option><option value="30">Mensal</option>
           </select>
       </div>
@@ -706,57 +686,52 @@ details > summary::-webkit-details-marker { display: none; }
        <button class="bnn" style="border-style:dashed; padding:8px; margin-bottom:0;" onclick="addEtaskSub()">+ Adicionar subtarefa</button>
     </div>
   </div>
-  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditTask()">Salvar Alterações</button></div>
+  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveEditTask()">Salvar AlteraÃ§Ãµes</button></div>
 </div></div>
 
 <div class="mo" id="mo-dtask" onclick="bgC(event,'mo-dtask')"><div class="md">
-  <div class="mh"><h2>Excluir Tarefa Recorrente</h2><button class="mc" onclick="closeM('mo-dtask')">×</button></div>
+  <div class="mh"><h2>Excluir Tarefa Recorrente</h2><button class="mc" onclick="closeM('mo-dtask')">Ã—</button></div>
   <div class="mb">
-    <p style="font-size:14px;color:var(--txt2);margin-bottom:15px;line-height:1.5;">Esta tarefa foi criada com repetição. O que deseja excluir?</p>
+    <p style="font-size:14px;color:var(--txt2);margin-bottom:15px;line-height:1.5;">Esta tarefa foi criada com repetiÃ§Ã£o. O que deseja excluir?</p>
     <input type="hidden" id="dtask-id"><input type="hidden" id="dtask-group-id">
-    <button class="bnn" onclick="execDelTask('one')">Somente esta ocorrência</button>
-    <button class="bnn" style="color:#e44; border-color:rgba(238,68,68,0.3);" onclick="execDelTask('all')">Todas as ocorrências deste grupo</button>
+    <button class="bnn" onclick="execDelTask('one')">Somente esta ocorrÃªncia</button>
+    <button class="bnn" style="color:#e44; border-color:rgba(238,68,68,0.3);" onclick="execDelTask('all')">Todas as ocorrÃªncias deste grupo</button>
   </div>
 </div></div>
 
-<div class="mo" id="mo-list-sug" onclick="bgC(event,'mo-list-sug')"><div class="md">
-  <div class="mh"><h2>💡 Sugestões de Listas</h2><button class="mc" onclick="closeM('mo-list-sug')">×</button></div>
-  <div class="mb" id="list-sug-body"></div>
-</div></div>
-
 <div class="mo" id="mo-proj" onclick="bgC(event,'mo-proj')"><div class="md">
-  <div class="mh"><h2 id="proj-m-ttl">Resumo</h2><button class="mc" onclick="closeM('mo-proj')">×</button></div>
+  <div class="mh"><h2 id="proj-m-ttl">Resumo</h2><button class="mc" onclick="closeM('mo-proj')">Ã—</button></div>
   <div class="mb" id="proj-m-body"></div>
 </div></div>
 
 <div class="mo" id="mo-cfg" onclick="bgC(event,'mo-cfg')"><div class="md">
-  <div class="mh"><h2>Configurações</h2><button class="mc" onclick="closeM('mo-cfg')">×</button></div>
-  <div class="mo-scroll">
-    <div class="cst">Aparência</div>
+  <div class="mh"><h2>ConfiguraÃ§Ãµes</h2><button class="mc" onclick="closeM('mo-cfg')">Ã—</button></div>
+  <div class="mb">
+    <div class="cst">AparÃªncia</div>
     <div class="cr">
       <div class="cl">Tema escuro</div>
       <label class="tog"><input type="checkbox" id="tog-dark" onchange="toggleTheme(this.checked)"/><span class="tog-s"></span></label>
     </div>
     <div class="cst">Identidade</div>
     <div class="cr" style="flex-direction:column;align-items:flex-start;gap:8px;border-bottom:none">
-      <div class="cl">Nome do Usuário</div>
+      <div class="cl">Nome do UsuÃ¡rio</div>
       <div style="display:flex;gap:8px;width:100%"><input type="text" id="cfg-name" placeholder="Seu nome" maxlength="32" style="flex:1"/><button class="bsv" onclick="saveName()">Salvar</button></div>
     </div>
-    <div class="cst">Navegação</div>
+    <div class="cst">NavegaÃ§Ã£o</div>
     <div class="cr" style="flex-direction:column;align-items:flex-start;gap:8px;border-bottom:none;padding-bottom:0;">
       <div class="cl">Ordem das Abas (Arraste)</div>
       <div id="cfg-tab-list" class="ng" style="width:100%; margin-top:8px;"></div>
     </div>
-    <div class="cst">Notificações</div>
+    <div class="cst">NotificaÃ§Ãµes</div>
     <div class="cr">
-      <div><div class="cl">Permissão Global</div><div style="font-size:12px;color:var(--txt3);margin-top:2px">Para todas as funções</div></div>
+      <div><div class="cl">PermissÃ£o Global</div><div style="font-size:12px;color:var(--txt3);margin-top:2px">Para todas as funÃ§Ãµes</div></div>
       <div style="display:flex;align-items:center;gap:8px"><span class="ns" id="nst"></span><button class="bncfg" id="nbtn"></button></div>
     </div>
     <div class="cr" style="border-bottom:none">
-      <div><div class="cl">Alertas de Hábitos</div><div style="font-size:12px;color:var(--txt3);margin-top:2px">Avisar no horário do hábito</div></div>
+      <div><div class="cl">Alertas de HÃ¡bitos</div><div style="font-size:12px;color:var(--txt3);margin-top:2px">Avisar no horÃ¡rio do hÃ¡bito</div></div>
       <label class="tog"><input type="checkbox" id="tog-nhab" onchange="cfg.nHab=this.checked;saveCfg();schedAll()"/><span class="tog-s"></span></label>
     </div>
-    <div class="cst">Segurança</div>
+    <div class="cst">SeguranÃ§a</div>
     <div class="cr" style="border-bottom:none">
       <div class="cl">Exportar Backup</div>
       <button class="bncfg" style="background:var(--bg3); color:var(--txt2); border:.5px solid var(--brd2);" onclick="exportBackup()">Baixar .json</button>
@@ -765,91 +740,92 @@ details > summary::-webkit-details-marker { display: none; }
 </div></div>
 
 <div class="mo" id="mo-hf" onclick="bgC(event,'mo-hf')"><div class="md">
-  <div class="mh"><h2 id="hf-ttl">Novo hábito</h2><button class="mc" onclick="closeM('mo-hf')">×</button></div>
+  <div class="mh"><h2 id="hf-ttl">Novo hÃ¡bito</h2><button class="mc" onclick="closeM('mo-hf')">Ã—</button></div>
   <div class="mb" id="hf-body"></div>
-  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveHabit()">Salvar hábito</button></div>
+  <div class="mf"><button class="bsv" style="width:100%;padding:13px;font-size:14px" onclick="saveHabit()">Salvar hÃ¡bito</button></div>
 </div></div>
 
 <div class="mo" id="mo-focus" onclick="bgC(event,'mo-focus')"><div class="md">
-  <div class="mh"><h2 id="fc-ttl">Foco</h2><div style="display:flex;gap:8px"><button class="bbk" style="font-size:12px;padding:5px 10px" onclick="editFromFocus()">✏</button><button class="mc" onclick="closeM('mo-focus')">×</button></div></div>
+  <div class="mh"><h2 id="fc-ttl">Foco</h2><div style="display:flex;gap:8px"><button class="bbk" style="font-size:12px;padding:5px 10px" onclick="editFromFocus()">âœ</button><button class="mc" onclick="closeM('mo-focus')">Ã—</button></div></div>
   <div class="mb" id="fc-body"></div>
 </div></div>
 
 <div class="mo" id="mo-ach" onclick="bgC(event,'mo-ach')"><div class="md">
-  <div class="mh"><h2>🏆 Conquistas</h2><button class="mc" onclick="closeM('mo-ach')">×</button></div>
+  <div class="mh"><h2>ðŸ† Conquistas</h2><button class="mc" onclick="closeM('mo-ach')">Ã—</button></div>
   <div class="mb" id="ach-body"></div>
 </div></div>
 
 <div class="mo" id="mo-sug" onclick="bgC(event,'mo-sug')"><div class="md">
-  <div class="mh"><h2>💡 Sugestões de hábitos</h2><button class="mc" onclick="closeM('mo-sug')">×</button></div>
+  <div class="mh"><h2>ðŸ’¡ SugestÃµes de hÃ¡bitos</h2><button class="mc" onclick="closeM('mo-sug')">Ã—</button></div>
   <div class="mb" id="sug-body"></div>
 </div></div>
 
 <script>
-const MO=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const DL=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const MO=['Janeiro','Fevereiro','MarÃ§o','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DL=['Dom','Seg','Ter','Qua','Qui','Sex','SÃ¡b'];
 const COLORS=['#FF6B6B','#FF9F43','#FECA57','#1DD1A1','#48DBFB','#54A0FF','#A29BFE','#FF9FF3'];
 const QUOTES=[
-  'Disciplina é liberdade.', 'Um dia de cada vez.', 'Consistência supera intensidade.',
-  'Progresso, não perfeição.', 'Cada hábito é um voto para quem você quer ser.',
-  'Não quebre a corrente.', 'A excelência não é um ato, mas um hábito.',
-  'Faça hoje o que seu "eu" do futuro agradecerá.', 'A jornada de mil milhas começa com um passo.'
+  'Disciplina Ã© liberdade.', 'Um dia de cada vez.', 'ConsistÃªncia supera intensidade.',
+  'Progresso, nÃ£o perfection.', 'Cada hÃ¡bito Ã© um voto para quem vocÃª quer ser.',
+  'NÃ£o quebre a corrente.', 'A excelÃªncia nÃ£o Ã© um ato, mas um hÃ¡bito.',
+  'FaÃ§a hoje o que seu "eu" do futuro agradecerÃ¡.', 'A jornada de mil milhas comeÃ§a com um passo.'
 ];
 const NOW=new Date(),TY=NOW.getFullYear(),TM=NOW.getMonth(),TD=NOW.getDate();
 
 let TABS=['agenda','tasks','notes','habitos','fin'];
-const TAB_NAMES = {agenda:'Agenda', tasks:'Tarefas', notes:'Notas', habitos:'Hábitos', fin:'Finanças'};
-const TAB_ICONS = {agenda: '📅', tasks: '✅', notes: '📝', habitos: '🔄', fin: '💵'};
+const TAB_NAMES = {agenda:'Agenda', tasks:'Tarefas', notes:'Notas', habitos:'HÃ¡bitos', fin:'FinanÃ§as'};
+const TAB_ICONS = {agenda: 'ðŸ“…', tasks: 'âœ…', notes: 'ðŸ“', habitos: 'ðŸ”„', fin: 'ðŸ’µ'};
 
 const EMOJI_CATS=[
-  {cat:'💪 Saúde',e:['💧','🏃','🧘','🍎','💊','🛏','🚴','🏋','🥗','🦷','🧴','❤️','🫁','🩺','🥤','🧃']},
-  {cat:'📚 Estudo',e:['📚','📖','✏️','🎓','💡','🧠','📝','🔬','📐','🖥','📊','🎯','📏','🔭']},
-  {cat:'💼 Trabalho',e:['💼','📈','💰','✅','📧','🤝','🗂','⏰','📋','🖊','📌','🗓']},
-  {cat:'🧘 Bem-estar',e:['🧘','☀️','🌙','😊','🙏','💆','🎵','🌿','🕯','🫶','🌸','🍃','🌊']},
-  {cat:'🌱 Outros',e:['🌱','🌍','♻️','🎨','🎮','🚗','✈️','🐾','🎉','🌈','⭐','🔥','🏠','🎸']},
+  {cat:'ðŸ’ª SaÃºde',e:['ðŸ’§','ðŸƒ','ðŸ§˜','ðŸŽ','ðŸ’Š','ðŸ›','ðŸš´','ðŸ‹','ðŸ¥—','ðŸ¦·','ðŸ§´','â¤ï¸','ðŸ«','ðŸ©º','ðŸ¥¤','ðŸ§ƒ']},
+  {cat:'ðŸ“š Estudo',e:['ðŸ“š','ðŸ“–','âœï¸','ðŸŽ“','ðŸ’¡','ðŸ§ ','ðŸ“','ðŸ”¬','ðŸ“','ðŸ–¥','ðŸ“Š','ðŸŽ¯','ðŸ“','ðŸ”­']},
+  {cat:'ðŸ’¼ Trabalho',e:['ðŸ’¼','ðŸ“ˆ','ðŸ’°','âœ…','ðŸ“§','ðŸ¤','ðŸ—‚','â°','ðŸ“‹','ðŸ–Š','ðŸ“Œ','ðŸ—“']},
+  {cat:'ðŸ§˜ Bem-estar',e:['ðŸ§˜','â˜€ï¸','ðŸŒ™','ðŸ˜Š','ðŸ™','ðŸ’†','ðŸŽµ','ðŸŒ¿','ðŸ•¯','ðŸ«¶','ðŸŒ¸','ðŸƒ','ðŸŒŠ']},
+  {cat:'ðŸŒ± Outros',e:['ðŸŒ±','ðŸŒ','â™»ï¸','ðŸŽ¨','ðŸŽ®','ðŸš—','âœˆï¸','ðŸ¾','ðŸŽ‰','ðŸŒˆ','â­','ðŸ”¥','ðŸ ','ðŸŽ¸']},
 ];
 
 const HABIT_SUGS=[
-  {icon:'💧',name:'Beber 2L de água',target:8,frequency:'daily',color:'#48DBFB',desc:'8 copos · todos os dias'},
-  {icon:'🐾',name:'Passear com o cachorro',target:1,frequency:'daily',color:'#1DD1A1',desc:'Todos os dias'},
-  {icon:'🌎',name:'Praticar um idioma',target:1,frequency:'daily',color:'#FF9F43',desc:'Praticar 15 min'},
-  {icon:'📚',name:'Ler / Estudar',target:1,frequency:'weekdays',color:'#A29BFE',desc:'Dias úteis'},
-  {icon:'🏅',name:'Acompanhar meu time',target:1,frequency:'daily',color:'#54A0FF',desc:'Notícias e jogos'},
-  {icon:'💰',name:'Poupar dinheiro',target:1,frequency:'daily',color:'#FECA57',desc:'Registrar economia diária'},
+  {icon:'ðŸ’§',name:'Beber 2L de Ã¡gua',target:8,frequency:'daily',color:'#48DBFB',desc:'8 copos Â· todos os dias'},
+  {icon:'ðŸ¾',name:'Passear com o cachorro',target:1,frequency:'daily',color:'#1DD1A1',desc:'Todos os dias'},
+  {icon:'ðŸŒŽ',name:'Praticar um idioma',target:1,frequency:'daily',color:'#FF9F43',desc:'Praticar 15 min'},
+  {icon:'ðŸ“š',name:'Ler / Estudar',target:1,frequency:'weekdays',color:'#A29BFE',desc:'Dias Ãºteis'},
+  {icon:'ðŸ…',name:'Acompanhar meu time',target:1,frequency:'daily',color:'#54A0FF',desc:'NotÃ­cias e jogos'},
+  {icon:'ðŸ’°',name:'Poupar dinheiro',target:1,frequency:'daily',color:'#FECA57',desc:'Registrar economia diÃ¡ria'},
 ];
 
 const BADGE_DEFS=[
-  {id:'s5',grp:'🔥 Sequência',title:'Primeiros passos',desc:'5 dias consecutivos',icon:'🥉'},
-  {id:'s14',grp:'🔥 Sequência',title:'Duas semanas',desc:'14 dias consecutivos',icon:'🥈'},
-  {id:'s30',grp:'🔥 Sequência',title:'Mês completo',desc:'30 dias consecutivos',icon:'🥇'},
-  {id:'s100',grp:'🔥 Sequência',title:'Centenário',desc:'100 dias consecutivos',icon:'👑'},
-  {id:'t30',grp:'⭐ Conclusões',title:'Comprometido',desc:'30 hábitos concluídos',icon:'🌟'},
-  {id:'t100',grp:'⭐ Conclusões',title:'100 hábitos!',desc:'100 conclusões',icon:'🏆'},
+  {id:'s5',grp:'ðŸ”¥ SequÃªncia',title:'Primeiros passos',desc:'5 dias consecutivos',icon:'ðŸ¥‰'},
+  {id:'s14',grp:'ðŸ”¥ SequÃªncia',title:'Duas semanas',desc:'14 dias consecutivos',icon:'ðŸ¥ˆ'},
+  {id:'s30',grp:'ðŸ”¥ SequÃªncia',title:'MÃªs completo',desc:'30 dias consecutivos',icon:'ðŸ¥‡'},
+  {id:'s100',grp:'ðŸ”¥ SequÃªncia',title:'CentenÃ¡rio',desc:'100 dias consecutivos',icon:'ðŸ‘‘'},
+  {id:'t30',grp:'â­ ConclusÃµes',title:'Comprometido',desc:'30 hÃ¡bitos concluÃ­dos',icon:'ðŸŒŸ'},
+  {id:'t100',grp:'â­ ConclusÃµes',title:'100 hÃ¡bitos!',desc:'100 conclusÃµes',icon:'ðŸ†'},
 ];
 
 const TUT_STEPS=[
-  {ico:'✨',ttl:'Bem-vindo ao Organizador!',txt:'Para começarmos, como podemos te chamar? (Primeiro nome)', html:'<input type="text" id="tut-name" maxlength="15" placeholder="Seu primeiro nome..." style="width:100%; text-align:center; padding:12px; font-size:16px; border-radius:10px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt); margin-top:10px; outline:none; font-family:inherit;"/>',tab:null, target:null},
-  {ico:'📅',ttl:'Sua Agenda',txt:'Aqui você acompanha seu mês e seus eventos. Veja os feriados e gerencie seus dias com facilidade!',tab:'agenda', target:'#tb-agenda'},
-  {ico:'✅',ttl:'Suas Tarefas',txt:'Crie tarefas com data, hora, lembretes e repetições. Nunca mais esqueça um compromisso!',tab:'tasks', target:'#tb-tasks'},
-  {ico:'📝',ttl:'Notas e Listas',txt:'Guarde informações importantes, crie textos livres ou listas de checagem (como compras do mercado).',tab:'notes', target:'#tb-notes'},
-  {ico:'🏆',ttl:'Hábitos e Foco',txt:'Construa rotinas! Crie hábitos diários ou semanais e use o Timer Pomodoro inteligente para manter o foco.',tab:'habitos', target:'#tb-habitos'},
-  {ico:'💵',ttl:'Finanças Inteligentes',txt:'Controle carteiras, adicione contas que se repetem e veja as projeções dos próximos meses!',tab:'fin', target:'#tb-fin'},
-  {ico:'⚙️',ttl:'Personalize tudo!',txt:'Na engrenagem você ativa o modo escuro, edita seu nome e liga as notificações. Pronto para decolar! 🚀',tab:'agenda', target:'.gear-btn'},
+  {ico:'âœ¨',ttl:'Bem-vindo ao Organizador!',txt:'Para comeÃ§armos, como podemos te chamar? (Primeiro nome)', html:'<input type="text" id="tut-name" maxlength="15" placeholder="Seu primeiro nome..." style="width:100%; text-align:center; padding:12px; font-size:16px; border-radius:10px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt); margin-top:10px; outline:none; font-family:inherit;"/>',tab:null, target:null},
+  {ico:'ðŸ“…',ttl:'Sua Agenda',txt:'Aqui vocÃª acompanha seu mÃªs e seus eventos. Veja os feriados e gerencie seus dias com facilidade!',tab:'agenda', target:'#tb-agenda'},
+  {ico:'âœ…',ttl:'Suas Tarefas',txt:'Crie tarefas com data, hora, lembretes e repetiÃ§Ãµes. Nunca mais esqueÃ§a um compromisso!',tab:'tasks', target:'#tb-tasks'},
+  {ico:'ðŸ“',ttl:'Notas e Listas',txt:'Guarde informaÃ§Ãµes importantes, crie textos livres ou listas de checagem (como compras do mercado).',tab:'notes', target:'#tb-notes'},
+  {ico:'ðŸ†',ttl:'HÃ¡bitos e Foco',txt:'Construa rotinas! Crie hÃ¡bitos diÃ¡rios ou semanais e use o Timer Pomodoro inteligente para manter o foco.',tab:'habitos', target:'#tb-habitos'},
+  {ico:'ðŸ’µ',ttl:'FinanÃ§as Inteligentes',txt:'Controle carteiras, adicione contas que se repetem e veja as projeÃ§Ãµes dos prÃ³ximos meses!',tab:'fin', target:'#tb-fin'},
+  {ico:'âš™ï¸',ttl:'Personalize tudo!',txt:'Na engrenagem vocÃª ativa o modo escuro, edita seu nome e liga as notificaÃ§Ãµes. Pronto para decolar! ðŸš€',tab:'agenda', target:'.gear-btn'},
 ];
 let tutStep=0;
 
-const CATS_OUT=['📄 Assinaturas','🛍️ Compra pessoal','🍔 Delivery','🎓 Educação','🏦 Empréstimo','📌 Fixos','🎬 Lazer','🔧 Manutenção','💸 Outros','🏥 Saúde','🛒 Supermerkado','🚗 Transporte'];
-const CATS_IN=['💰 Comissões/bônus','💸 Outros','📈 Renda variável','💼 Salário'];
+const CATS_OUT=['ðŸ“„ Assinaturas','ðŸ›ï¸ Compra pessoal','ðŸ” Delivery','ðŸŽ“ EducaÃ§Ã£o','ðŸ¦ EmprÃ©stimo','ðŸ“Œ Fixos','ðŸŽ¬ Lazer','ðŸ”§ ManutenÃ§Ã£o','ðŸ’¸ Outros','ðŸ¥ SaÃºde','ðŸ›’ Supermercado','ðŸš— Transporte'];
+const CATS_IN=['ðŸ’° ComissÃµes/bÃ´nus','ðŸ’¸ Outros','ðŸ“ˆ Renda variÃ¡vel','ðŸ’¼ SalÃ¡rio'];
 
 let showDoneBills = false;
 
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const getDK=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate())+1}` /* bug prevention layout */
 const getDK_real=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const getToday=()=>getDK_real(new Date());
 const addDays=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r;};
 const ck=(y,m,d)=>`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 const fmtC=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-function fmtDt(dk,dt){if(!dk)return'';const[y,m,d]=dk.split('-').map(Number);const s=new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'numeric',month:'short'});return dt?`${s} · ${dt}`:s;}
+function fmtDt(dk,dt){if(!dk)return'';const[y,m,d]=dk.split('-').map(Number);const s=new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'numeric',month:'short'});return dt?`${s} Â· ${dt}`:s;}
 function isOv(dk,dt){if(!dk)return false;const[y,m,d]=dk.split('-').map(Number);if(dt){const[h,mi]=dt.split(':').map(Number);return new Date(y,m-1,d,h,mi)<NOW;}return new Date(y,m-1,d,23,59)<NOW;}
 
 // HOLIDAYS
@@ -859,9 +835,9 @@ function ensureHols(y){
   try {
       if(HC[y])return HC[y];
       const h={};
-      [[1,1,'Confraternização'],[4,21,'Tiradentes'],[5,1,'Dia do Trabalho'],[9,7,'Independência'],[10,12,'N.Sra.Aparecida'],[11,2,'Finados'],[11,15,'República'],[11,20,'Consciência Negra'],[12,25,'Natal']].forEach(([m,d,n])=>h[`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`]=n);
+      [[1,1,'ConfraternizaÃ§Ã£o'],[4,21,'Tiradentes'],[5,1,'Dia do Trabalho'],[9,7,'IndependÃªncia'],[10,12,'N.Sra.Aparecida'],[11,2,'Finados'],[11,15,'RepÃºblica'],[11,20,'ConsciÃªncia Negra'],[12,25,'Natal']].forEach(([m,d,n])=>h[`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`]=n);
       const e=getEaster(y);
-      h[getDK_real(addDays(e,-48))]='Carnaval'; h[getDK_real(addDays(e,-47))]='Carnaval'; h[getDK_real(addDays(e,-2))]='Sexta-feira Santa'; h[getDK_real(e)]='Páscoa'; h[getDK_real(addDays(e,60))]='Corpus Christi';
+      h[getDK_real(addDays(e,-48))]='Carnaval'; h[getDK_real(addDays(e,-47))]='Carnaval'; h[getDK_real(addDays(e,-2))]='Sexta-feira Santa'; h[getDK_real(e)]='PÃ¡scoa'; h[getDK_real(addDays(e,60))]='Corpus Christi';
       HC[y]=h;return h;
   } catch(err) { return {}; }
 }
@@ -988,7 +964,7 @@ function openPicker(id, type) {
     pkTarget = id; pkType = type;
     const el = document.getElementById(id);
     const val = el.value || '';
-    document.getElementById('pk-ttl').textContent = type === 'date' ? 'Selecionar Data' : 'Selecionar Horário';
+    document.getElementById('pk-ttl').textContent = type === 'date' ? 'Selecionar Data' : 'Selecionar HorÃ¡rio';
     
     const pb = document.getElementById('pk-body');
     pb.innerHTML = '<div class="pk-wheels" id="pk-wheels"><div class="pk-sel-bg"></div></div>';
@@ -1105,12 +1081,12 @@ function toggleTheme(on){
     applyTheme();
 }
 function applyName(){
-  document.getElementById('aname').textContent=cfg.name?`Olá, ${cfg.name}`:'Organizador Premium';
+  document.getElementById('aname').textContent=cfg.name?`OlÃ¡, ${cfg.name}`:'Organizador Premium';
   document.getElementById('dlbl').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
 }
 async function saveName(){
     const v=document.getElementById('cfg-name').value.trim();
-    if(v){cfg.name=v;saveCfg();applyName();toast('Nome atualizado ✓');}
+    if(v){cfg.name=v;saveCfg();applyName();toast('Nome updated âœ“');}
 }
 
 function renderTabCfg() {
@@ -1119,7 +1095,7 @@ function renderTabCfg() {
     container.innerHTML = order.map(t => `
         <div class="nc tab-item no-swipe" data-id="${t}" style="padding:10px 14px; display:flex; align-items:center; gap:10px; cursor:grab; margin-bottom:0;">
             <span style="font-size:18px;">${TAB_ICONS[t]}</span> <span style="font-size:14px; font-weight:500;">${TAB_NAMES[t]}</span>
-            <span style="margin-left:auto; color:var(--txt4); font-size:18px;">☰</span>
+            <span style="margin-left:auto; color:var(--txt4); font-size:18px;">â˜°</span>
         </div>
     `).join('');
 }
@@ -1136,20 +1112,6 @@ function applyTabOrder() {
         swTab(TABS[curTab] || TABS[0]); 
     }
 }
-
-// SUBTASKS ON CREATION SETUP
-let curCreateTaskSubs = [];
-function renderCreateTaskSubs() {
-    const wrp = document.getElementById('task-create-subs');
-    wrp.innerHTML = curCreateTaskSubs.map((s, i) => `
-        <div style="display:flex; gap:5px;">
-            <input type="text" value="${esc(s.t)}" oninput="curCreateTaskSubs[${i}].t=this.value" placeholder="Subtarefa..." style="flex:1; padding:6px 10px; font-size:13px; height:32px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt);"/>
-            <button class="bd no-swipe" style="color:var(--txt4); padding:0 8px;" onclick="delCreateTaskSub(${i})">×</button>
-        </div>
-    `).join('');
-}
-function addTaskCreateSub() { curCreateTaskSubs.push({t:'', d:false}); renderCreateTaskSubs(); }
-function delCreateTaskSub(i) { curCreateTaskSubs.splice(i, 1); renderCreateTaskSubs(); }
 
 function openCfg(){
     document.getElementById('cfg-name').value=cfg.name||'';
@@ -1180,15 +1142,15 @@ function applyHideVals() {
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 function updN(){
   const st=document.getElementById('nst'),btn=document.getElementById('nbtn');
-  if(typeof Notification === 'undefined'){ st.textContent='Não suportado';st.className='ns off';btn.style.display='none'; return; }
+  if(typeof Notification === 'undefined'){ st.textContent='NÃ£o suportado';st.className='ns off';btn.style.display='none'; return; }
   const p=Notification.permission;st.className='ns '+(p==='granted'?'on':'off');
-  if(p==='granted'){st.textContent='● Ativas';btn.textContent='Info';btn.onclick=()=>showDialog('alert','Notificações','Desative em Configurações do Chrome → Notificações.');}
-  else if(p==='denied'){st.textContent='● Bloqueadas';btn.textContent='Ativar';btn.onclick=()=>showDialog('alert','Bloqueado','Vá em Configurações do Chrome → Notificações.');}
-  else{st.textContent='● Inativas';btn.textContent='Ativar';btn.onclick=reqN;}
+  if(p==='granted'){st.textContent='â— Ativas';btn.textContent='Info';btn.onclick=()=>showDialog('alert','NotificaÃ§Ãµes','Desative em ConfiguraÃ§Ãµes do Chrome â†’ NotificaÃ§Ãµes.');}
+  else if(p==='denied'){st.textContent='â— Bloqueadas';btn.textContent='Ativar';btn.onclick=()=>showDialog('alert','Bloqueado','VÃ¡ em ConfiguraÃ§Ãµes do Chrome â†’ NotificaÃ§Ãµes.');}
+  else{st.textContent='â— Inativas';btn.textContent='Ativar';btn.onclick=reqN;}
 }
 function reqN(){
   if(typeof Notification === 'undefined')return;
-  Notification.requestPermission().then(p=>{ updN(); if(p==='granted'){schedAll();toast('Notificações ativadas ✓');} });
+  Notification.requestPermission().then(p=>{ updN(); if(p==='granted'){schedAll();toast('NotificaÃ§Ãµes ativadas âœ“');} });
 }
 
 let fbT=[];
@@ -1210,7 +1172,7 @@ function schedAll(){
       const[h,mi]=t.dt.split(':').map(Number);
       const shift = typeof t.nb === 'number' ? t.nb*60000 : 0;
       const delay=new Date(y,m-1,d,h,mi).getTime()-shift-Date.now();
-      if(delay>0 && delay <= MAX_DELAY) schedN('Meu Organizador',`✅ "${t.text}"${t.nb>0?` — faltam ${nl(t.nb)}`:' — agora!'}`,delay,`t-${t.id}`);
+      if(delay>0 && delay <= MAX_DELAY) schedN('Meu Organizador',`âœ… "${t.text}"${t.nb>0?` â€” faltam ${nl(t.nb)}`:' â€” agora!'}`,delay,`t-${t.id}`);
   });
   Object.keys(events||{}).forEach(key=>{
       const[y,m,d]=key.split('-').map(Number);
@@ -1219,7 +1181,7 @@ function schedAll(){
           const[h,mi]=ev.time.split(':').map(Number);
           const shift = typeof ev.nb === 'number' ? ev.nb*60000 : 0;
           const delay=new Date(y,m-1,d,h,mi).getTime()-shift-Date.now();
-          if(delay>0 && delay <= MAX_DELAY) schedN('Meu Organizador',`📅 "${ev.text}" às ${ev.time}${ev.nb>0?` — faltam ${nl(ev.nb)}`:' — agora!'}`,delay,`e-${ev.id}`);
+          if(delay>0 && delay <= MAX_DELAY) schedN('Meu Organizador',`ðŸ“… "${ev.text}" Ã s ${ev.time}${ev.nb>0?` â€” faltam ${nl(ev.nb)}`:' â€” agora!'}`,delay,`e-${ev.id}`);
       });
   });
   
@@ -1228,9 +1190,9 @@ function schedAll(){
       if(!isSchedOn(h,new Date()))return;
       if(h.times&&h.times.length){
         const cnt=getHabCnt(h);
-        h.times.forEach((t,i)=>{if(!t||i<cnt)return;const[hh,mm]=t.split(':').map(Number);const at=new Date();at.setHours(hh,mm,0,0);const delay=at-Date.now();if(delay>0)schedN('Meu Organizador',`${h.icon} ${h.name} — ocorrência ${i+1}!`,delay,`hab-${h.id}-${i}`);});
+        h.times.forEach((t,i)=>{if(!t||i<cnt)return;const[hh,mm]=t.split(':').map(Number);const at=new Date();at.setHours(hh,mm,0,0);const delay=at-Date.now();if(delay>0)schedN('Meu Organizador',`${h.icon} ${h.name} â€” ocorrÃªncia ${i+1}!`,delay,`hab-${h.id}-${i}`);});
       }else if(h.reminderTime){
-        const[hh,mm]=h.reminderTime.split(':').map(Number);const at=new Date();at.setHours(hh,mm,0,0);const delay=at-Date.now();if(delay>0)schedN('Meu Organizador',`${h.icon} ${h.name} — não esqueça! 🔥`,delay,`hab-${h.id}`);
+        const[hh,mm]=h.reminderTime.split(':').map(Number);const at=new Date();at.setHours(hh,mm,0,0);const delay=at-Date.now();if(delay>0)schedN('Meu Organizador',`${h.icon} ${h.name} â€” nÃ£o esqueÃ§a! ðŸ”¥`,delay,`hab-${h.id}`);
       }
     });
   }
@@ -1333,10 +1295,10 @@ function execDelTask(scope) {
     const groupId = Number(document.getElementById('dtask-group-id').value);
     if(scope === 'one') {
         tasks = tasks.filter(x => x.id !== id);
-        toast('Ocorrência da tarefa excluída.');
+        toast('OcorrÃªncia da tarefa excluÃ­da.');
     } else if(scope === 'all') {
         tasks = tasks.filter(x => x.groupId !== groupId);
-        toast('Todas as ocorrências da tarefa foram excluídas.');
+        toast('Todas as ocorrÃªncias da tarefa foram excluÃ­das.');
     }
     save(); renderTasks(); renderCal(); if(selD!==null&&document.getElementById('ev-sec').style.display!=='none')renderEvList();
     closeM('mo-dtask');
@@ -1373,7 +1335,6 @@ function addTask(){
     const pri=parseInt(document.getElementById('task-pri').value)||1;
     
     const baseId = Date.now();
-    const subsToSave = curCreateTaskSubs.filter(s => s.t.trim() !== '');
 
     if (rep > 0 && dk) {
         let [y, m, d] = dk.split('-').map(Number);
@@ -1381,17 +1342,15 @@ function addTask(){
         let maxOccurrences = rep === 1 ? 730 : (rep === 7 ? 104 : 24);
         for(let i=0; i < maxOccurrences; i++) {
             const iterK = getDK_real(curDate);
-            tasks.unshift({id: baseId + i, text, obs, done: false, dk: iterK, dt, nb, rep, pri, sub: JSON.parse(JSON.stringify(subsToSave)), groupId: baseId});
+            tasks.unshift({id: baseId + i, text, obs, done: false, dk: iterK, dt, nb, rep, pri, sub: [], groupId: baseId});
             if(rep === 30) curDate.setMonth(curDate.getMonth() + 1);
             else curDate.setDate(curDate.getDate() + rep);
         }
     } else {
-        tasks.unshift({id: baseId, text, obs, done: false, dk, dt, nb, rep, pri, sub: JSON.parse(JSON.stringify(subsToSave))});
+        tasks.unshift({id: baseId, text, obs, done: false, dk, dt, nb, rep, pri, sub: []});
     }
 
-    inp.value='';document.getElementById('task-obs').value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';document.getElementById('task-pri').value='1';
-    curCreateTaskSubs = []; renderCreateTaskSubs();
-    save(); schedAll(); renderTasks(); renderCal();
+    inp.value='';document.getElementById('task-obs').value='';document.getElementById('task-date').value='';document.getElementById('task-time').value='';document.getElementById('task-rep').value='0';document.getElementById('task-pri').value='1';save();schedAll();renderTasks();renderCal();
 }
 
 let curEtaskSubs = [];
@@ -1412,8 +1371,8 @@ function renderEtaskSubs() {
     const wrp = document.getElementById('etask-m-subs');
     wrp.innerHTML = curEtaskSubs.map((s, i) => `
         <div style="display:flex; gap:5px;">
-            <input type="text" value="${esc(s.t)}" oninput="curEtaskSubs[${i}].t=this.value" placeholder="Subtarefa..." style="flex:1; padding:6px 10px; font-size:13px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt);"/>
-            <button class="bd no-swipe" style="color:var(--txt4); padding:0 8px;" onclick="delEtaskSub(${i})">×</button>
+            <input type="text" value="${esc(s.t)}" oninput="curEtaskSubs[${i}].t=this.value" placeholder="Subtarefa..." style="flex:1; padding:6px 10px; font-size:13px;"/>
+            <button class="bd no-swipe" style="color:var(--txt4); padding:0 8px;" onclick="delEtaskSub(${i})">Ã—</button>
         </div>
     `).join('');
 }
@@ -1437,13 +1396,13 @@ function tiHTML(item,isDone=false){
   const meta=fmtDt(item.dk,item.dt),ov=!item.done&&isOv(item.dk,item.dt);
   const tf=item.isEv?`togEvDone('${item.evKey}',${item.id})`:`togTask(${item.id})`;
   const df=item.isEv?`delEvGlobal('${item.evKey}',${item.id})`:`delTask(${item.id})`;
-  const editBtn = (!isDone && !item.isEv) ? `<button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${item.id})">✏️</button>` : '';
-  const acts=isDone?`<div class="dtb">${!item.isEv?`<button class="brev no-swipe" onclick="reactivate(${item.id})">↩</button>`:''}<button class="bperm no-swipe" onclick="${df}">🗑</button></div>`:`<div class="dtb">${editBtn}<button class="bd no-swipe" onclick="${df}">×</button></div>`;
-  const repIcon = item.rep > 0 ? ' 🔁' : '';
+  const editBtn = (!isDone && !item.isEv) ? `<button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${item.id})">âœï¸</button>` : '';
+  const acts=isDone?`<div class="dtb">${!item.isEv?`<button class="brev no-swipe" onclick="reactivate(${item.id})">â†©</button>`:''}<button class="bperm no-swipe" onclick="${df}">ðŸ—‘</button></div>`:`<div class="dtb">${editBtn}<button class="bd no-swipe" onclick="${df}">Ã—</button></div>`;
+  const repIcon = item.rep > 0 ? ' ðŸ”' : '';
   
   let priIcon = '';
-  if(item.pri === 2) priIcon = '<span style="color:#e44; font-size:11px; font-weight:bold; margin-right:5px;">🔴 Alta</span>';
-  if(item.pri === 0) priIcon = '<span style="color:#1DD1A1; font-size:11px; font-weight:bold; margin-right:5px;">🟢 Baixa</span>';
+  if(item.pri === 2) priIcon = '<span style="color:#e44; font-size:11px; font-weight:bold; margin-right:5px;">ðŸ”´ Alta</span>';
+  if(item.pri === 0) priIcon = '<span style="color:#1DD1A1; font-size:11px; font-weight:bold; margin-right:5px;">ðŸŸ¢ Baixa</span>';
 
   let subHtml = '';
   if(item.sub && item.sub.length > 0) {
@@ -1468,7 +1427,7 @@ function tiHTML(item,isDone=false){
       </details>`;
   }
 
-  return`<div class="ti ${item.done?'done-item':''}"><div class="tck no-swipe ${item.done?'done':''}" onclick="${tf}">${item.done?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="tb2"><div class="tt">${priIcon}${esc(item.text)}${repIcon}</div>${item.obs?`<div style="font-size:12px;color:var(--txt3);margin-top:2px;line-height:1.3">${esc(item.obs)}</div>`:''}${subHtml}${meta?`<div class="tm ${ov?'ov':''}">${ov?'⚠ ':'📅 '}${esc(meta)}</div>`:''}</div>${acts}</div>`;
+  return`<div class="ti ${item.done?'done-item':''}"><div class="tck no-swipe ${item.done?'done':''}" onclick="${tf}">${item.done?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="tb2"><div class="tt">${priIcon}${esc(item.text)}${repIcon}</div>${item.obs?`<div style="font-size:12px;color:var(--txt3);margin-top:2px;line-height:1.3">${esc(item.obs)}</div>`:''}${subHtml}${meta?`<div class="tm ${ov?'ov':''}">${ov?'âš  ':'ðŸ“… '}${esc(meta)}</div>`:''}</div>${acts}</div>`;
 }
 
 function renderTasks(){
@@ -1502,20 +1461,13 @@ function renderTasks(){
       const done = [...(tasks||[])].filter(Boolean).filter(t=>t.done).map(t=>({...t,isEv:false}));
       
       const pEl=document.getElementById('t-pend'),dEl=document.getElementById('t-done-wrap');
-      pEl.innerHTML=!pend.length&&!done.length?'<p class="empty">Nenhuma tarefa ainda.</p>':pend.length?`<p class="lbl">Pendentes · ${pend.length}</p>`+pend.map(t=>tiHTML(t)).join(''):'';
-      dEl.innerHTML=done.length?`<button class="dtoggle no-swipe" onclick="this.classList.toggle('open'); const d=this.nextElementSibling; d.style.display=d.style.display==='none'?'block':'none';"><svg width="12" height="12" viewBox="0 0 11 11" fill="none"><rect x="1" y="1" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M3 5.5l1.5 1.5 3.5-3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Concluídas · ${done.length}<span class="arr">›</span></button><div style="display:none">${done.map(t=>tiHTML(t,true)).join('')}</div>`:'';
+      pEl.innerHTML=!pend.length&&!done.length?'<p class="empty">Nenhuma tarefa ainda.</p>':pend.length?`<p class="lbl">Pendentes Â· ${pend.length}</p>`+pend.map(t=>tiHTML(t)).join(''):'';
+      dEl.innerHTML=done.length?`<button class="dtoggle no-swipe" onclick="this.classList.toggle('open'); const d=this.nextElementSibling; d.style.display=d.style.display==='none'?'block':'none';"><svg width="12" height="12" viewBox="0 0 11 11" fill="none"><rect x="1" y="1" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M3 5.5l1.5 1.5 3.5-3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> ConcluÃ­das Â· ${done.length}<span class="arr">â€º</span></button><div style="display:none">${done.map(t=>tiHTML(t,true)).join('')}</div>`:'';
   } catch(e){}
 }
 
-// PREMIUM NOTES AND LISTS SYSTEM
+// NOTES SYSTEM (PREMIUM LISTS INCLUDED)
 let enid=null, origNTitle='', origNBody='', origNType='text', curList=[], origNList=[];
-const NLIST_SUGS = [
-  {title: '🛒 Lista de Supermercado', type: 'compras', list: [{t:'Alimentos',isDiv:true},{t:'🥛 Leite',d:false,v:''},{t:'🍞 Pão',d:false,v:''},{t:'🥚 Ovos',d:false,v:''},{t:'🥩 Carne',d:false,v:''},{t:'Limpeza',isDiv:true},{t:'🧼 Detergente',d:false,v:''},{t:'🧻 Papel Higiênico',d:false,v:''}]},
-  {title: '🧹 Tarefas Domésticas / Faxina', type: 'padrao', list: [{t:'Quartos e Sala',isDiv:true},{t:'🧹 Aspirar tapetes',d:false,v:''},{t:'🪟 Limpar vidros das janelas',d:false,v:''},{t:'🛏️ Trocar roupas de cama',d:false,v:''},{t:'Cozinha e Banheiro',isDiv:true},{t:'🧺 Levar lixo para fora',d:false,v:''},{t:'🧼 Desinfetar pias e balcões',d:false,v:''}]},
-  {title: '🧳 Checklist de Viagem', type: 'padrao', list: [{t:'🧳 Roupas organizadas na mala',d:false,v:''},{t:'🪥 Escova e pasta de dente',d:false,v:''},{t:'🪪 Documentos / Passaporte / Carteira',d:false,v:''},{t:'🔌 Carregadores e adaptadores',d:false,v:''}]},
-  {title: '📚 Lista de Desejos (Wishlist)', type: 'compras', list: [{t:'📚 Livros técnicos / Estudos',d:false,v:'',v:'60.00'},{t:'🎧 Fone Bluetooth cancelamento ruído',d:false,v:'',v:'350.00'},{t:'👟 Tênis de corrida novo',d:false,v:'',v:'290.00'}]}
-];
-
 function openNote(id, type='text'){
     enid=id;
     const n = id==='new'?null:(notes||[]).find(x=>x.id===id);
@@ -1530,7 +1482,6 @@ function openNote(id, type='text'){
     if(origNType === 'list') {
         document.getElementById('nt-bdy').style.display = 'none';
         document.getElementById('nt-list-wrap').style.display = 'flex';
-        document.getElementById('nt-list-ltype').value = n ? (n.listType || 'padrao') : 'padrao';
         if(curList.length === 0) curList.push({t:'', d:false, v:''});
         renderListItems();
     } else {
@@ -1544,15 +1495,7 @@ function openNote(id, type='text'){
     history.pushState({note:true},'');
 }
 
-function chgNListLType() {
-    calculateListTotals();
-    renderListItems();
-}
-
 function calculateListTotals() {
-    const ltype = document.getElementById('nt-list-ltype').value;
-    const calcRow = document.getElementById('nt-list-calc-row');
-    
     let totalPrev = 0;
     let totalCart = 0;
     let totalItems = 0;
@@ -1581,20 +1524,15 @@ function calculateListTotals() {
     let pct = totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
     document.getElementById('nt-list-pct').textContent = pct + '%';
     document.getElementById('nt-list-pbar').style.width = pct + '%';
-    
-    if (ltype === 'compras') {
-        calcRow.style.display = 'flex';
-        document.getElementById('nt-list-tot-prev').textContent = fmtC(totalPrev);
-        document.getElementById('nt-list-tot-cart').textContent = fmtC(totalCart);
-    } else {
-        calcRow.style.display = 'none';
-    }
+    document.getElementById('nt-list-tot-prev').textContent = fmtC(totalPrev);
+    document.getElementById('nt-list-tot-cart').textContent = fmtC(totalCart);
 }
 
 function renderListItems() {
     const wrap = document.getElementById('nt-list-items');
-    const ltype = document.getElementById('nt-list-ltype').value;
     
+    let totalPrev = 0;
+    let totalCart = 0;
     let totalItems = 0;
     let doneItems = 0;
 
@@ -1602,12 +1540,20 @@ function renderListItems() {
         if (!item.isDiv) {
             totalItems++;
             if (item.d) doneItems++;
+            let val = parseFloat(String(item.v || '').replace(',', '.')) || 0;
+            totalPrev += val;
+            if (item.d) totalCart += val;
         }
     });
 
     const sumEl = document.getElementById('nt-list-summary');
     if (curList.length > 0) {
         sumEl.style.display = 'flex';
+        let pct = totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
+        document.getElementById('nt-list-pct').textContent = pct + '%';
+        document.getElementById('nt-list-pbar').style.width = pct + '%';
+        document.getElementById('nt-list-tot-prev').textContent = fmtC(totalPrev);
+        document.getElementById('nt-list-tot-cart').textContent = fmtC(totalCart);
     } else {
         sumEl.style.display = 'none';
     }
@@ -1615,28 +1561,26 @@ function renderListItems() {
     wrap.innerHTML = curList.map((item, i) => {
         if (item.isDiv) {
             return `
-                <div class="nli no-swipe" data-idx="${i}" style="margin-bottom: 8px; background: var(--bg3); padding: 4px 10px; border-radius: 9px; border-left: 4px solid var(--ac); display:flex; align-items:center; gap:8px;">
-                    <span class="drag-handle">☰</span>
-                    <input type="text" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Título do Grupo..." style="font-weight: 600; font-size: 13px; background: transparent; border: none; padding: 4px 0; width: 100%; color:var(--txt);"/>
-                    <button class="bd no-swipe" style="font-size:20px; color:var(--txt4); padding: 0 4px;" onclick="delListItem(${i})">×</button>
+                <div class="nli" style="margin-bottom: 8px; background: var(--bg3); padding: 4px 10px; border-radius: 9px; border-left: 4px solid var(--ac); display:flex; align-items:center; gap:8px;">
+                    <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="TÃ­tulo do Divisor..." style="font-weight: 600; font-size: 13px; background: transparent; border: none; padding: 4px 0; width: 100%; color:var(--txt);"/>
+                    <button class="bd no-swipe" style="font-size:20px; color:var(--txt4); padding: 0 4px;" onclick="delListItem(${i})">Ã—</button>
                 </div>
             `;
         } else {
-            const numInpHtml = (ltype === 'compras') ? `<input type="number" step="0.01" min="0" value="${item.v || ''}" oninput="curList[${i}].v = this.value; calculateListTotals();" placeholder="R$" style="width: 75px; padding: 8px 6px; font-size: 13px; text-align: right; flex-shrink: 0; border-radius: 9px; border: .5px solid var(--brd2); background: var(--inp); color: var(--txt);"/>` : '';
             return `
-                <div class="nli no-swipe ${item.d?'done':''}" data-idx="${i}" style="align-items: center; gap: 8px; margin-bottom: 6px; display: flex;">
-                    <span class="drag-handle">☰</span>
+                <div class="nli ${item.d?'done':''}" style="align-items: center; gap: 8px; margin-bottom: 6px; display: flex;">
                     <div class="nli-chk no-swipe ${item.d?'done':''}" onclick="togListItem(${i})" style="width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--txt4); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; color: transparent; background: transparent; transition: all 0.15s;">
                         ${item.d ? `<svg width="10" height="8" viewBox="0 0 9 7" fill="none" style="color: var(--acfg);"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
                     </div>
-                    <input type="text" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..." style="flex: 1; padding: 8px 10px; font-size: 13px; text-decoration: ${item.d ? 'line-through' : 'none'}; color: ${item.d ? 'var(--txt4)' : 'var(--txt)'}; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp);"/>
-                    ${numInpHtml}
-                    <button class="bd no-swipe" style="font-size:22px; color:var(--txt4); padding: 0 4px;" onclick="delListItem(${i})">×</button>
+                    <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..." style="flex: 1; padding: 8px 10px; font-size: 13px; text-decoration: ${item.d ? 'line-through' : 'none'}; color: ${item.d ? 'var(--txt4)' : 'var(--txt)'}; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp);"/>
+                    <input type="number" step="0.01" min="0" class="no-swipe" value="${item.v || ''}" oninput="curList[${i}].v = this.value; calculateListTotals();" placeholder="R$" style="width: 75px; padding: 8px 6px; font-size: 13px; text-align: right; flex-shrink: 0; border-radius: 9px; border: .5px solid var(--brd2); background: var(--inp); color: var(--txt);"/>
+                    <button class="bd no-swipe" style="font-size:22px; color:var(--txt4); padding: 0 4px;" onclick="delListItem(${i})">Ã—</button>
                 </div>
             `;
         }
     }).join('');
     
+    // Checkbox updates visually
     curList.forEach((item, i) => {
         if(!item.isDiv && item.d) {
             const el = wrap.children[i];
@@ -1646,12 +1590,11 @@ function renderListItems() {
             }
         }
     });
-
-    calculateListTotals();
 }
 
 function togListItem(i) {
     curList[i].d = !curList[i].d;
+    // Premium stability sorting: Keep checked at the absolute bottom
     const unchecked = curList.filter(x => x.isDiv || !x.d);
     const checked = curList.filter(x => !x.isDiv && x.d);
     curList = unchecked.concat(checked);
@@ -1659,6 +1602,7 @@ function togListItem(i) {
 }
 
 function addListItem(type) {
+    // Read current typed inputs before sorting to avoid lost strings
     const nliEls = document.getElementById('nt-list-items').children;
     curList.forEach((item, i) => {
         if(nliEls && nliEls[i]) {
@@ -1702,38 +1646,42 @@ function resetListCheckboxes() {
     renderListItems();
 }
 
-function openNListSug() {
-    const body = document.getElementById('list-sug-body');
-    body.innerHTML = `<div class="sug-grid">` + NLIST_SUGS.map((s, i) => `
-        <div class="sug-item">
-            <div class="sug-info">
-                <div class="sug-nm">${s.title}</div>
-                <div class="sug-dt">${s.type === 'compras' ? '🛒 Tipo Compras' : '📋 Checklist Padrão'} · ${s.list.length} itens</div>
-            </div>
-            <button class="sug-add" onclick="createListFromSug(${i})">Criar</button>
-        </div>
-    `).join('') + `</div>`;
-    openM('mo-list-sug');
-}
-
-function createListFromSug(i) {
-    const s = NLIST_SUGS[i];
-    notes.unshift({
-        id: Date.now(),
-        title: s.title,
-        type: 'list',
-        listType: s.type,
-        body: '',
-        list: JSON.parse(JSON.stringify(s.list)),
-        date: new Date().toLocaleDateString('pt-BR')
+async function closeNote(auto=false){
+    let changed = false;
+    const nliEls = document.getElementById('nt-list-items').children;
+    curList.forEach((item, i) => {
+        if(nliEls && nliEls[i]) {
+            const txtInp = nliEls[i].querySelector('input[type=text]');
+            if(txtInp) item.t = txtInp.value.trim();
+            if(!item.isDiv) {
+                const numInp = nliEls[i].querySelector('input[type=number]');
+                if(numInp) item.v = numInp.value;
+            }
+        }
     });
-    save(); renderNotes(); closeM('mo-list-sug'); toast('Lista criada ✓');
+
+    if(origNTitle !== document.getElementById('nt-ttl').value.trim()) changed = true;
+    if(origNType === 'text' && origNBody !== document.getElementById('nt-bdy').value.trim()) changed = true;
+    if(origNType === 'list') {
+        const cl = curList.filter(x => x.t.trim() !== '');
+        const ol = origNList.filter(x => x.t.trim() !== '');
+        if(JSON.stringify(cl) !== JSON.stringify(ol)) changed = true;
+    }
+    
+    if(changed){
+        const ans = await showDialog('confirm','Nota nÃ£o salva','Existem alteraÃ§Ãµes nÃ£o salvas nesta nota. Deseja salvÃ¡-las agora?');
+        if(ans) { saveNote(); return; }
+    }
+    
+    document.getElementById('nlv').style.display='flex';
+    document.getElementById('nev').classList.remove('open');
+    enid=null;
+    if(history.state && history.state.note) history.back();
 }
 
 function saveNote(){
-    const title = document.getElementById('nt-ttl').value.trim()||'Sem título';
+    const title = document.getElementById('nt-ttl').value.trim()||'Sem tÃ­tulo';
     let body = ''; let listToSave = [];
-    const listType = document.getElementById('nt-list-ltype').value;
     
     if(origNType === 'text') { body = document.getElementById('nt-bdy').value.trim(); } 
     else { 
@@ -1751,8 +1699,8 @@ function saveNote(){
         listToSave = curList.filter(x => x.t.trim() !== ''); 
     }
     
-    if(enid==='new') { notes.unshift({id:Date.now(), title, type:origNType, listType, body, list:listToSave, date:NOW.toLocaleDateString('pt-BR')}); } 
-    else { notes = notes.map(n => n.id===enid ? {...n, title, type:origNType, listType, body, list:listToSave} : n); }
+    if(enid==='new') { notes.unshift({id:Date.now(), title, type:origNType, body, list:listToSave, date:NOW.toLocaleDateString('pt-BR')}); } 
+    else { notes = notes.map(n => n.id===enid ? {...n, title, type:origNType, body, list:listToSave} : n); }
     
     save(); renderNotes();
     document.getElementById('nlv').style.display='flex'; 
@@ -1761,11 +1709,12 @@ function saveNote(){
     if(history.state && history.state.note) history.back();
 }
 
-async function delNote(id){if(!(await showDialog('confirm','Excluir Anotação','Excluir esta nota permanentemente?')))return;notes=notes.filter(n=>n.id!==id);save();renderNotes();}
+async function delNote(id){if(!(await showDialog('confirm','Excluir AnotaÃ§Ã£o','Excluir esta nota permanentemente?')))return;notes=notes.filter(n=>n.id!==id);save();renderNotes();}
+
 function renderNotes(){
   try {
       const g=document.getElementById('ngrid');
-      if(!notes||!notes.length){g.innerHTML='<p class="empty">Nenhuma anotação ainda.</p>';return;}
+      if(!notes||!notes.length){g.innerHTML='<p class="empty">Nenhuma anotaÃ§Ã£o ainda.</p>';return;}
       g.innerHTML=notes.map(n=>{
         let prev = '';
         if(n.type === 'list') {
@@ -1773,20 +1722,43 @@ function renderNotes(){
             const tt = (n.list||[]).filter(x=>!x.isDiv).length;
             let totVal = 0;
             (n.list||[]).forEach(x => { if(!x.isDiv) totVal += parseFloat(String(x.v || '').replace(',','.')) || 0; });
-            prev = `${n.listType === 'compras' ? '🛒 Compras' : '📋 Lista'}: ${dn}/${tt} concluídos`;
-            if(n.listType === 'compras' && totVal > 0) prev += ` · Total: ${fmtC(totVal)}`;
-        } else { prev = esc(n.body||'Sem conteúdo'); }
+            prev = `ðŸ“‹ Lista: ${dn}/${tt} itens concluÃ­dos`;
+            if(totVal > 0) prev += ` Â· Total: ${fmtC(totVal)}`;
+        } else { prev = esc(n.body||'Sem conteÃºdo'); }
         return `<div class="nc" data-id="${n.id}">
           <div onclick="openNote(${n.id})">
             <h3>${esc(n.title)}</h3><p>${prev}</p>
-            <div class="nf"><span class="nd">${n.date}</span><button class="bd no-swipe" onclick="event.stopPropagation();delNote(${n.id})">×</button></div>
+            <div class="nf"><span class="nd">${n.date}</span><button class="bd no-swipe" onclick="event.stopPropagation();delNote(${n.id})">Ã—</button></div>
           </div>
         </div>`;
       }).join('');
   } catch(e){}
 }
 
-// TOUCH DRAG SYSTEM FOR APP
+window.addEventListener('popstate', (e) => {
+    if(document.getElementById('nev').classList.contains('open') && !(e.state && e.state.note)) {
+        document.getElementById('nlv').style.display='flex';
+        document.getElementById('nev').classList.remove('open');
+        enid=null;
+    }
+    
+    document.querySelectorAll('.mo.open').forEach(m => {
+        if (!e.state || e.state.modal !== m.id) {
+            m.classList.remove('open');
+            
+            if(m.id === 'mo-dialog' && dialogResolve) {
+                dialogResolve(false);
+                dialogResolve = null;
+            }
+            if(m.id === 'mo-focus') {
+                if(focTmr){clearInterval(focTmr.intv);focTmr=null;}
+                focusH=null;
+            }
+        }
+    });
+});
+
+// TOUCH DRAG FOR ALL
 function bindDrag(containerId, itemClass, onReorder) {
     const g = document.getElementById(containerId);
     if(!g) return;
@@ -1794,13 +1766,13 @@ function bindDrag(containerId, itemClass, onReorder) {
 
     g.addEventListener('touchstart', e => {
         const t = e.target.closest(itemClass);
-        if(!t || e.target.closest('button') || e.target.closest('.bub') || e.target.closest('.h-act') || e.target.closest('.h-opts') || e.target.closest('input') || e.target.closest('select') || e.target.closest('textarea')) return;
+        if(!t || e.target.closest('button') || e.target.closest('.bub') || e.target.closest('.h-act') || e.target.closest('.h-opts')) return;
         sx = e.touches[0].clientX; sy = e.touches[0].clientY;
         dTimer = setTimeout(() => {
             dEl = t; dEl.classList.add('dragging');
             dEl.style.opacity = '0.5'; dEl.style.transform = 'scale(0.95)'; dEl.style.transition = 'none';
             if(navigator.vibrate) navigator.vibrate(50);
-        }, 300); 
+        }, 500); 
     }, {passive:true});
 
     g.addEventListener('touchmove', e => {
@@ -1826,25 +1798,514 @@ function bindDrag(containerId, itemClass, onReorder) {
     g.addEventListener('touchend', endDrag); g.addEventListener('touchcancel', endDrag);
 }
 
-// TABS STYLES NAVIGATION LOCK
-window.addEventListener('popstate', (e) => {
-    if(document.getElementById('nev').classList.contains('open') && !(e.state && e.state.note)) {
-        document.getElementById('nlv').style.display='flex';
-        document.getElementById('nev').classList.remove('open');
-        enid=null;
-    }
-    document.querySelectorAll('.mo.open').forEach(m => {
-        if (!e.state || e.state.modal !== m.id) {
-            m.classList.remove('open');
-            if(m.id === 'mo-dialog' && dialogResolve) { dialogResolve(false); dialogResolve = null; }
-            if(m.id === 'mo-focus') { if(focTmr){clearInterval(focTmr.intv);focTmr=null;} focusH=null; }
-        }
-    });
-});
+// CALENDAR BLINDADO & RECORRÃŠNCIA
+let cY=TY,cM=TM,selD=null,calView='month',wkOff=0;
 
-// FINANCES TRACKER
+function isBillInDay(b, dk) {
+    const mk = dk.substring(0,7);
+    if(b.delMap && b.delMap[mk]) return false;
+    if(b.endMk && mk >= b.endMk) return false;
+    if(!b.date) return false;
+    
+    if(!b.rep) return b.date === dk; 
+    const bY = parseInt(b.date.substring(0,4)), bM = parseInt(b.date.substring(5,7))-1, bD = b.date.substring(8,10);
+    const kY = parseInt(dk.substring(0,4)), kM = parseInt(dk.substring(5,7))-1, kD = dk.substring(8,10);
+    if(bD !== kD) return false;
+    if(kY === bY && kM === bM) return true;
+    if(!b.rep || b.rep === 0) return false;
+    const diff = (kY - bY) * 12 + (kM - bM);
+    if(diff > 0) {
+        if(b.rep === -1) return true;
+        if(diff <= b.rep) return true;
+    }
+    return false;
+}
+
+function isBillInMonth(b, mk) {
+    if(b.delMap && b.delMap[mk]) return false;
+    if(b.endMk && mk >= b.endMk) return false;
+    if(!b.date) return false;
+    
+    const bMk = b.date.substring(0,7);
+    if(bMk === mk) return true;
+    if(!b.rep || b.rep === 0) return false;
+    if(mk > bMk) {
+        if(b.rep === -1) return true;
+        const y1 = parseInt(bMk.substring(0,4)), m1 = parseInt(bMk.substring(5,7));
+        const y2 = parseInt(mk.substring(0,4)), m2 = parseInt(mk.substring(5,7));
+        const diff = (y2 - y1) * 12 + (m2 - m1);
+        if(diff <= b.rep) return true;
+    }
+    return false;
+}
+
+function getBillVal(b, mk) { return (b.valMap && b.valMap[mk] !== undefined) ? Number(b.valMap[mk]) : Number(b.val||0); }
+function getBillDesc(b, mk) { return (b.descMap && b.descMap[mk] !== undefined) ? b.descMap[mk] : b.desc; }
+
+function checkDot(k) {
+    let dot = false;
+    try {
+        let rawE = (events || {})[k];
+        if (Array.isArray(rawE) && rawE.length > 0) dot = true;
+        if (!dot && Array.isArray(tasks) && tasks.some(t => t && t.dk === k)) dot = true;
+        if (!dot && Array.isArray(bills) && bills.some(b => b && isBillInDay(b, k))) dot = true;
+    } catch(e) {}
+    return dot;
+}
+
+function ckSel(){return selD!==null?ck(cY,cM,selD):null;}
+
+function triggerCalAnim(dir) {
+    const cm = document.getElementById('cal-main');
+    if(cm) {
+        cm.classList.remove('cal-next', 'cal-prev');
+        void cm.offsetWidth; 
+        cm.classList.add(dir > 0 ? 'cal-next' : 'cal-prev');
+    }
+}
+
+function setView(v){
+  calView=v;
+  ['month','week','day'].forEach(x=>document.getElementById('vbtn-'+x).classList.toggle('sel',x===v));
+  if(v==='week')wkOff=0;
+  document.getElementById('ev-sec').style.display='none';
+  if(v==='month') { cY=TY; cM=TM; selD=null; }
+  else if(v==='week') { selD=null; }
+  renderCal();
+}
+
+function chMonth(dir){
+  if(calView==='month'){cM+=dir;if(cM<0){cM=11;cY--;}if(cM>11){cM=0;cY++;}selD=null;document.getElementById('ev-sec').style.display='none';renderCal();}
+  else if(calView==='week'){wkOff+=dir;renderCal();}
+  else{if(selD===null){selD=TD;}const d=addDays(new Date(cY,cM,selD),dir);cY=d.getFullYear();cM=d.getMonth();selD=d.getDate();renderCal();selDay(selD);}
+  triggerCalAnim(dir);
+}
+
+function selDay(d){
+    selD=d;
+    renderCal();
+    document.getElementById('ev-sec').style.display='block';
+    document.getElementById('ev-dlbl').textContent=new Date(cY,cM,d).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    const hol=getHol(cY,cM,d),hr=document.getElementById('hol-row');
+    if(hol){hr.style.display='flex';document.getElementById('hol-nm').textContent=hol;}else hr.style.display='none';
+    renderEvList();
+}
+
+function addEvent(){
+    const text=document.getElementById('ev-in').value.trim();if(!text||selD===null)return;
+    const time=document.getElementById('ev-time').value||null;
+    const ntfVal=document.getElementById('ev-ntf').value;
+    const nb=ntfVal==='none'?'none':parseInt(ntfVal);
+    const rep=parseInt(document.getElementById('ev-rep').value)||0;
+    
+    const k=ckSel();
+    const baseId = Date.now();
+    
+    if (rep > 0) {
+        let [y, m, d] = k.split('-').map(Number);
+        let curDate = new Date(y, m-1, d);
+        let maxOccurrences = rep === 1 ? 730 : (rep === 7 ? 104 : 24); 
+        
+        for(let i=0; i < maxOccurrences; i++) {
+            const iterK = getDK_real(curDate);
+            if(!events[iterK]) events[iterK] = [];
+            events[iterK].push({id: baseId + i, text, time, nb, done: false, rep: rep, groupId: baseId});
+            
+            if(rep === 30) {
+                curDate.setMonth(curDate.getMonth() + 1);
+            } else {
+                curDate.setDate(curDate.getDate() + rep);
+            }
+        }
+    } else {
+        if(!events[k]) events[k] = [];
+        events[k].push({id: baseId, text, time, nb, done: false, rep: 0});
+    }
+    
+    document.getElementById('ev-in').value='';document.getElementById('ev-time').value='';document.getElementById('ev-rep').value='0';
+    save();schedAll();renderEvList();renderCal();renderTasks();
+}
+
+function renderEvList(){
+  try {
+      if(selD===null)return;
+      const k=ckSel();
+      const mK=k.substring(0,7);
+      
+      let rawE = (events||{})[k];
+      let evs = Array.isArray(rawE) ? rawE.slice().sort((a,b)=>(a.time||'23:59').localeCompare(b.time||'23:59')) : [];
+      let dT = Array.isArray(tasks) ? tasks.filter(Boolean).filter(t=>t.dk===k).sort((a,b)=>{
+          const priCmp = (b.pri !== undefined ? b.pri : 1) - (a.pri !== undefined ? a.pri : 1);
+          if (priCmp !== 0) return priCmp;
+          return (a.dt||'23:59').localeCompare(b.dt||'23:59');
+      }) : [];
+      let dBills = Array.isArray(bills) ? bills.filter(Boolean).filter(b=>isBillInDay(b,k)) : [];
+      
+      const el=document.getElementById('ev-list');
+      
+      let html = '';
+      
+      if(k === getToday()) {
+          const dObj = new Date(cY, cM, selD);
+          const dh = (habits||[]).filter(Boolean).filter(h => !h.paused && isSchedOn(h, dObj));
+          if(dh.length > 0) {
+              html += `<div class="lbl" style="margin-top:0px;margin-bottom:5px">HÃ¡bitos de Hoje</div>`;
+              html += dh.map(h => {
+                  const cnt=(h.history||{})[k]||0; const done = cnt >= h.target;
+                  return `<div class="dti" onclick="swTab('habitos')" style="cursor:pointer;"><span class="dtt" style="font-size:18px">${h.icon}</span><div class="dtb2"><div class="dttl ${done?'done':''}">${esc(h.name)}</div><div class="tm">${cnt}/${h.target} vezes</div></div></div>`;
+              }).join('');
+          }
+      }
+
+      if(!evs.length && !dT.length && !dBills.length && !html){ el.innerHTML='<p style="font-size:13px;color:var(--txt4)">Sem tarefas ou eventos.</p>'; return; }
+      
+      const bh=dBills.map(b=>{
+          const cEmoji=b.cat?b.cat.split(' ')[0]:''; 
+          const cName=b.cat?b.cat.substring(cEmoji.length).trim():''; 
+          const rawDesc = getBillDesc(b, mK);
+          const dText = rawDesc ? esc(rawDesc) : cName;
+          const isPaid=b.paidMap&&b.paidMap[mK];
+          const bVal = getBillVal(b, mK);
+          return `<div class="evi ${isPaid?'done-ev':''}"><div class="tck no-swipe ${isPaid?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togBill(${b.id},'${mK}')">...</div><div class="ei2"><div class="et2">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' ðŸ”':''}</span></div><div class="em2 v-hide">${fmtC(bVal)}</div></div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id},'${mK}')">âœï¸</button><button class="bd no-swipe" onclick="delBill(${b.id}, '${mK}')">Ã—</button></div>`
+      }).join('');
+      
+      const th=dT.map(t=>{
+          let priIcon = '';
+          if(t.pri === 2) priIcon = '<span style="color:#e44; font-size:11px; font-weight:bold; margin-right:5px;">ðŸ”´ Alta</span>';
+          if(t.pri === 0) priIcon = '<span style="color:#1DD1A1; font-size:11px; font-weight:bold; margin-right:5px;">ðŸŸ¢ Baixa</span>';
+          return `<div class="evi ${t.done?'done-ev':''}"><div class="tck no-swipe ${t.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togTask(${t.id})">${t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${priIcon}${esc(t.text)}${t.rep?' ðŸ”':''}<span class="ebdg etask">tarefa</span></div>${t.obs?`<div style="font-size:11px;color:var(--txt3);margin-top:2px;line-height:1.2">${esc(t.obs)}</div>`:''}${t.dt?`<div class="em2">ðŸ• ${t.dt}</div>`:''}</div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editTask(${t.id})">âœï¸</button><button class="bd no-swipe" onclick="delTask(${t.id})">Ã—</button></div>`
+      }).join('');
+      
+      const eh=evs.map(ev=>`<div class="evi ${ev.done?'done-ev':''}"><div class="tck no-swipe ${ev.done?'done':''}" style="width:17px;height:17px;margin-top:0;flex-shrink:0" onclick="togEvDone('${k}',${ev.id})">${ev.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`:''}</div><div class="ei2"><div class="et2">${esc(ev.text)}${ev.rep?' ðŸ”':''}<span class="ebdg eev">evento</span></div><div class="em2">${ev.time?`ðŸ• ${ev.time}`:'Sem horÃ¡rio'}</div></div><button class="bd no-swipe" onclick="delEvGlobal('${k}',${ev.id})">Ã—</button></div>`).join('');
+      
+      if(dBills.length) html += `<p class="lbl" style="margin-top:${html?10:0}px;margin-bottom:5px">FinanÃ§as</p>`+bh;
+      if(dT.length) html += `<p class="lbl" style="margin-top:${html?10:0}px;margin-bottom:5px">Tarefas</p>`+th;
+      if(evs.length) html += `<p class="lbl" style="margin-top:${html?10:0}px;margin-bottom:5px">Eventos</p>`+eh;
+      
+      el.innerHTML = html;
+  } catch(e){}
+}
+
+function renderMonth(){
+  try {
+      const hols = ensureHols(cY) || {};
+      const fd = new Date(cY, cM, 1).getDay();
+      const dim = new Date(cY, cM + 1, 0).getDate();
+      let h = '';
+      for(let i=0; i<fd; i++) h += '<div class="cc emp"></div>';
+      
+      for(let d=1; d<=dim; d++){
+          const past = (cY < TY) || (cY === TY && cM < TM) || (cY === TY && cM === TM && d < TD);
+          const isT = (d === TD && cM === TM && cY === TY);
+          const isSel = (d === selD);
+          const k = ck(cY, cM, d);
+          const hasDot = checkDot(k);
+          const hol = hols[k] || null;
+          
+          let cls = 'cc';
+          if(past) cls += ' past';
+          if(isT) cls += ' today';
+          if(isSel) cls += ' sel';
+          if(hasDot) cls += ' dot';
+          if(hol) cls += ' hol';
+
+          h += `<div class="${cls}" onclick="selDay(${d})" title="${esc(hol||'')}">${d}</div>`;
+      }
+      
+      document.getElementById('cal-main').innerHTML = `<div class="cnr"><button class="cnv no-swipe" onclick="chMonth(-1)">â€¹</button><span>${MO[cM]} ${cY}</span><button class="cnv no-swipe" onclick="chMonth(1)">â€º</button></div><div class="cdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div class="cgrid">${h}</div>`;
+  } catch(e) {}
+}
+
+function renderWeek(){
+  try {
+      const ref=new Date(TY,TM,TD);ref.setDate(ref.getDate()+wkOff*7);
+      const ws=new Date(ref);ws.setDate(ref.getDate()-ref.getDay());
+      const we=new Date(ws);we.setDate(ws.getDate()+6);
+      const lbl=`${ws.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})} â€“ ${we.toLocaleDateString('pt-BR',{day:'numeric',month:'short'})}`;
+      let strip='';
+      for(let i=0;i<7;i++){
+          const d=new Date(ws);d.setDate(ws.getDate()+i);const y=d.getFullYear(),mo=d.getMonth(),dy=d.getDate();
+          const past=d<new Date(TY,TM,TD), isT=dy===TD&&mo===TM&&y===TY, isSel=selD===dy&&cM===mo&&cY===y, k=ck(y,mo,dy);
+          const hasDot=checkDot(k), hol=getHol(y,mo,dy);
+          let cls = 'wd';
+          if(past) cls+=' past'; if(isT) cls+=' today'; if(isSel) cls+=' sel'; if(hasDot) cls+=' dot'; if(hol) cls+=' hol';
+          strip+=`<div class="${cls}" onclick="cY=${y};cM=${mo};selDay(${dy})" title="${esc(hol||'')}"><span class="wdn">${DL[d.getDay()].substring(0,3)}</span><span class="wdd">${dy}</span></div>`;
+      }
+      document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv no-swipe" onclick="chMonth(-1)">â€¹</button><span style="font-size:13px">${lbl}</span><button class="cnv no-swipe" onclick="chMonth(1)">â€º</button></div><div class="wstrip">${strip}</div>`;
+  } catch(e){}
+}
+function renderDay(){
+  try {
+      if(selD===null){selD=TD;cY=TY;cM=TM;}
+      const d=new Date(cY,cM,selD),k=ck(cY,cM,selD),hol=getHol(cY,cM,selD);
+      document.getElementById('cal-main').innerHTML=`<div class="cnr"><button class="cnv no-swipe" onclick="chMonth(-1)">â€¹</button><span style="font-size:13px">${d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="cnv no-swipe" onclick="chMonth(1)">â€º</button></div>${hol?`<div class="holbanner">ðŸŽ‰ ${esc(hol)}</div>`:''}`;
+      document.getElementById('ev-sec').style.display='block';
+      document.getElementById('ev-dlbl').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+      document.getElementById('hol-row').style.display='none';
+      renderEvList();
+  } catch(e){}
+}
+function renderSearch(){const q=document.getElementById('cal-srch').value.trim().toLowerCase(),res=document.getElementById('srch-res');if(!q){res.style.display='none';return;}const R=[];(tasks||[]).forEach(t=>{if(t&&t.text&&t.text.toLowerCase().includes(q))R.push({title:t.text,meta:`ðŸ“… ${t.dk?fmtDt(t.dk,t.dt):'Sem data'}`,dk:t.dk,type:'tarefa'});});Object.keys(events||{}).forEach(k=>{((events||{})[k]||[]).filter(Boolean).forEach(ev=>{if(ev&&ev.text&&ev.text.toLowerCase().includes(q)){const[y,m,d]=k.split('-').map(Number);R.push({title:ev.text,meta:`ðŸ“… ${new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'})}${ev.time?' '+ev.time:''}`,dk:k,type:'evento'});}});});res.style.display='block';res.innerHTML=!R.length?'<p style="font-size:13px;color:var(--txt4);text-align:center;padding:8px">Nenhum resultado.</p>':R.slice(0,7).map(r=>`<div class="sri" onclick="jumpDK('${r.dk||''}')"><div class="sri-t">${esc(r.title)} <span class="ebdg">${r.type}</span></div><div class="sri-m">${esc(r.meta)}</div></div>`).join('');}
+function jumpDK(dk){if(!dk)return;const[y,m,d]=dk.split('-').map(Number);cY=y;cM=m-1;selD=d;document.getElementById('cal-srch').value='';document.getElementById('srch-res').style.display='none';if(calView!=='month')setView('month');else{renderCal();selDay(d);}}
+function renderCal(){if(calView==='month')renderMonth();else if(calView==='week')renderWeek();else renderDay();}
+
+// HABITS
+let habits=[],hfd={id:null,icon:'â­',name:'',color:'#54A0FF',target:1,times:[],frequency:'daily',customDays:[],reminderTime:'',paused:false},focusH=null,focTmr=null;
+function loadHabits(){try{habits=JSON.parse(localStorage.getItem('o_habits2')); if(!Array.isArray(habits)) habits=[];}catch(e){habits=[];}}
+function saveHabits(){localStorage.setItem('o_habits2',JSON.stringify(habits));}
+function isSchedOn(h,date){
+    if(h.paused) return false;
+    const w=date.getDay();if(h.frequency==='daily')return true;if(h.frequency==='weekdays')return w>=1&&w<=5;if(h.frequency==='custom')return(h.customDays||[]).includes(w);return true;
+}
+function getHabCnt(h){return(h.history||{})[getToday()]||0;}
+function isHabDone(h){return getHabCnt(h)>=h.target;}
+function compStreak(h){
+    const hist=h.history||{};let s=0,d=new Date();d.setHours(0,0,0,0);
+    if(!isHabDone(h)) d.setDate(d.getDate()-1);
+    for(let i=0;i<366;i++){
+        if(h.paused) { d.setDate(d.getDate()-1); continue; } 
+        const w=d.getDay();
+        let isSched = true;
+        if(h.frequency==='weekdays' && (w<1||w>5)) isSched = false;
+        if(h.frequency==='custom' && !(h.customDays||[]).includes(w)) isSched = false;
+        
+        if(!isSched){d.setDate(d.getDate()-1);continue;}
+        const k=getDK_real(d);
+        if((hist[k]||0)>=h.target){s++;d.setDate(d.getDate()-1);}else break;
+    }
+    return s;
+}
+function getBadge(s){return s>=100?'ðŸ’Ž':s>=30?'ðŸ¥‡':s>=14?'ðŸ¥ˆ':s>=7?'ðŸ¥‰':'';}
+
+function getHabDots(h) {
+    let html = '';
+    for(let i=6; i>=0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const k = getDK_real(d);
+        const cnt = (h.history||{})[k] || 0;
+        const isD = cnt >= h.target;
+        
+        let style = '';
+        if(isD) {
+            style = `background:${h.color}; opacity: ${i===0?1:0.5};`;
+        } else {
+            if(i===0) style = `border:1.5px solid ${h.color}; background:transparent; width:4px; height:4px;`;
+            else style = `background:var(--brd2); opacity:0.6;`;
+        }
+        html += `<div class="h-dot" style="${style}"></div>`;
+    }
+    return html;
+}
+
+function incHabit(id) {
+    const h = habits.find(x=>x.id===id); if(!h || h.paused) return;
+    const today = getToday();
+    if(!h.history) h.history = {};
+    let cnt = h.history[today] || 0;
+    
+    if(cnt < h.target) {
+        h.history[today] = cnt + 1;
+        saveHabits(); renderHabits();
+        if(h.history[today] >= h.target) {
+            toast(`ðŸŽ‰ "${h.name}" concluÃ­do!`);
+            if(navigator.vibrate) navigator.vibrate(50);
+        }
+    } else {
+        if(h.target === 1) { h.history[today] = 0; saveHabits(); renderHabits(); }
+        else toast('HÃ¡bito jÃ¡ concluÃ­do! (Use o menu â‹® para desfazer)');
+    }
+    if(focusH && focusH.id === id) { focusH = habits.find(x=>x.id===id); renderFocusBody(); }
+}
+
+function undoHabit(id) {
+    const h = habits.find(x=>x.id===id); if(!h || h.paused) return;
+    const today = getToday();
+    let cnt = (h.history||{})[today] || 0;
+    if(cnt > 0) {
+        h.history[today] = cnt - 1;
+        saveHabits(); renderHabits();
+        if(focusH && focusH.id === id) { focusH = habits.find(x=>x.id===id); renderFocusBody(); }
+    }
+}
+
+function togHabOpt(id) {
+    document.querySelectorAll('.h-opts').forEach(el => {
+        if(el.id !== `h-opt-${id}`) el.classList.remove('open');
+    });
+    const el = document.getElementById(`h-opt-${id}`);
+    if(el) el.classList.toggle('open');
+}
+
+function togHabPause(id) {
+    const h = habits.find(x=>x.id===id); if(!h) return;
+    h.paused = !h.paused;
+    saveHabits(); renderHabits();
+    toast(h.paused ? 'HÃ¡bito pausado.' : 'HÃ¡bito retomado!');
+}
+
+function habCardHTML(h){
+    const cnt = getHabCnt(h);
+    const str = compStreak(h);
+    const bdg = getBadge(str);
+    const done = cnt >= h.target;
+    const sched = !h.paused && isSchedOn(h, new Date());
+    
+    const r = 21; const circ = 2 * Math.PI * r;
+    const pct = Math.min(cnt / h.target, 1);
+    const offset = circ - (pct * circ);
+    
+    let actIn = '';
+    if(done) {
+        actIn = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+    } else if (h.target === 1) {
+        actIn = `<div class="h-act-v" style="color:var(--txt3)"></div>`; 
+    } else {
+        actIn = `<div class="h-act-plus">+</div><div class="h-act-v">${cnt}/${h.target}</div>`;
+    }
+
+    return `
+    <div class="hcard no-swipe ${done?'done':''} ${!sched && !h.paused ?'huns':''} ${h.paused ? 'hpaus' : ''}" data-id="${h.id}" onclick="${h.paused ? '' : `openFocus(${h.id})`}">
+        <div class="h-ico-wrap" style="background:${h.color}22; color:${h.color};">
+            ${h.icon}
+        </div>
+        <div class="h-info">
+            <div class="h-nm">${esc(h.name)}</div>
+            <div class="h-meta">
+                ${str > 0 ? `<span style="color:#e67e22; font-weight:600;">ðŸ”¥ ${str}</span>` : ''}
+                ${bdg ? `<span style="font-size:13px">${bdg}</span>` : ''}
+                <div class="h-dots">${getHabDots(h)}</div>
+            </div>
+        </div>
+        <div class="h-act no-swipe" onclick="event.stopPropagation(); incHabit(${h.id})">
+            <svg class="h-ring">
+                <circle class="h-ring-bg" cx="24" cy="24" r="${r}"></circle>
+                <circle class="h-ring-fg" cx="24" cy="24" r="${r}" stroke="${done ? '#1DD1A1' : h.color}" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"></circle>
+            </svg>
+            <div class="h-act-in" style="${done ? 'background:#1DD1A1; border-radius:50%; width:36px; height:36px;' : ''}">
+                ${actIn}
+            </div>
+        </div>
+        <button class="h-menu-btn no-swipe" onclick="event.stopPropagation(); togHabOpt(${h.id})">â‹®</button>
+        <div class="h-opts no-swipe" id="h-opt-${h.id}">
+            <button class="h-opt-btn" onclick="event.stopPropagation(); togHabPause(${h.id}); togHabOpt(${h.id})">${h.paused ? 'â–¶ Retomar HÃ¡bito' : 'â¸ Pausar HÃ¡bito'}</button>
+            <button class="h-opt-btn" onclick="event.stopPropagation(); openHF(${h.id}); togHabOpt(${h.id})">âœ Editar</button>
+            ${cnt > 0 ? `<button class="h-opt-btn" onclick="event.stopPropagation(); undoHabit(${h.id}); togHabOpt(${h.id})">â†© Desfazer</button>` : ''}
+            <button class="h-opt-btn del" onclick="event.stopPropagation(); delHabit(${h.id}); togHabOpt(${h.id})">ðŸ—‘ Excluir</button>
+        </div>
+    </div>`;
+}
+
+function renderHabits(){
+  try {
+      let tod=(habits||[]).filter(Boolean).filter(h=> !h.paused && isSchedOn(h,new Date()));
+      let unsched=(habits||[]).filter(Boolean).filter(h=> !h.paused && !isSchedOn(h,new Date()));
+      let pausedH=(habits||[]).filter(Boolean).filter(h=> h.paused);
+      
+      tod.sort((a, b) => {
+          const doneA = isHabDone(a);
+          const doneB = isHabDone(b);
+          if(doneA && !doneB) return 1;
+          if(!doneA && doneB) return -1;
+          return 0;
+      });
+
+      const dn=tod.filter(h=>isHabDone(h)), pct=tod.length?Math.round(dn.length/tod.length*100):0;
+      const g=pct===100?'#1DD1A1,#48DBFB':'#54A0FF,#A29BFE';
+      
+      document.getElementById('hab-list').innerHTML=`
+        <div class="hprog">
+            <div class="hph"><span>${dn.length}/${tod.length} hoje</span><span style="font-size:12px;color:var(--txt3)">${pct}%</span></div>
+            <div class="pbw"><div class="pbf" style="width:${pct}%;background:linear-gradient(90deg,${g})"></div></div>
+            ${pct===100&&tod.length?'<div class="pbm">ðŸŽ‰ Todos concluÃ­dos hoje!</div>':''}
+        </div>
+        ${tod.length ? tod.map(habCardHTML).join('') : '<p class="empty" style="margin-bottom:15px;">Nenhum hÃ¡bito para hoje.</p>'}
+        ${unsched.length ? `<div class="lbl" style="margin-top:15px; margin-bottom:10px;">NÃ£o programados para hoje</div>` + unsched.map(habCardHTML).join('') : ''}
+        ${pausedH.length ? `<div class="lbl" style="margin-top:20px; margin-bottom:10px;">Pausados (FÃ©rias)</div>` + pausedH.map(habCardHTML).join('') : ''}
+      `;
+  } catch(e){}
+}
+
+function openHF(id){if(id){const h=habits.find(h=>h.id===id);if(h)hfd={...h,customDays:[...(h.customDays||[])],times:[...(h.times||[])]};document.getElementById('hf-ttl').textContent='Editar hÃ¡bito';}else{hfd={id:null,icon:'â­',name:'',color:COLORS[5],target:1,times:[],frequency:'daily',customDays:[],reminderTime:'',paused:false};document.getElementById('hf-ttl').textContent='Novo hÃ¡bito';}renderHF();openM('mo-hf');}
+function closeHF(){closeM('mo-hf');}
+function setHabTime(i,v){if(!hfd.times)hfd.times=[];hfd.times[i]=v;}
+function renderHF(){
+  const tms=hfd.target>1?`<div class="hff"><label>HorÃ¡rios por ocorrÃªncia <span style="font-weight:400;font-size:9px;text-transform:none">(opcional)</span></label><div class="htgrid">${Array.from({length:hfd.target},(_,i)=>`<div class="htrow"><span>OcorrÃªncia ${i+1}</span><input type="text" id="hf-time-${i}" class="pk-input" readonly value="${(hfd.times||[])[i]||''}" onclick="openPicker('hf-time-${i}', 'time')"/></div>`).join('')}</div></div>`:`<div class="hff"><label>Lembrete</label><input type="text" id="hf-rem-time" class="pk-input" readonly value="${hfd.reminderTime||''}" onclick="openPicker('hf-rem-time', 'time')"/></div>`;
+  const catHtml = EMOJI_CATS.map(c => `<div class="ecat-lbl">${c.cat}</div><div class="emoji-row">${c.e.map(em => `<div class="eopt ${hfd.icon===em?'sel':''}" onclick="hfd.icon='${em}';renderHF()">${em}</div>`).join('')}</div>`).join('');
+  document.getElementById('hf-body').innerHTML=`<div class="hff"><label>Ãcone</label><div style="display:flex;gap:10px;align-items:center;margin-bottom:8px"><input type="text" value="${esc(hfd.icon)}" maxlength="2" style="width:60px;font-size:20px;text-align:center" oninput="hfd.icon=this.value"/> <span style="font-size:11px;color:var(--txt3)">Ou escolha abaixo:</span></div>${catHtml}</div><div class="hff"><label>Nome</label><input type="text" value="${esc(hfd.name)}" placeholder="Ex: Beber Ã¡gua" oninput="hfd.name=this.value"/></div><div class="hff"><label>Cor</label><div class="csw-row">${COLORS.map(c=>`<div class="csw ${hfd.color===c?'sel':''}" style="background:${c}" onclick="hfd.color='${c}';renderHF()"></div>`).join('')}</div></div><div class="hff"><label>Meta diÃ¡ria</label><div class="tst"><button class="tsb" onclick="if(hfd.target>1){hfd.target--;if(hfd.times)hfd.times=hfd.times.slice(0,hfd.target);}renderHF()">âˆ’</button><span class="tsv">${hfd.target}</span><button class="tsb" onclick="if(hfd.target<10)hfd.target++;renderHF()">+</button><span class="tsl">${hfd.target===1?'vez/dia':'vezes/dia'}</span></div></div>${tms}<div class="hff"><label>FrequÃªncia</label><div class="frow">${[['daily','DiÃ¡rio'],['weekdays','Dias Ãºteis'],['custom','Personalizado']].map(([v,l])=>`<button class="fbtn ${hfd.frequency===v?'sel':''}" onclick="hfd.frequency='${v}';renderHF()">${l}</button>`).join('')}</div>${hfd.frequency==='custom'?`<div class="drow">${['D','S','T','Q','Q','S','S'].map((d,i)=>`<button class="dck ${(hfd.customDays||[]).includes(i)?'sel':''}" onclick="togCDay(${i})">${d}</button>`).join('')}</div>`:''}</div>`;
+}
+function togCDay(i){
+    const idx=(hfd.customDays||[]).indexOf(i);
+    if(idx>=0)hfd.customDays.splice(idx,1);
+    else hfd.customDays.push(i);
+    renderHF();
+}
+async function saveHabit(){
+    if(!hfd.name.trim()){toast('Digite um nome');return;}
+    if(!hfd.times)hfd.times=[];
+    if(document.getElementById('hf-rem-time')) hfd.reminderTime = document.getElementById('hf-rem-time').value;
+    if(hfd.id)habits=habits.map(h=>h.id===hfd.id?{...h,...hfd}:h);else habits.push({...hfd,id:Date.now(),history:{}});
+    saveHabits();renderHabits();schedAll();closeHF();toast(hfd.id?'HÃ¡bito atualizado âœ“':'HÃ¡bito criado âœ“');
+}
+async function delHabit(id){if(!(await showDialog('confirm','Excluir HÃ¡bito','Excluir este hÃ¡bito e todo o histÃ³rico permanentemente?')))return;habits=habits.filter(h=>h.id!==id);saveHabits();renderHabits();if(focusH&&focusH.id===id)closeFocus();}
+
+// FOCUS & BACKGROUND TIMER
+function openFocus(id){const h=habits.find(h=>h.id===id);if(!h)return;focusH=h;if(focTmr){clearInterval(focTmr.intv);focTmr=null;}document.getElementById('fc-ttl').textContent=`${h.icon} ${h.name}`;renderFocusBody();openM('mo-focus');}
+function closeFocus(){closeM('mo-focus');if(focTmr){clearInterval(focTmr.intv);focTmr=null;}focusH=null;}
+function editFromFocus(){if(focusH){const id=focusH.id;closeFocus();openHF(id);}}
+
+function setBubble(id,idx){const h=habits.find(h=>h.id===id);if(!h)return;const today=getToday();if(!h.history)h.history={};const cur=h.history[today]||0;h.history[today]=cur===h.target&&idx===h.target-1?0:idx+1;saveHabits();renderHabits();if(focusH&&focusH.id===id){focusH=habits.find(x=>x.id===id);renderFocusBody();}}
+
+function renderFocusBody(){
+    if(!focusH)return;
+    const h=habits.find(x=>x.id===focusH.id)||focusH,cnt=getHabCnt(h),str=compStreak(h),bdg=getBadge(str),q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+    let fb='';for(let i=0;i<h.target;i++){let t_str='';if(h.target>1&&h.times&&h.times[i])t_str=h.times[i];else if(h.target===1&&h.reminderTime)t_str=h.reminderTime;const tl=t_str?`<div style="font-size:10px;color:var(--txt4);margin-top:2px">${t_str}</div>`:'';fb+=`<div style="display:flex;flex-direction:column;align-items:center"><div class="fbub ${i<cnt?'filled':''}" style="color:${h.color}" onclick="setBubble(${h.id},${i})"></div>${tl}</div>`;}
+    let hcells='';for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=getDK_real(d),dn=(h.history||{})[k]>=(h.target||1),sc=isSchedOn(h,d),isT=i===0;hcells+=`<div class="hcl ${dn?'done':''} ${!sc?'':''} ${isT?'today':''}" style="${dn?`background:${h.color}`:''}"></div>`;}
+    
+    if(focTmr && focTmr.running) {
+        focTmr.remaining = Math.max(0, Math.ceil((focTmr.endTime - Date.now())/1000));
+    }
+    
+    const isC=focTmr&&![5,10,15,30].includes(focTmr.dur),td=focTmr?fmtTimer(focTmr.remaining):'--:--',tbLabel=!focTmr?'Iniciar':focTmr.running?'Pausar':'Continuar';
+    document.getElementById('fc-body').innerHTML=`<div class="fbubs">${fb}</div><div class="fcnt">${cnt}/${h.target}${cnt>=h.target?' Â· âœ“ ConcluÃ­do!':''}</div>${str>0||bdg?`<div class="fsts">${str>0?`<div class="fs"><div class="fsn">ðŸ”¥ ${str}</div><div class="fsl">dias seguidos</div></div>`:''} ${bdg?`<div class="fs"><div class="fsn">${bdg}</div><div class="fsl">${str>=100?'Diamante':str>=30?'Ouro':str>=14?'Prata':'Bronze'}</div></div>`:''}</div>`:''}<div class="fq">"${q}"</div><div class="hgs"><div class="lbl" style="margin-bottom:4px">Ãšltimos 28 dias</div><div class="hdow">${DL.map(d=>`<span>${d[0]}</span>`).join('')}</div><div class="hgrid">${hcells}</div></div><div class="tmrsec"><div class="lbl" style="margin-bottom:7px">Timer de foco</div><div class="topts">${[5,10,15,30].map(m=>`<button class="topt ${focTmr&&focTmr.dur===m&&!isC?'sel':''}" onclick="setTmr(${m})">${m} min</button>`).join('')}<button class="topt ${isC?'sel':''}" onclick="showCT()">Personalizado</button></div><div id="ct-row" class="tcrow" style="display:${isC?'flex':'none'}"><input type="number" id="ct-in" min="1" max="360" value="${isC?focTmr.dur:25}"/><span style="font-size:12px;color:var(--txt3)">min (mÃ¡x 6h)</span><button class="bbk" style="font-size:12px;padding:5px 10px" onclick="applyCT()">Ok</button></div><div class="tdisp" id="t-disp">${td}</div><button class="tbtn" id="t-btn" onclick="togTmr()">${tbLabel}</button></div>`;
+}
+function showCT(){const r=document.getElementById('ct-row');if(r)r.style.display=r.style.display==='none'?'flex':'none';}
+function applyCT(){const v=Math.max(1,Math.min(360,parseInt(document.getElementById('ct-in').value)||25));setTmr(v);}
+function setTmr(min){if(focTmr)clearInterval(focTmr.intv);focTmr={dur:min,remaining:min*60,running:false,intv:null,endTime:0};renderFocusBody();}
+function togTmr(){
+  if(!focTmr)return;
+  if(focTmr.running){
+    clearInterval(focTmr.intv);focTmr.running=false;focTmr.intv=null;
+    const b=document.getElementById('t-btn');if(b)b.textContent='Continuar';
+  }else{
+    focTmr.running=true;
+    focTmr.endTime = Date.now() + (focTmr.remaining * 1000);
+    focTmr.intv=setInterval(()=>{
+      focTmr.remaining = Math.max(0, Math.ceil((focTmr.endTime - Date.now())/1000));
+      const d=document.getElementById('t-disp');if(d)d.textContent=fmtTimer(focTmr.remaining);
+      if(focTmr.remaining<=0){
+        clearInterval(focTmr.intv);focTmr.running=false;focTmr.intv=null;
+        const d2=document.getElementById('t-disp');if(d2)d2.textContent='00:00';
+        const b=document.getElementById('t-btn');if(b){b.textContent='Reiniciar';b.onclick=()=>setTmr(focTmr.dur);}
+        toast(`â± ${focusH?focusH.icon:''} Tempo concluÃ­do!`);
+        if(navigator.vibrate) navigator.vibrate([500, 200, 500]);
+        if(typeof Notification !== 'undefined' && Notification.permission==='granted')new Notification('Meu Organizador',{body:`â± Timer concluÃ­do: ${focusH?focusH.icon+' '+focusH.name:''}`});
+      }
+    }, 500); 
+    const b=document.getElementById('t-btn');if(b)b.textContent='Pausar';
+  }
+}
+function fmtTimer(s){return`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
+
+// FINANCES
 let fY=TY, fM=TM;
-function chgFinM(dir) { fM += dir; if(fM > 11) { fM = 0; fY++; } if(fM < 0) { fM = 11; fY--; } renderFin(); }
+
+function chgFinM(dir) {
+    fM += dir;
+    if(fM > 11) { fM = 0; fY++; }
+    if(fM < 0) { fM = 11; fY--; }
+    renderFin();
+}
+
 function chgBillType(){
   const t = document.getElementById('bill-type').value;
   document.getElementById('lbl-bill-date').textContent = t === '+' ? 'Entrada' : 'Vencimento';
@@ -1852,153 +2313,570 @@ function chgBillType(){
 }
 function expandMonth(k, name) {
   const b = (bills||[]).filter(Boolean).filter(x => isBillInMonth(x, k));
-  let totalIn = 0, totalOut = 0; const catsIn = {}, catsOut = {};
+  
+  let totalIn = 0, totalOut = 0;
+  const catsIn = {}, catsOut = {};
+  
   b.forEach(x => {
-      const key = x.cat || 'Outro'; const val = getBillVal(x, k);
-      if(x.type === '+') { totalIn += val; if(!catsIn[key]) catsIn[key] = {total:0, items:[]}; catsIn[key].total += val; catsIn[key].items.push(x); } 
-      else { totalOut += val; if(!catsOut[key]) catsOut[key] = {total:0, items:[]}; catsOut[key].total += val; catsOut[key].items.push(x); }
+      const key = x.cat || 'Outro';
+      const val = getBillVal(x, k);
+      if(x.type === '+') {
+          totalIn += val;
+          if(!catsIn[key]) catsIn[key] = {total:0, items:[]};
+          catsIn[key].total += val;
+          catsIn[key].items.push(x);
+      } else {
+          totalOut += val;
+          if(!catsOut[key]) catsOut[key] = {total:0, items:[]};
+          catsOut[key].total += val;
+          catsOut[key].items.push(x);
+      }
   });
-  const total = totalIn + totalOut; const pctIn = total > 0 ? (totalIn / total) * 100 : 50; const pctOut = total > 0 ? (totalOut / total) * 100 : 50;
-  const catColors = ['#FF6B6B','#1DD1A1','#54A0FF','#FECA57','#A29BFE','#FF9F43','#48DBFB','#FF9FF3'];
-  let chartGradient = []; let accDeg = 0; let legendHtml = '';
+
+  const total = totalIn + totalOut;
+  const pctIn = total > 0 ? (totalIn / total) * 100 : 50;
+  const pctOut = total > 0 ? (totalOut / total) * 100 : 50;
+  
+  const catColors = ['#FF6B6B','#1DD1A1','#54A0FF','#FECA57','#A29BFE','#FF9F43','#48DBFB','#FF9FF3','#00d2d3','#f368e0','#ff9f43','#10ac84'];
+  let chartGradient = [];
+  let accDeg = 0;
+  let legendHtml = '';
   Object.keys(catsOut).sort((a,b) => catsOut[b].total - catsOut[a].total).forEach((c, i) => {
-      const cc = catsOut[c]; const pct = (cc.total / totalOut) * 100; const deg = (pct / 100) * 360; const color = catColors[i % catColors.length];
-      chartGradient.push(`${color} ${accDeg}deg ${accDeg + deg}deg`); accDeg += deg;
-      legendHtml += `<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt2);"><div style="width:10px;height:10px;border-radius:50%;background:${color}"></div><span>${c} (${pct.toFixed(1)}%)</span></div>`;
+      const cc = catsOut[c];
+      const pct = (cc.total / totalOut) * 100;
+      const deg = (pct / 100) * 360;
+      const color = catColors[i % catColors.length];
+      chartGradient.push(`${color} ${accDeg}deg ${accDeg + deg}deg`);
+      accDeg += deg;
+      legendHtml += `<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt2);"><div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0;"></div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c} (${pct.toFixed(1)}%)</span></div>`;
   });
-  let html = `<div style="margin-bottom:15px; background:var(--bg3); padding:14px; border-radius:12px;"><div style="display:flex; justify-content:space-between; margin-bottom: 12px;"><div style="text-align:center; flex:1; border-right:.5px solid var(--brd2);"><div style="font-size:10px; color:var(--txt3); font-weight:600;">Entradas</div><div class="v-hide" style="font-size:16px; font-weight:600; color:#2e7d32;">+${fmtC(totalIn)}</div></div><div style="text-align:center; flex:1;"><div style="font-size:10px; color:var(--txt3); font-weight:600;">Saídas</div><div class="v-hide" style="font-size:16px; font-weight:600; color:#e44;">-${fmtC(totalOut)}</div></div></div><div style="display:flex; height:6px; border-radius:3px; overflow:hidden; background:var(--brd2);"><div style="width:${pctIn}%; background:#2e7d32;"></div><div style="width:${pctOut}%; background:#e44;"></div></div></div>`;
-  if(!b.length) html += `<p class="empty">Nenhum lançamento previsto.</p>`; else {
+  
+  let pieHtml = totalOut > 0 ? `
+      <div style="display:flex; gap:15px; align-items:center; margin:15px 0; background:var(--bg3); padding:15px; border-radius:12px;">
+          <div style="width:90px; height:90px; border-radius:50%; background:conic-gradient(${chartGradient.join(',')}); flex-shrink:0;"></div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:4px; min-width:0;">
+              <div style="font-size:11px; font-weight:600; color:var(--txt3); text-transform:uppercase; margin-bottom:4px;">Despesas por Categoria</div>
+              ${legendHtml}
+          </div>
+      </div>
+  ` : '';
+
+  let html = `
+    <div style="margin-bottom:15px; background:var(--bg3); padding:14px; border-radius:12px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom: 12px;">
+            <div style="text-align:center; flex:1; border-right:.5px solid var(--brd2);">
+                <div style="font-size:10px; color:var(--txt3); font-weight:600; text-transform:uppercase;">Entradas</div>
+                <div class="v-hide" style="font-size:16px; font-weight:600; color:#2e7d32; margin-top:4px;">+${fmtC(totalIn)}</div>
+            </div>
+            <div style="text-align:center; flex:1;">
+                <div style="font-size:10px; color:var(--txt3); font-weight:600; text-transform:uppercase;">SaÃ­das</div>
+                <div class="v-hide" style="font-size:16px; font-weight:600; color:#e44; margin-top:4px;">-${fmtC(totalOut)}</div>
+            </div>
+        </div>
+        <div style="display:flex; height:6px; border-radius:3px; overflow:hidden; background:var(--brd2);">
+            <div style="width:${pctIn}%; background:#2e7d32; transition:width 0.3s;"></div>
+            <div style="width:${pctOut}%; background:#e44; transition:width 0.3s;"></div>
+        </div>
+    </div>
+    ${pieHtml}`;
+
+  if(!b.length) {
+      html += `<p class="empty" style="margin-top:0">Nenhum lanÃ§amento previsto.</p>`;
+  } else {
       const renderGrp = (grp, title, color) => {
-          const keys = Object.keys(grp).sort(); if(!keys.length) return '';
-          let res = `<div style="font-size:11px; font-weight:600; color:var(--txt3); margin:18px 0 8px; text-transform:uppercase">${title}</div>`;
-          keys.forEach((c) => { const cc = grp[c]; res += `<div style="background:var(--card); border:.5px solid var(--brd); border-radius:10px; margin-bottom:8px; overflow:hidden;"><div onclick="const n=this.nextElementSibling; if(n.style.display==='none')n.style.display='block';else n.style.display='none';" style="display:flex; justify-content:space-between; padding:12px; cursor:pointer; font-size:13px; background:var(--bg3);"><span>${c}</span><span class="v-hide" style="color:${color}; font-weight:600">${fmtC(cc.total)}</span></div><div style="display:none; padding:4px 12px 12px 12px;">`; cc.items.forEach(it => { const dText = getBillDesc(it, k) || c; const isPaid = it.paidMap && it.paidMap[k]; res += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:8px 0; border-bottom:.5px dashed var(--brd2);"><span style="${isPaid ? 'text-decoration:line-through;color:var(--txt4)' : ''}">${esc(dText)}</span><span class="v-hide">${fmtC(getBillVal(it, k))}</span></div>`; }); res += `</div></div>`; }); return res;
+          const keys = Object.keys(grp).sort();
+          if(!keys.length) return '';
+          let res = `<div style="font-size:11px; font-weight:600; color:var(--txt3); margin:18px 0 8px; text-transform:uppercase; letter-spacing:0.05em;">${title}</div>`;
+          keys.forEach((c) => {
+              const cc = grp[c];
+              res += `
+              <div style="background:var(--card); border:.5px solid var(--brd); border-radius:10px; margin-bottom:8px; overflow:hidden;">
+                 <div onclick="const n=this.nextElementSibling; const a=this.querySelector('.arr'); if(n.style.display==='none'){n.style.display='block';a.style.transform='rotate(90deg)';}else{n.style.display='none';a.style.transform='rotate(0deg)';}" style="display:flex; justify-content:space-between; align-items:center; padding:12px; cursor:pointer; font-weight:500; font-size:13px; color:var(--txt); background:var(--bg3);">
+                     <div style="display:flex; align-items:center; gap:8px;">
+                         <span class="arr" style="display:inline-block; transition:transform 0.2s; color:var(--txt3); font-size:16px; line-height:1;">â€º</span>
+                         <span>${c}</span>
+                     </div>
+                     <span class="v-hide" style="color:${color}; font-weight:600">${fmtC(cc.total)}</span>
+                 </div>
+                 <div style="display:none; padding:4px 12px 12px 12px;">`;
+              cc.items.forEach(it => {
+                  const dText = getBillDesc(it, k) || c;
+                  const isPaid = it.paidMap && it.paidMap[k];
+                  const bValFmt = fmtC(getBillVal(it, k));
+                  res += `
+                    <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--txt2); padding:8px 0; border-bottom:.5px dashed var(--brd2);">
+                      <span style="flex:1; padding-right:10px; ${isPaid ? 'text-decoration:line-through;color:var(--txt4)' : ''}">${esc(dText)} ${it.rep?' ðŸ”':''}</span>
+                      <span class="v-hide" style="${isPaid ? 'color:var(--txt4)' : ''}">${bValFmt}</span>
+                    </div>`;
+              });
+              res = res.replace(/border-bottom:\.5px dashed var\(--brd2\);(">.*?<\/div>)$/, '">$1');
+              res += `</div></div>`;
+          });
+          return res;
       };
-      html += renderGrp(catsIn, 'Receitas Detalhadas', '#2e7d32') + renderGrp(catsOut, 'Despesas Detalhadas', '#e44');
+
+      html += renderGrp(catsIn, 'Receitas Detalhadas', '#2e7d32');
+      html += renderGrp(catsOut, 'Despesas Detalhadas', '#e44');
   }
-  document.getElementById('proj-m-ttl').textContent = `Resumo: ${name}`; document.getElementById('proj-m-body').innerHTML = html; openM('mo-proj');
+  
+  document.getElementById('proj-m-ttl').textContent = `Resumo: ${name}`;
+  document.getElementById('proj-m-body').innerHTML = html;
+  openM('mo-proj');
 }
+
 function renderFin(){
   try {
       const totalBal = (accounts||[]).filter(Boolean).reduce((acc, curr) => acc + Number(curr.val), 0);
       document.getElementById('fin-total').textContent = fmtC(totalBal);
       document.getElementById('fin-mlbl').textContent = `${MO[fM]} ${fY}`;
-      let projHtml = ''; let runBal = totalBal; const now = new Date();
+      
+      let projHtml = '';
+      let runBal = totalBal;
+      const now = new Date();
       for(let i=0; i<6; i++) {
-          let mDate = new Date(now.getFullYear(), now.getMonth() + i, 1); let y = mDate.getFullYear(), m = mDate.getMonth(); let mk = `${y}-${String(m+1).padStart(2,'0')}`; let inM=0, outM=0;
-          (bills||[]).filter(Boolean).forEach(b => { if(!b.paidMap) b.paidMap = {}; if(!b.paidMap[mk] && isBillInMonth(b, mk)) { let bVal = getBillVal(b, mk); if(b.type === '+') inM += bVal; else outM += bVal; } });
+          let mDate = new Date(now.getFullYear(), now.getMonth() + i, 1);
+          let y = mDate.getFullYear(), m = mDate.getMonth();
+          let mk = `${y}-${String(m+1).padStart(2,'0')}`;
+          let inM=0, outM=0;
+          (bills||[]).filter(Boolean).forEach(b => {
+              if(!b.paidMap) b.paidMap = {};
+              const isPaid = b.paidMap[mk];
+              if(!isPaid && isBillInMonth(b, mk)) { 
+                  let bVal = getBillVal(b, mk);
+                  if(b.type === '+') inM += bVal; else outM += bVal; 
+              }
+          });
           runBal = runBal + inM - outM;
-          projHtml += `<div class="no-swipe" onclick="expandMonth('${mk}', '${MO[m]}/${y}')" style="min-width:125px; padding:10px; cursor:pointer; background:var(--bg3); border:.5px solid var(--brd2); border-radius:10px; flex-shrink:0;"><div style="font-size:11px; color:var(--txt3); font-weight:600;">${MO[m].substring(0,3)}/${y}</div><div class="v-hide" style="font-size:14px; font-weight:600; color:${runBal<0?'#e44':'var(--txt)'}; margin-top:4px">${fmtC(runBal)}</div><div style="display:flex; justify-content:space-between; margin-top:6px; font-size:10px;"><span style="color:#2e7d32">↑ <span class="v-hide">${fmtC(inM)}</span></span> <span style="color:#e44">↓ <span class="v-hide">${fmtC(outM)}</span></span></div></div>`;
+          projHtml += `<div class="no-swipe" onclick="expandMonth('${mk}', '${MO[m]}/${y}')" style="min-width:125px; padding:10px; cursor:pointer; background:var(--bg3); border:.5px solid var(--brd2); border-radius:10px; flex-shrink:0;">
+             <div style="font-size:11px; color:var(--txt3); font-weight:600; text-transform:uppercase">${MO[m].substring(0,3)}/${y}</div>
+             <div class="v-hide" style="font-size:14px; font-weight:600; color:${runBal<0?'#e44':'var(--txt)'}; margin-top:4px">${fmtC(runBal)}</div>
+             <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:10px;">
+               <span style="color:#2e7d32">â†‘ <span class="v-hide">${fmtC(inM)}</span></span> <span style="color:#e44">â†“ <span class="v-hide">${fmtC(outM)}</span></span>
+             </div>
+          </div>`;
       }
       document.getElementById('fin-proj').innerHTML = projHtml;
-      document.getElementById('acc-list').innerHTML = (accounts||[]).filter(Boolean).map(a => `<div class="acc-it"><span class="acc-nm"><button class="bd no-swipe" style="color:#e44" onclick="delAccount(${a.id})">×</button> ${esc(a.name)}</span><div style="display:flex;gap:8px;align-items:center"><span class="acc-val v-hide">${fmtC(a.val)}</span><button class="bd no-swipe" style="font-size:12px;color:var(--txt3)" onclick="editAccount(${a.id})">✏️</button></div></div>`).join('');
+
+      const accList = document.getElementById('acc-list');
+      accList.innerHTML = (accounts||[]).filter(Boolean).map(a => `
+        <div class="acc-it">
+           <span class="acc-nm"><button class="bd no-swipe" style="font-size:14px;color:#e44" onclick="delAccount(${a.id})">Ã—</button> ${esc(a.name)}</span>
+           <div style="display:flex;gap:8px;align-items:center">
+              <span class="acc-val v-hide">${fmtC(a.val)}</span>
+              <button class="bd no-swipe" style="font-size:12px;color:var(--txt3)" onclick="editAccount(${a.id})">âœï¸</button>
+           </div>
+        </div>
+      `).join('');
+
+      const list = document.getElementById('bill-list');
       const mKey = `${fY}-${String(fM+1).padStart(2,'0')}`;
-      const mBills = (bills||[]).filter(Boolean).filter(b => isBillInMonth(b, mKey)).sort((a,b) => parseInt((a.date||'').substring(8,10)||0) - parseInt((b.date||'').substring(8,10)||0));
-      const pendingBills = mBills.filter(b => !(b.paidMap && b.paidMap[mKey])), doneBills = mBills.filter(b => b.paidMap && b.paidMap[mKey]);
+      
+      const mBills = (bills||[]).filter(Boolean).filter(b => isBillInMonth(b, mKey)).sort((a,b) => {
+          const dA = parseInt((a.date||'').substring(8,10)||0);
+          const dB = parseInt((b.date||'').substring(8,10)||0);
+          return dA - dB;
+      });
+
+      const pendingBills = mBills.filter(b => !(b.paidMap && b.paidMap[mKey]));
+      const doneBills = mBills.filter(b => b.paidMap && b.paidMap[mKey]);
+
       const btnToggle = document.getElementById('btn-toggle-done-bills');
-      if (doneBills.length > 0) btnToggle.style.display = 'block'; else { btnToggle.style.display = 'none'; showDoneBills = false; }
-      document.getElementById('bill-list').innerHTML = (showDoneBills ? mBills : pendingBills).map(b => {
+      if (doneBills.length > 0) {
+          btnToggle.style.display = 'block';
+      } else {
+          btnToggle.style.display = 'none';
+          showDoneBills = false; 
+      }
+
+      const billsToRender = showDoneBills ? mBills : pendingBills;
+
+      list.innerHTML = billsToRender.map(b => {
+        const cEmoji = b.cat ? b.cat.split(' ')[0] : '';
+        const cName = b.cat ? b.cat.substring(cEmoji.length).trim() : '';
+        const rawDesc = getBillDesc(b, mKey);
+        const dText = rawDesc ? esc(rawDesc) : cName;
         const isPaid = b.paidMap && b.paidMap[mKey];
-        return `<div class="ti ${isPaid?'done-item':''}"><div class="tck no-swipe ${isPaid?'done':''}" onclick="togBill(${b.id}, '${mKey}')"></div><div class="tb2"><div class="tt">${esc(getBillDesc(b, mKey) || b.cat)} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}</span></div><div class="tm">Dia ${b.date ? b.date.substring(8,10) : '--'} · <span class="v-hide">${fmtC(getBillVal(b, mKey))}</span></div></div><button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id}, '${mKey}')">✏️</button><button class="bd no-swipe" onclick="delBill(${b.id}, '${mKey}')">×</button></div>`;
-      }).join('') || '<p class="empty">Nenhum lançamento pendente.</p>';
+        const bDay = b.date ? b.date.substring(8,10) : '--';
+        const bVal = getBillVal(b, mKey);
+
+        return `<div class="ti ${isPaid?'done-item':''}">
+          <div class="tck no-swipe ${isPaid?'done':''}" onclick="togBill(${b.id}, '${mKey}')">${isPaid?`<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
+          <div class="tb2"><div class="tt">${cEmoji} ${dText} <span class="ebdg" style="background:${b.type==='+'?'#e8f5e9':'#ffebee'};color:${b.type==='+'?'#2e7d32':'#c62828'}">${b.type==='+'?'entrada':'conta'}${b.rep?' ðŸ”':''}</span></div><div class="tm">Dia ${bDay} ${bVal ? ` Â· <span class="v-hide">${fmtC(bVal)}</span>` : ''}</div></div>
+          <button class="bd no-swipe" style="font-size:13px;margin-right:6px" onclick="editBill(${b.id}, '${mKey}')">âœï¸</button>
+          <button class="bd no-swipe" onclick="delBill(${b.id}, '${mKey}')">Ã—</button>
+        </div>`;
+      }).join('') || '<p class="empty" style="margin-top:1rem">Nenhum lanÃ§amento pendente neste mÃªs.</p>';
   } catch(e){}
 }
 
+function toggleDoneBills() {
+    showDoneBills = !showDoneBills;
+    const btn = document.getElementById('btn-toggle-done-bills');
+    btn.textContent = showDoneBills ? 'Ocultar LanÃ§amentos ConcluÃ­dos' : 'Ver LanÃ§amentos ConcluÃ­dos';
+    renderFin();
+}
+
 function openTransfer(){
-    if(accounts.length < 2) { showDialog('alert','Transferência','Você precisa de pelo menos 2 carteiras.'); return; }
+    if(accounts.length < 2) { showDialog('alert','TransferÃªncia','VocÃª precisa de pelo menos 2 carteiras.'); return; }
     let opts = accounts.map(a=>`<option value="${a.id}">${a.name} (${fmtC(a.val)})</option>`).join('');
-    document.getElementById('tr-from').innerHTML = opts; document.getElementById('tr-to').innerHTML = opts; openM('mo-transfer');
+    document.getElementById('tr-from').innerHTML = opts;
+    document.getElementById('tr-to').innerHTML = opts;
+    document.getElementById('tr-val').value = '';
+    openM('mo-transfer');
 }
 function saveTransfer(){
-    const f = parseInt(document.getElementById('tr-from').value), t = parseInt(document.getElementById('tr-to').value), v = parseFloat(document.getElementById('tr-val').value);
-    if(f === t || !v || v<=0) return;
-    const accF = accounts.find(a=>a.id===f), accT = accounts.find(a=>a.id===t);
-    if(accF && accT) { accF.val -= v; accT.val += v; save(); renderFin(); closeM('mo-transfer'); toast('Transferência concluída ✓'); }
+    const f = parseInt(document.getElementById('tr-from').value);
+    const t = parseInt(document.getElementById('tr-to').value);
+    const vStr = document.getElementById('tr-val').value;
+    const v = parseFloat(vStr.replace(',','.'));
+    
+    if(f === t) { toast('Selecione carteiras diferentes!'); return; }
+    if(!v || v<=0) { toast('Valor invÃ¡lido!'); return; }
+
+    const accF = accounts.find(a=>a.id===f);
+    const accT = accounts.find(a=>a.id===t);
+    if(accF && accT) {
+        accF.val -= v;
+        accT.val += v;
+        save(); renderFin(); closeM('mo-transfer'); toast('TransferÃªncia realizada âœ“');
+    }
 }
+
 async function addAccount(){
-  const nm = await showDialog('prompt', 'Nova Carteira', 'Nome da Carteira/Banco:'); if(!nm || !nm.trim()) return;
-  const vl = await showDialog('prompt', 'Saldo Inicial', `Saldo inicial para '${nm}':`, "0.00");
-  if(vl !== false && !isNaN(parseFloat(vl))) { accounts.push({id:Date.now(), name:nm.trim(), val:parseFloat(vl)}); save(); renderFin(); }
+  const nm = await showDialog('prompt', 'Nova Carteira', 'Nome da Carteira/Banco:');
+  if(!nm || !nm.trim()) return;
+  const vl = await showDialog('prompt', 'Saldo Inicial', `Saldo inicial para '${nm}' (use ponto para centavos):`, "0.00");
+  if(vl !== false && vl !== null && !isNaN(parseFloat(vl.replace(',','.')))) { accounts.push({id:Date.now(), name:nm.trim(), val:parseFloat(vl.replace(',','.'))}); save(); renderFin(); }
 }
 function editAccount(id){
   const acc = accounts.find(a=>a.id===id); if(!acc) return;
-  document.getElementById('eacc-id').value = id; document.getElementById('eacc-name').value = acc.name; document.getElementById('eacc-val').value = acc.val; openM('mo-eacc');
+  document.getElementById('eacc-id').value = id;
+  document.getElementById('eacc-name').value = acc.name;
+  document.getElementById('eacc-val').value = acc.val;
+  openM('mo-eacc');
 }
 function saveEditAcc(){
-  const id = Number(document.getElementById('eacc-id').value), acc = accounts.find(a=>a.id===id); if(!acc) return;
-  acc.name = document.getElementById('eacc-name').value.trim(); acc.val = parseFloat(document.getElementById('eacc-val').value) || 0;
-  save(); renderFin(); closeM('mo-eacc');
+  const id = Number(document.getElementById('eacc-id').value);
+  const acc = accounts.find(a=>a.id===id); if(!acc) return;
+  acc.name = document.getElementById('eacc-name').value.trim() || acc.name;
+  acc.val = parseFloat(document.getElementById('eacc-val').value) || 0;
+  save(); renderFin(); closeM('mo-eacc'); toast('Carteira atualizada!');
 }
 async function delAccount(id){ if(await showDialog('confirm','Remover Carteira','Remover esta carteira permanentemente?')) { accounts = accounts.filter(a => a.id !== id); save(); renderFin(); } }
+
 async function chgRep(el) {
     if(el.value === 'custom') {
-        const v = await showDialog('prompt', 'Repetição', 'Repetir por quantos meses a mais?');
-        const num = parseInt(v); if(!isNaN(num) && num > 0) { el.value = num; } else el.value = "0";
+        const v = await showDialog('prompt', 'RepetiÃ§Ã£o', 'Repetir por quantos meses a mais? (Ex: 24)');
+        const num = parseInt(v);
+        if(!isNaN(num) && num > 0) {
+            let exists = false;
+            for(let i=0; i<el.options.length; i++) {
+                if(el.options[i].value == num) { exists = true; break; }
+            }
+            if(!exists) {
+                const opt = document.createElement('option');
+                opt.value = num;
+                opt.text = `Por mais ${num} meses`;
+                el.add(opt, el.options[el.options.length-1]); 
+            }
+            el.value = num;
+        } else {
+            el.value = "0"; 
+        }
     }
 }
+
 function addBill(){
-  const date = document.getElementById('bill-date').value; if(!date) return;
-  bills.push({id: Date.now(), type: document.getElementById('bill-type').value, cat: document.getElementById('bill-cat').value, desc: document.getElementById('bill-desc').value.trim(), date, val: document.getElementById('bill-val').value, rep: parseInt(document.getElementById('bill-rep').value)||0, paidMap: {}, valMap: {}, descMap: {}, delMap: {}});
-  document.getElementById('bill-desc').value=''; document.getElementById('bill-date').value=''; document.getElementById('bill-val').value=''; document.getElementById('bill-rep').value='0'; save(); renderFin(); renderCal();
+  const date = document.getElementById('bill-date').value;
+  if(!date) { toast("A data Ã© obrigatÃ³ria!"); return; }
+  
+  let desc = document.getElementById('bill-desc').value.trim();
+  const type = document.getElementById('bill-type').value;
+  const cat = document.getElementById('bill-cat').value;
+  const val = document.getElementById('bill-val').value;
+  const rep = parseInt(document.getElementById('bill-rep').value) || 0;
+  
+  bills.push({id: Date.now(), type, cat, desc, date, val, rep, paidMap: {}, valMap: {}, descMap: {}, delMap: {}});
+  document.getElementById('bill-desc').value=''; document.getElementById('bill-date').value=''; document.getElementById('bill-val').value=''; document.getElementById('bill-rep').value='0';
+  save(); renderFin(); renderCal();
 }
+
+// MODAL EDITAR CONTA
 function editBill(id, mk){
   const b = bills.find(x => x.id === id); if(!b) return;
-  document.getElementById('ebill-m-id').value = id; document.getElementById('ebill-m-mk').value = mk; document.getElementById('ebill-m-date').value = b.date || '';
+  document.getElementById('ebill-m-id').value = id;
+  document.getElementById('ebill-m-mk').value = mk;
+  document.getElementById('ebill-m-date').value = b.date || '';
   document.getElementById('ebill-m-desc').value = (b.descMap && b.descMap[mk] !== undefined) ? b.descMap[mk] : (b.desc || '');
   document.getElementById('ebill-m-val').value = (b.valMap && b.valMap[mk] !== undefined) ? b.valMap[mk] : (b.val || '');
-  document.getElementById('ebill-scope-wrap').style.display = b.rep !== 0 ? 'block' : 'none'; openM('mo-ebill');
+  
+  if(b.rep !== 0) {
+      document.getElementById('ebill-scope-wrap').style.display = 'block';
+      document.getElementById('ebill-scope').value = 'one';
+  } else {
+      document.getElementById('ebill-scope-wrap').style.display = 'none';
+  }
+  openM('mo-ebill');
 }
 function saveEditBill(){
-  const id = Number(document.getElementById('ebill-m-id').value), mk = document.getElementById('ebill-m-mk').value, b = bills.find(x => x.id === id); if(!b) return;
-  const val = parseFloat(document.getElementById('ebill-m-val').value) || 0, desc = document.getElementById('ebill-m-desc').value.trim(), ndate = document.getElementById('ebill-m-date').value;
-  if(b.rep !== 0 && document.getElementById('ebill-scope').value === 'one') { if(!b.valMap) b.valMap = {}; if(!b.descMap) b.descMap = {}; b.valMap[mk] = val; b.descMap[mk] = desc; } 
-  else if (b.rep !== 0 && document.getElementById('ebill-scope').value === 'future') { b.endMk = mk; let newB = JSON.parse(JSON.stringify(b)); newB.id = Date.now(); newB.date = ndate || b.date; newB.desc = desc; newB.val = val; newB.paidMap = {}; newB.valMap = {}; newB.descMap = {}; newB.delMap = {}; newB.endMk = null; bills.push(newB); } 
-  else { if(ndate) b.date = ndate; b.desc = desc; b.val = val; b.valMap = {}; b.descMap = {}; }
-  save(); renderFin(); renderEvList(); renderCal(); closeM('mo-ebill');
+  const id = Number(document.getElementById('ebill-m-id').value);
+  const mk = document.getElementById('ebill-m-mk').value;
+  const b = bills.find(x => x.id === id); if(!b) return;
+  
+  const ndate = document.getElementById('ebill-m-date').value;
+  const desc = document.getElementById('ebill-m-desc').value.trim();
+  const valStr = document.getElementById('ebill-m-val').value;
+  const val = parseFloat(valStr.replace(',','.')) || 0;
+  
+  if(b.rep !== 0 && document.getElementById('ebill-scope').value === 'one') {
+      if(!b.valMap) b.valMap = {};
+      if(!b.descMap) b.descMap = {};
+      b.valMap[mk] = val;
+      b.descMap[mk] = desc;
+      if(ndate && ndate !== b.date) { toast("A data base nÃ£o muda no modo de ediÃ§Ã£o individual."); }
+  } else if (b.rep !== 0 && document.getElementById('ebill-scope').value === 'future') {
+      b.endMk = mk;
+      
+      let oldDay = b.date.substring(8,10);
+      let newDate = `${mk}-${oldDay}`; 
+      if (ndate) newDate = ndate;
+      
+      let newB = JSON.parse(JSON.stringify(b));
+      newB.id = Date.now();
+      newB.date = newDate;
+      newB.desc = desc;
+      newB.val = val;
+      newB.paidMap = {}; newB.valMap = {}; newB.descMap = {}; newB.delMap = {};
+      newB.endMk = null;
+      
+      if (b.paidMap && b.paidMap[mk]) { 
+          newB.paidMap[mk] = true; 
+          delete b.paidMap[mk]; 
+      }
+      if (b.valMap) delete b.valMap[mk];
+      if (b.descMap) delete b.descMap[mk];
+      if (b.delMap) delete b.delMap[mk];
+      
+      bills.push(newB);
+  } else if (b.rep !== 0 && document.getElementById('ebill-scope').value === 'all') {
+      if(ndate) b.date = ndate;
+      b.desc = desc; b.val = val;
+      b.valMap = {}; b.descMap = {}; 
+  } else {
+      if(ndate) b.date = ndate;
+      b.desc = desc; b.val = val;
+      b.valMap = {}; b.descMap = {};
+  }
+  
+  save(); renderFin(); renderEvList(); renderCal(); closeM('mo-ebill'); toast('LanÃ§amento atualizado!');
 }
-function togBill(id, mk){
-  bills = bills.map(b => { if(b.id === id) { if(!b.paidMap) b.paidMap = {}; const wasPaid = !!b.paidMap[mk]; b.paidMap[mk] = !wasPaid; if(accounts.length > 0) { const v = getBillVal(b, mk); accounts[0].val += wasPaid ? (b.type==='+'?-v:v) : (b.type==='+'?v:-v); } } return b; });
-  save(); renderFin(); renderEvList(); renderCal();
+
+function togBill(id, mk){ 
+  let msg = '';
+  bills = bills.map(b => {
+      if(b.id === id) {
+          if(!b.paidMap) b.paidMap = {};
+          const wasPaid = !!b.paidMap[mk];
+          b.paidMap[mk] = !wasPaid;
+          
+          if(accounts.length > 0) {
+              const v = getBillVal(b, mk);
+              if(v > 0) {
+                  let change = 0;
+                  if(!wasPaid) change = b.type === '+' ? v : -v; 
+                  else change = b.type === '+' ? -v : v;
+                  accounts[0].val += change;
+                  if(!wasPaid) msg = b.type === '+' ? `R$ ${v.toFixed(2)} recebidos na Carteira` : `R$ ${v.toFixed(2)} descontados da Carteira`;
+                  else msg = b.type === '+' ? `R$ ${v.toFixed(2)} estornados` : `R$ ${v.toFixed(2)} reembolsados`;
+              }
+          }
+      }
+      return b;
+  }); 
+  save(); renderFin(); renderEvList(); renderCal(); 
+  if(msg) toast(msg);
 }
-function delBill(id, mk){ const b = bills.find(x => x.id === id); if(!b) return; if(b.rep === 0) { showDialog('confirm','Excluir','Excluir permanentemente?').then(ans => { if(ans) { bills = bills.filter(x => x.id !== id); save(); renderFin(); renderEvList(); renderCal(); } }); } else { document.getElementById('dbill-id').value = id; document.getElementById('dbill-mk').value = mk; openM('mo-dbill'); } }
+
+function delBill(id, mk){ 
+  const b = bills.find(x => x.id === id); if(!b) return;
+  if(b.rep === 0) {
+      showDialog('confirm','Excluir Conta','Excluir este lanÃ§amento permanentemente?').then(ans => {
+          if(ans) { bills = bills.filter(x => x.id !== id); save(); renderFin(); renderEvList(); renderCal(); }
+      });
+  } else {
+      document.getElementById('dbill-id').value = id;
+      document.getElementById('dbill-mk').value = mk;
+      openM('mo-dbill');
+  }
+}
 function execDelBill(scope) {
-    const id = Number(document.getElementById('dbill-id').value), mk = document.getElementById('dbill-mk').value, b = bills.find(x => x.id === id); if(!b) return;
-    if(scope === 'one') { if(!b.delMap) b.delMap = {}; b.delMap[mk] = true; } else if(scope === 'future') b.endMk = mk; else if(scope === 'all') bills = bills.filter(x => x.id !== id);
+    const id = Number(document.getElementById('dbill-id').value);
+    const mk = document.getElementById('dbill-mk').value;
+    let b = bills.find(x => x.id === id); if(!b) return;
+    
+    if(scope === 'one') {
+        if(!b.delMap) b.delMap = {};
+        b.delMap[mk] = true;
+        toast('LanÃ§amento deste mÃªs excluÃ­do.');
+    } else if(scope === 'future') {
+        b.endMk = mk;
+        toast('LanÃ§amentos futuros excluÃ­dos.');
+    } else if(scope === 'all') {
+        bills = bills.filter(x => x.id !== id);
+        toast('Todos os lanÃ§amentos foram excluÃ­dos.');
+    }
     save(); renderFin(); renderEvList(); renderCal(); closeM('mo-dbill');
 }
 
-// HABITS COUNTER & CONQUISTAS
-function openAch(){ openM('mo-ach'); }
-function openSug(){ openM('mo-sug'); }
+// ACHIEVEMENTS
+function openAch(){
+  const body=document.getElementById('ach-body');
+  const tDn=(tasks||[]).filter(Boolean).filter(t=>t.done).length, eDn=Object.values(events||{}).flat().filter(e=>e.done).length, hDn=Object.values((habits||[]).filter(Boolean).map(h=>Object.values(h.history||{}))).flat().filter(v=>v>0).length;
+  const totalDn=tDn+eDn+hDn;
+  let maxStr=0; (habits||[]).filter(Boolean).forEach(h=>{const s=compStreak(h);if(s>maxStr)maxStr=s;});
+  let html=`<div class="ach-stat">VocÃª jÃ¡ completou <strong>${totalDn}</strong> itens no total e sua maior sequÃªncia atual Ã© de <strong>${maxStr}</strong> dias. Continue assim!</div><div class="ach-grid">`;
+  BADGE_DEFS.forEach(b=>{
+    let unlocked = false;
+    if(b.id.startsWith('s')) unlocked = maxStr >= parseInt(b.id.substring(1));
+    else if(b.id.startsWith('t')) unlocked = totalDn >= parseInt(b.id.substring(1));
+    else if(b.id==='first') unlocked = habits.length > 0;
+    html+=`<div class="ach-card ${unlocked?'':'locked'}"><div class="ach-ico">${b.icon}</div><div class="ach-ttl">${b.title}</div><div class="ach-dsc">${b.desc}</div></div>`;
+  });
+  body.innerHTML=html+'</div>';
+  openM('mo-ach');
+}
 
-// ── INITIALIZE APPLICATION ──
+function openSug(){
+  const body=document.getElementById('sug-body');
+  body.innerHTML=`<div class="sug-grid">` + HABIT_SUGS.map((s,i)=>`<div class="sug-item"><div class="sug-ico">${s.icon}</div><div class="sug-info"><div class="sug-nm">${s.name}</div><div class="sug-dt">${s.desc}</div></div><button class="sug-add" onclick="addSug(${i})">Adicionar</button></div>`).join('') + `</div>`;
+  openM('mo-sug');
+}
+function addSug(i){
+  const s=HABIT_SUGS[i];
+  habits.push({id:Date.now(), icon:s.icon, name:s.name, target:s.target, frequency:s.frequency, color:s.color, customDays:s.customDays||[], times:[], history:{}});
+  saveHabits(); renderHabits(); closeM('mo-sug'); toast('HÃ¡bito adicionado!');
+}
+
+// TUTORIAL
+function startTutorial(){
+    if(localStorage.getItem('o_tut_done')) return;
+    tutStep=0; document.getElementById('tut').style.display='flex'; showStep();
+}
+function showStep(){
+    const s=TUT_STEPS[tutStep];
+    document.getElementById('tut-ico').textContent=s.ico;
+    document.getElementById('tut-ttl').textContent=s.ttl;
+    document.getElementById('tut-txt').innerHTML=s.txt + (s.html ? s.html : '');
+    if(tutStep===0 && cfg.name){ const tn = document.getElementById('tut-name'); if(tn) tn.value = cfg.name; }
+    let d='';TUT_STEPS.forEach((_,i)=>d+=`<div class="tut-dot ${i===tutStep?'active':''}"></div>`);
+    document.getElementById('tut-dots').innerHTML=d;
+    document.getElementById('tut-next').textContent=tutStep===TUT_STEPS.length-1?'ComeÃ§ar!':'PrÃ³ximo â†’';
+    if(s.tab)swTab(s.tab,document.getElementById(`tb-${s.tab}`));
+    
+    setTimeout(() => {
+        const wrap = document.getElementById('spotlight-wrap');
+        const hole = document.getElementById('spot-hole');
+        const card = document.getElementById('tut-card');
+        wrap.style.display = 'block';
+
+        if(s.target) {
+            const el = document.querySelector(s.target);
+            if(el) {
+                const rect = el.getBoundingClientRect();
+                hole.style.left = (rect.left - 6) + 'px';
+                hole.style.top = (rect.top - 6) + 'px';
+                hole.style.width = (rect.width + 12) + 'px';
+                hole.style.height = (rect.height + 12) + 'px';
+                hole.style.opacity = '1';
+                
+                let ty = rect.bottom + 20;
+                if(rect.top > window.innerHeight / 2) ty = rect.top - card.offsetHeight - 20;
+                card.style.transform = `translateY(${ty}px)`;
+            }
+        } else {
+            hole.style.width = '0'; hole.style.height = '0';
+            hole.style.left = '50%'; hole.style.top = '50%';
+            hole.style.opacity = '0';
+            hole.style.boxShadow = '0 0 0 9999px rgba(0,0,0,0.65)';
+            card.style.transform = `translateY(${(window.innerHeight - card.offsetHeight)/2 - 20}px)`;
+        }
+    }, 300);
+}
+function nextTut(){
+    if(tutStep===0){ const n = document.getElementById('tut-name'); if(n && n.value.trim()){ cfg.name = n.value.trim(); saveCfg(); applyName(); } }
+    if(tutStep<TUT_STEPS.length-1){tutStep++;showStep();}else endTutorial();
+}
+function endTutorial(){
+    document.getElementById('tut').style.display='none';
+    document.getElementById('spotlight-wrap').style.display='none';
+    localStorage.setItem('o_tut_done','true');
+    setTimeout(() => { if(typeof Notification !== 'undefined' && Notification.permission === 'default') { if(confirm("Deseja ativar as notificaÃ§Ãµes para ser lembrado das suas tarefas e hÃ¡bitos?")) { reqN(); } } }, 400);
+}
+
+// UI HELPERS (Toast)
+function toast(msg) {
+    let t = document.getElementById('toast');
+    if(!t) {
+        t = document.createElement('div');
+        t.id = 'toast';
+        t.style.cssText = 'position:fixed;bottom:env(safe-area-inset-bottom, 20px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--txt);color:var(--bg);padding:10px 20px;border-radius:20px;font-size:13px;z-index:9999;opacity:0;transition:opacity 0.3s, transform 0.3s;pointer-events:none;font-weight:500;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.15);white-space:nowrap;';
+        document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    void t.offsetWidth; 
+    t.style.opacity = 1;
+    t.style.transform = 'translateX(-50%) translateY(-20px)';
+    clearTimeout(t.to);
+    t.to = setTimeout(() => { t.style.opacity = 0; t.style.transform = 'translateX(-50%) translateY(20px)'; }, 3000);
+}
+
+// â”€â”€ INIT BLINDADO ABSOLUTO â”€â”€
 function initApp() {
     try {
-        load(); loadCfg(); loadHabits(); applyTabOrder(); applyTheme(); applyName(); applyHideVals();
-        if(typeof chgBillType === 'function') chgBillType();
+        load(); loadCfg(); loadHabits();
+        applyTabOrder(); applyTheme(); applyName(); applyHideVals();
+        if(typeof chgBillType === 'function') chgBillType(); 
+        
         calView = 'month'; cY = TY; cM = TM; selD = null;
-        try{ renderTasks(); renderNotes(); renderHabits(); renderFin(); } catch(e){}
+
+        try{ renderTasks(); } catch(e){}
+        try{ renderNotes(); } catch(e){}
+        try{ renderHabits(); } catch(e){}
+        try{ if(typeof renderFin==='function') renderFin(); } catch(e){}
+        
         try{ selDay(TD); } catch(e){}
+
         try {
             bindDrag('ngrid', '.nc', () => { const arr=[]; document.querySelectorAll('#ngrid .nc').forEach(el=>arr.push(notes.find(n=>n.id===Number(el.dataset.id)))); notes=arr.filter(Boolean); save(); });
             bindDrag('hab-list', '.hcard', () => { const arr=[]; document.querySelectorAll('#hab-list .hcard').forEach(el=>arr.push(habits.find(h=>h.id===Number(el.dataset.id)))); habits=arr.filter(Boolean); saveHabits(); });
-            bindDrag('cfg-tab-list', '.tab-item', () => { const arr=[]; document.querySelectorAll('#cfg-tab-list .tab-item').forEach(el=>arr.push(el.dataset.id)); cfg.tabOrder=arr; saveCfg(); applyTabOrder(); });
-            // PREMIUM ITEM DRAGGING ON LIST NOTE
-            bindDrag('nt-list-items', '.nli', () => {
-                const arr = [];
-                document.querySelectorAll('#nt-list-items .nli').forEach(el => {
-                    const idx = parseInt(el.dataset.idx);
-                    if(!isNaN(idx) && curList[idx]) arr.push(curList[idx]);
-                });
-                curList = arr.filter(Boolean);
-                renderListItems();
+            bindDrag('cfg-tab-list', '.tab-item', () => { 
+                const arr=[]; document.querySelectorAll('#cfg-tab-list .tab-item').forEach(el=>arr.push(el.dataset.id)); 
+                cfg.tabOrder=arr; saveCfg(); applyTabOrder(); 
             });
         } catch(e) {}
+        
         document.getElementById('task-in').addEventListener('keydown', e => { if(e.key==='Enter') addTask(); });
         document.getElementById('ev-in').addEventListener('keydown', e => { if(e.key==='Enter') addEvent(); });
-        setTimeout(() => { const sp = document.getElementById('splash'); if(sp) sp.remove(); startTutorial(); }, 2200);
+        
+        try {
+            const p=new URLSearchParams(location.search),txt=(p.get('text')||p.get('url')||'').trim();
+            if(txt){notes.unshift({id:Date.now(),title:p.get('title')||'Compartilhado',body:txt,date:NOW.toLocaleDateString('pt-BR')});save();history.replaceState(null,'',location.pathname);window._shared=true;}
+        } catch(e) {}
+        
+        if(window._shared){swTab('notes',document.getElementById(`tb-${TABS.includes('notes')?'notes':TABS[0]}`));toast('âœ“ Texto salvo nas notas!');}
+        
+        document.addEventListener('visibilitychange', () => { if(!document.hidden) schedAll(); });
+        
+        setTimeout(() => {
+            const sp = document.getElementById('splash');
+            if(sp) sp.remove(); 
+            startTutorial();
+        }, 2200);
+
         schedAll();
-    } catch (err) { console.error("Erro na inicialização:", err); }
+    } catch (err) { console.error("Erro na inicializaÃ§Ã£o:", err); }
 }
+
 initApp();
 </script>
 </body>
