@@ -461,12 +461,24 @@ details > summary::-webkit-details-marker { display: none; }
             </div>
             <div id="ngrid" class="ng"></div>
           </div>
-          <div id="nev">
+<div id="nev">
             <div class="neh"><button class="bbk" onclick="closeNote(true)">← Voltar</button><button class="bsv" onclick="saveNote()">Salvar</button></div>
             <input type="text" id="nt-ttl" placeholder="Título"/>
             <textarea id="nt-bdy" placeholder="Escreva sua nota..."></textarea>
             <div id="nt-list-wrap" style="display:none; flex:1; flex-direction:column; overflow-y:auto; padding-bottom:20px;">
-               <!-- NEW LIST SUMMARY AND CALCULATOR -->
+               
+               <div style="display:flex; gap:8px; margin-bottom:12px; align-items:center; flex-shrink:0;">
+                   <select id="nt-list-type" onchange="chgListType()" style="flex:1; padding:8px; font-size:13px; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp); color:var(--txt);">
+                       <option value="padrao">Lista Padrão (Sem valores)</option>
+                       <option value="compras">Lista de Compras (Com R$)</option>
+                   </select>
+                   <select id="nt-list-model" onchange="applyListModel(this.value); this.value='';" style="flex:1; padding:8px; font-size:13px; border-radius:9px; border:.5px solid var(--brd2); background:var(--bg3); color:var(--txt);">
+                       <option value="">💡 Usar Modelo...</option>
+                       <option value="super">🛒 Supermercado</option>
+                       <option value="viagem">✈️ Mala de Viagem</option>
+                       <option value="faxina">🧹 Faxina</option>
+                   </select>
+               </div>
                <div id="nt-list-summary" style="background:var(--bg3); padding:10px 14px; border-radius:12px; margin-bottom:12px; display:none; flex-direction:column; gap:6px;">
                    <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--txt2); align-items:center;">
                        <span>Progresso: <span id="nt-list-pct" style="font-weight:600;">0%</span></span>
@@ -481,7 +493,7 @@ details > summary::-webkit-details-marker { display: none; }
                <div id="nt-list-items"></div>
                <div style="display:flex; gap:8px; margin-top:8px; flex-shrink:0;">
                    <button class="bnn" style="border-style:dashed; margin:0; flex:1;" onclick="addListItem('item')">+ Item</button>
-                   <button class="bnn" style="border-style:dashed; margin:0; flex:1;" onclick="addListItem('div')">+ Divisor</button>
+                   <button class="bnn" style="border-style:dashed; margin:0; flex:1;" onclick="addListItem('div')">+ Grupo</button>
                </div>
             </div>
           </div>
@@ -1491,7 +1503,49 @@ function renderTasks(){
 }
 
 // NOTES SYSTEM (PREMIUM LISTS INCLUDED)
-let enid=null, origNTitle='', origNBody='', origNType='text', curList=[], origNList=[];
+let enid=null, origNTitle='', origNBody='', origNType='text', origNListType='padrao', curList=[], origNList=[];
+
+function chgListType() {
+    const type = document.getElementById('nt-list-type').value;
+    const calcRow = document.getElementById('nt-list-calc-row');
+    if(calcRow) calcRow.style.display = type === 'compras' ? 'flex' : 'none';
+    renderListItems(); 
+}
+
+function applyListModel(modelType) {
+    if(!modelType) return;
+    if(curList.length > 0) {
+        showDialog('confirm', 'Aplicar Modelo', 'Isso irá apagar os itens atuais da lista. Continuar?').then(ans => {
+            if(ans) executeModel(modelType);
+        });
+    } else {
+        executeModel(modelType);
+    }
+}
+
+function executeModel(modelType) {
+    curList = [];
+    if(modelType === 'super') {
+        document.getElementById('nt-list-type').value = 'compras';
+        curList.push({t: 'Hortifruti', isDiv: true});
+        ['Banana', 'Cebola', 'Tomate'].forEach(i => curList.push({t: i, d: false, v: ''}));
+        curList.push({t: 'Limpeza', isDiv: true});
+        ['Sabão em pó', 'Detergente'].forEach(i => curList.push({t: i, d: false, v: ''}));
+    } else if(modelType === 'viagem') {
+        document.getElementById('nt-list-type').value = 'padrao';
+        curList.push({t: 'Roupas', isDiv: true});
+        ['Camisetas', 'Calças', 'Roupas íntimas'].forEach(i => curList.push({t: i, d: false, v: ''}));
+        curList.push({t: 'Higiene', isDiv: true});
+        ['Escova de dente', 'Desodorante', 'Sabonete'].forEach(i => curList.push({t: i, d: false, v: ''}));
+    } else if(modelType === 'faxina') {
+        document.getElementById('nt-list-type').value = 'padrao';
+        curList.push({t: 'Quartos', isDiv: true});
+        ['Trocar lençóis', 'Tirar pó', 'Varrer'].forEach(i => curList.push({t: i, d: false, v: ''}));
+        curList.push({t: 'Banheiro', isDiv: true});
+        ['Lavar box', 'Limpar espelho', 'Trocar toalhas'].forEach(i => curList.push({t: i, d: false, v: ''}));
+    }
+    chgListType();
+}
 function openNote(id, type='text'){
     enid=id;
     const n = id==='new'?null:(notes||[]).find(x=>x.id===id);
@@ -1500,6 +1554,7 @@ function openNote(id, type='text'){
     origNBody = n?(n.body||''):'';
     curList = n?JSON.parse(JSON.stringify(n.list||[])):[];
     origNList = JSON.parse(JSON.stringify(curList)); 
+    origNListType = n?(n.listType||'padrao'):'padrao';
     
     document.getElementById('nt-ttl').value=origNTitle;
     
@@ -1507,6 +1562,9 @@ function openNote(id, type='text'){
         document.getElementById('nt-bdy').style.display = 'none';
         document.getElementById('nt-list-wrap').style.display = 'flex';
         if(curList.length === 0) curList.push({t:'', d:false, v:''});
+        document.getElementById('nt-list-type').value = origNListType;
+        const calcRow = document.getElementById('nt-list-calc-row');
+        if(calcRow) calcRow.style.display = origNListType === 'compras' ? 'flex' : 'none';
         renderListItems();
     } else {
         document.getElementById('nt-bdy').style.display = 'block';
@@ -1597,7 +1655,7 @@ function renderListItems() {
                         ${item.d ? `<svg width="10" height="8" viewBox="0 0 9 7" fill="none" style="color: var(--acfg);"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
                     </div>
                     <input type="text" class="no-swipe" value="${esc(item.t)}" oninput="curList[${i}].t = this.value" placeholder="Item..." style="flex: 1; padding: 8px 10px; font-size: 13px; text-decoration: ${item.d ? 'line-through' : 'none'}; color: ${item.d ? 'var(--txt4)' : 'var(--txt)'}; border-radius:9px; border:.5px solid var(--brd2); background:var(--inp);"/>
-                    <input type="number" step="0.01" min="0" class="no-swipe" value="${item.v || ''}" oninput="curList[${i}].v = this.value; calculateListTotals();" placeholder="R$" style="width: 75px; padding: 8px 6px; font-size: 13px; text-align: right; flex-shrink: 0; border-radius: 9px; border: .5px solid var(--brd2); background: var(--inp); color: var(--txt);"/>
+                    <input type="number" step="0.01" min="0" class="no-swipe" value="${item.v || ''}" oninput="curList[${i}].v = this.value; calculateListTotals();" placeholder="R$" style="width: 75px; padding: 8px 6px; font-size: 13px; text-align: right; flex-shrink: 0; border-radius: 9px; border: .5px solid var(--brd2); background: var(--inp); color: var(--txt); display: ${document.getElementById('nt-list-type') && document.getElementById('nt-list-type').value === 'compras' ? 'block' : 'none'};"/>
                     <button class="bd no-swipe" style="font-size:22px; color:var(--txt4); padding: 0 4px;" onclick="delListItem(${i})">×</button>
                 </div>
             `;
@@ -1723,8 +1781,9 @@ function saveNote(){
         listToSave = curList.filter(x => x.t.trim() !== ''); 
     }
     
-    if(enid==='new') { notes.unshift({id:Date.now(), title, type:origNType, body, list:listToSave, date:NOW.toLocaleDateString('pt-BR')}); } 
-    else { notes = notes.map(n => n.id===enid ? {...n, title, type:origNType, body, list:listToSave} : n); }
+    const listTypeToSave = document.getElementById('nt-list-type').value;
+    if(enid==='new') { notes.unshift({id:Date.now(), title, type:origNType, listType:listTypeToSave, body, list:listToSave, date:NOW.toLocaleDateString('pt-BR')}); } 
+    else { notes = notes.map(n => n.id===enid ? {...n, title, type:origNType, listType:listTypeToSave, body, list:listToSave} : n); }
     
     save(); renderNotes();
     document.getElementById('nlv').style.display='flex'; 
